@@ -5,10 +5,8 @@ source(file.path(Sys.getenv('BASE_DIR'), 'lib/utilities.R'))
 
 arg_parser=argparser::arg_parser("Run a cell typing method")
 add=argparser::add_argument
-arg_parser=add(arg_parser, "--study", default="tracerx", help="NextFlow run")
 arg_parser=add(arg_parser, "--outDir", help="NextFlow run")
 arg_parser=add(arg_parser, "--tissAreaDir", help="Panel of markers")
-arg_parser=add(arg_parser, "--cohort", default='tx100', help="Panel of markers")
 arg_parser=add(arg_parser, "--panel", default='p2', help="Panel of markers")
 
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
@@ -36,7 +34,7 @@ sumOut$imagename=gsub('^[^_]+_(.*).tiff', '\\1', sumOut$Label)
 sumOut$panel=tolower(gsub('_.*', '', sumOut$imagename))
 sumOut$TissueType=gsub("([^_]+).*", "\\1", sumOut$Label)
 
-fileOut=with(args, f("{tissAreaDir}/{args$study}_{cohort}_{panel}_tissue_area.csv"))
+fileOut=with(args, f("{tissAreaDir}/{panel}_tissue_area.csv"))
 write.table(sumOut, file=fileOut, row.names = F, quote = F, sep = ',')
 
 

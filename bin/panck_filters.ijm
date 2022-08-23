@@ -2,7 +2,6 @@
 #@String runPattern
 #@Boolean mcd
 #@String rootDir
-#@String outDir
 
 // Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
 image="all";
@@ -11,39 +10,36 @@ directional='none';
 // Choose the NextFlow run iteration
 
 panck_thres=15
-print(rootDir);
-if(File.isDirectory(outDir) == 0)
-	File.makeDirectory(outDir);
+
 
 setBatchMode(true);
 runs=getFileList(rootDir);
-print(runs.length);
+print(runs.length + ' images in ' + rootDir);
 
-f = File.open(outDir + 'panck_range.txt');
+f = File.open('panck_range.txt');
 
 for (k=0; k < runs.length; k++)	{
-//	print(runs[k]);
+
 	if(startsWith(runs[k], "run")) {
+	
 		runDir=rootDir + runs[k] + "results/imctools/";
 		slideDirList=getFileList(runDir);
-//		print(runDir, slideDirList.length);
+
 		for (h = 0; h < slideDirList.length; h++) {
 			roiList=getFileList(runDir + slideDirList[h]);
-			// if(startsWith(slideDirList[h], 'Pano')) continue;
-//			print(roiList.length);
+
 			for (j = 0; j < roiList.length; j++) {
 				tma=replace(slideDirList[h],  "/", "");
 				roi=replace(roiList[j], "/", "");
 				imgName=tma + "-" + roi;
-			    //if(imgName != 'P2_TMA007_L_20190619-roi_6') continue;
-//				print(imgName);
+
 				if(image != "all" && imgName != image)
 					continue;
 				stacks=getFileList(runDir+slideDirList[h]+ roiList[j]);
-//				print(stacks.length);
+
 				if(stacks.length==0) continue;
-				fileOut=outDir + 'panckf_' + imgName + '.tif'; 
-//				print(fileOut);
+				fileOut='panckf_' + imgName + '.tif'; 
+
 				if(File.exists(fileOut)) {
 					print('File exists', fileOut);
 					continue;
@@ -51,7 +47,7 @@ for (k=0; k < runs.length; k++)	{
 
 				newPanel=0;
 				for (m = 0; m < stacks.length; m++)	{
-//					print(stacks[m]);
+
 					imgDir=runDir + slideDirList[h] + roiList[j] + stacks[m];
 					if(stacks.length==0) {
 						print("ERROR: empty stack " + stacks[m] + "\n");
@@ -68,7 +64,7 @@ for (k=0; k < runs.length; k++)	{
 							
 						}
 					}
-//					print('New panel', newPanel);
+
 					if(newPanel == 1) continue;
 					open(imgDir + "164Dy_panCK.tiff");
 					selectWindow("164Dy_panCK.tiff");
@@ -77,10 +73,7 @@ for (k=0; k < runs.length; k++)	{
 					getMinAndMax(min, max);
 					print(imgName, 'Tumour', min, max);
 					print(f, imgName + "\t" + 'Tumour' + '\t' + min + '\t' +  max);			
-//					if(max > panck_thres) {
-//						run("Close All");
-//						continue;
-//					}
+
 				//	print('Additional  filtering on the tumour intensities');
 					if(max < panck_thres) {
 						run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
@@ -93,7 +86,7 @@ for (k=0; k < runs.length; k++)	{
 					run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
 					singleMarkerImg="Tumour";
 					rename(singleMarkerImg);
-					saveAs('Tiff', outDir + 'panckf_' + imgName);
+					saveAs('Tiff', 'panckf_' + imgName);
 					run("Close All");
 				}
 			}

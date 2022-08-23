@@ -1,52 +1,51 @@
 
 /*
- * STEP 1: based on output from imctools -> format into intenstity matrices
+ * STEP 1: based on output from imcyto -> format into intensity matrices
  */
 
 process format_input {
 
-	tag "Formating imctools output as input for typing"
 	label 'xs'
-	executor 'local'
-	
+
+	publishDir "${params.outDir}/nfData/", mode: params.publish_dir_mode, overwrite: true
+
 	input:
-		tuple val(imageID), path(inFile)
-		path nfOut
+		tuple val(imageID), path(inFile), val(feature)
 
 	output:
-		path("${nfOut}")
-		// export PATH="/camp/lab/swantonc/working/angelom/tools/miniconda3/bin":$PATH
+		path("$feature/*")
 
 	script:
 		"""
-			echo ${inFile} ${nfOut} ${imageID}
-			# [[ ! -d "${nfOut}" ]] && mkdir -p ${nfOut}
-			split_files_by_feature_per_file.pl ${inFile} ${imageID} ${nfOut} ${params.run}
-				# "${params.inDir}/${params.panel}/${params.run}"
+			split_input_by_feature_per_file.pl ${inFile} ${imageID} ${feature} ${params.imcyto}
+			
 		"""
 }
 
+/*
+ * STEP 2: merge formatted input per feature
+ */
 process collate_features {
 
-    tag "Collate"
 	label 'medium_mem'
-
+	
+	publishDir "${params.outDir}/features/", mode: params.publish_dir_mode, overwrite: true
+	
 	input:
-		path inDir
-		path outDir
 		tuple val(feature)
 		val files
 
 	output:
-		val(outDir)
+		path("${feature}/*")
 	
-    script: // Script in typex/bin/format/
+    script:
     """
+		
 			export BASE_DIR=${baseDir}
-
-			# echo $inDir $outDir
-			[[ ! -d "${outDir}" ]] && mkdir -p ${outDir}
-			collate_by_feature.R --inDir "${inDir}/" --outDir "${outDir}/${feature}" --panel ${params.panel} --run ${params.run} --feature ${feature}
-                #                --inDir ${params.inDir}/nfrun --outDir ${params.outDir}/features \
+			collate_by_feature.R --inDir "${params.outDir}/nfData/" \
+				--panel ${params.panel} \
+				--run ${params.run} \
+				--feature ${feature}
+				
     """
 }

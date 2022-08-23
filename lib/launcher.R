@@ -8,12 +8,8 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   # feature    - the value that summarizes the intensity signal (mean, integrated, median)
   # parameters - method-specific parameters + contains markers to be excluded/included
   
-  # If file.pattern=Cells.csv
-  # columnNames=get_column_names(colnames=colnames(inData),
-  #                                features=feature, markers_select=group,
-  #                                channels_exclude=pars$channels_exclude)
   
-  ids=with(inData, paste(ObjectNumber, basename(file)))
+  ids=with(inData, paste(ObjectNumber, basename(imagename)))
   colnames(inData)=markers_format(colnames(inData))
   funForward=match.fun(paste0("run_", method))
   pars[[method]]$run_id=runID
@@ -22,78 +18,106 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   
   # Load info
   areaData=load_files(file.path(nfDir, "AreaShape"), run=pars$run)
-  areaMatch=match(ids, with(areaData, paste(ObjectNumber, basename(file))))
+  areaMatch=match(ids, with(areaData, paste(ObjectNumber, basename(imagename))))
   
   # if the analysis has been done
   inMatFile=f("{runID}.inMat.RData")
   clFile=f("{runID}.clusters.RData")
   
+  
+  columnNames=setdiff(grepv(feature, colnames(inData)), 
+  	c(pars$channels_exclude, "ObjectNumber", "imagename"))
+  colnames(inData)=colnames(inData) %>%
+	gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", .)
+  columnNames=columnNames %>%
+  	gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", .)
+
   if(! file.exists(inMatFile))  {
     # Keep only numeric columns
-    columnNames=setdiff(colnames(inData), c(pars$channels_exclude, "ObjectNumber", "file"))
     rowsKeep=rep(TRUE, nrow(inData))
-  
-    if(!is.null(pars$markers) & pars$markers != "all") {
-      indices=match(unique(unlist(marker_gene_list[[pars$markers]])), colnames(inData))
-      keep=colnames(inData)[indices[!is.na(indices)]]
-      cat("Column names matching the markers list:", keep, "\n", file=f("{runID}.log"), append=T)
-      columnNames=intersect(columnNames, keep)
+
+    if(! is.null(pars$markers) & pars$subset != subtypesDir) {
+		selectedMarkers=marker_gene_list[[pars$markers]] %>% 
+		unlist %>% unique 
+      indices=match(selectedMarkers, colnames(inData))
+      keep=colnames(inData)[indices[! is.na(indices)]]
+      cat("INFO: Column names matching the markers list:", keep, "\n",
+		file=f("{runID}.log"), append=T)
+	  columnNames=intersect(columnNames, keep)
+  	  
     }
-    colnames(inData)=gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", colnames(inData))
-    
+	cat("Columns:", columnNames, '\n')
     # Exlude cells with an area smaller or equal to pars$area_exclude
-    if(!is.null(pars$area_exclude) & pars$area_exclude > 0) {
-      cat("Number of cells with area smaller than", pars$area_exclude, "is",
+    if(! is.null(pars$area_exclude) & pars$area_exclude > 0) {
+      cat("INFO: Number of cells with area smaller than", pars$area_exclude, "is",
           sum(areaData$AreaShape_Area[areaMatch] <= pars$area_exclude), "\n",
           file=f("{runID}.log"), append=T)
       rowsKeep=rowsKeep & areaData$AreaShape_Area[areaMatch] > pars$area_exclude
     }
-    
+
     # Exclude cells with intensity smaller or equal to pars$min_expression for all markers
     rowsKeep=apply(inData[, ..columnNames], 1, function(x) any(x > pars$min_expresssion))
-    cat("Number of cells with zero expression for all markers of interest",
-        sum(!rowsKeep), "\n", file=f("{runID}.log"), append=T)
+	cat("INFO: Number of cells with zero expression for all markers of interest",
+        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
     
     # Include batches for cellassign; # rows must match cov matrix
     if(method == "cellassign") {
       # add batch effects
-      tma_block=get_region_info(panel=pars$panel, cellIDs=inData$file, featurePattern="TMA$", regFile=regFile)
-      tma_side=get_region_info(panel=pars$panel, cellIDs=inData$file, featurePattern="duplicate_core$", regFile=regFile)
-      cohort=get_region_info(panel=pars$panel, cellIDs=inData$file, featurePattern="^cohort$", regFile=regFile)
-      tma_values=paste(cohort, tma_block, tma_side)
-      if(any(is.na(tma_values))) {
-        stop("Missing TMA values")
-      }
-      cat("Number of cells without TMA & tissue values is",
-          sum(is.na(tma_values)), "\n",
-          file=file.path(paste0(runID, ".log")), append=T)
-      rowsKeep=rowsKeep & !is.na(tma_values)  # & !is.na(tissue_values)
-      print(table(tma_values[rowsKeep]))
+	  tma_values = sapply(pars$batch_effects, function(factor) {
+		  get_region_info(panel=pars$panel, 
+		  				cellIDs=inData$imagename,
+						regFile=regFile,
+						featurePattern=f("{factor}$"))
+	  })
+      if(all(is.na(tma_values))) {
+		tma_values=rep("one", nrow(inData))
+		cat("WARNING:  Batch effects will not be calculated for the probabilistic cellassign model",
+	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
+        #stop("ERROR: Missing TMA values")
+	  }
       if(length(unique(tma_values[rowsKeep])) > 1) {
+	  	tma_values=apply(tma_values, 1, paste)
+		print("TMA values for batch effect correction")
+        print(table(tma_values[rowsKeep]))
+      	rowsKeep=rowsKeep & ! is.na(tma_values)  # & !is.na(tissue_values)
         pars[[method]]$X=model.matrix(~ 0 + tma_values[rowsKeep])   
       } else {
-        pars[[method]]$X=NULL
+		  cat('WARNING: Batch effects will not be calculated for',
+		  	"the probabilistic cellassign model\n",
+			file=f("{runID}.log"), append=T)
+		  pars[[method]]$X=NULL
       }
       # create_covariate_matrix(list(tma_values[rowsKeep], tissue_values[rowsKeep]))
     }
     
     if(! dir.exists(dirname(runID)))
       dir.create(dirname(runID), recursive=T)
-     
+	
+    cat("Number of cells with zero expression for all markers of specified in", 
+		pars$markers, " is ", sum(! rowsKeep), "\n", append=T)
+	
     inMat=inData[rowsKeep, ..columnNames]
-	print(dim(inMat))
-    colors=colors[rowsKeep] # toString
-    if(pars[[method]]$transformation != "none") {
-      transformInput=match.fun(paste0("to_", pars[[method]]$transformation))
-      inMat=transformInput(inMat)
+    colors=colors[rowsKeep]
+	stopifnot(ncol(inMat) & nrow(inMat))
+  	cat('INFO: range of values in the input matrix is ', range(inMat), 
+  	    	'using magnitude ', pars$magnitude, '\n')
+	
+	if(pars[[method]]$transformation != "none") {
+		transformInput=match.fun(paste0("to_", pars[[method]]$transformation))
+		cat('INFO: Transforming the matrix using -', pars[[method]]$transformation, 
+			'- as specified in typing_params.json for the corresponding tool.\n')
+			
+		if(pars[[method]]$transformation == 'magnitude') {
+	        inMat=transformInput(inMat, dynamic_range = pars$magnitude)
+		} else {
+	        inMat=transformInput(inMat)
+		}
     }
-    
-    runOutput=rep("Excluded", nrow(inData))
+	runOutput=rep("Excluded", nrow(inData))
     rownames(inMat) = ids[rowsKeep]
-    cat("Markers for analysis:\n", colnames(inMat), "\n", 
+    cat("INFO: Markers for analysis:\n", colnames(inMat), "\n", 
         file=f("{runID}.log"), append=T)
-    if(method == "MC")  {
-      print("Calculating centroid for each marker")
+	if(method == "MC")  {
       inMat=apply(inMat, 2, function(x) tapply(x, as.factor(colors), median))
       metaclusters=funForward(inMat, pars[[method]], colors=colors)
       runOutput[rowsKeep]=metaclusters[match(colors, rownames(inMat))]
@@ -103,10 +127,9 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   } else {
     load(inMatFile)
     rowsKeep=match(rownames(inMat), ids)
-	print(head(rownames(inMat)))
-	print(sum(is.na(rowsKeep)))
-	print(head(ids[is.na(rowsKeep)]))
+	
     columnNames=match(colnames(inMat), colnames(inData))
+
     runOutput=rep("Excluded", nrow(inData))
     if(file.exists(clFile)) {
       load(clFile)
@@ -118,193 +141,31 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
       runOutput[rowsKeep] = funForward(inMat, pars[[method]], colors=colors)
     }
   }
-  if(method %in% pars$visualisation_methods) return(NULL)
+  cat('WARNING: range of transformed values is ', range(inMat), 
+  	'using magnitude ', pars$magnitude, '\n',
+  	file = f('{runID}.log'), append = T)
+  if(method %in% pars$visualisation_methods)
+	  return(NULL)
   return(list('runOutput'=runOutput, 'columnNames'=columnNames, 'ids'=ids))
 }
 
-run_Rphenograph <- function(inMat, p, colors) {
-
-  library(Rcpp)	
-  outFile=paste0(p$run_id, ".out.RData.gz")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
-  pdfOut=paste0(p$run_id, ".heatmap.pdf")
-  if(file.exists(clFile)) {
-    load(clFile)
-    return(clusters)
-  }
-  nrClusters=length(unique(colors[!is.na(colors)]))
-  print(table(colors))
-  if(!file.exists(outFile) | !file.exists(inMatFile)) {
-    if(nrClusters == 1) {
-      Rout=Rphenograph::Rphenograph(inMat, k=p[["k"]])
-    } else {
-        Rout=tapply(1:nrow(inMat), colors, function(subset) {
-          cluster=colors[subset[1]]
-          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
-          if(file.exists(outCellFile))  {
-            load(outCellFile)
-            return(out)
-          }
-          cat("\n", cluster, length(subset), "\n")
-          # Minimum group size for clustering 
-          if(length(subset) <= p[["k"]] * 150) return(NA)
-          out=Rphenograph::Rphenograph(inMat[subset, ], k=p[["k"]])
-          out$rows=subset
-          save(out, file=outCellFile, compress="gzip")
-          out
-      })
-    }
-    save(Rout, file=outFile, compress="gzip")
-    save(inMat, file=inMatFile)
-  } else {
-    load(outFile)
-    load(inMatFile)
-  }
-  if(nrClusters == 1) {
-    clusters=factor(igraph::membership(Rout[[2]]))
-  } else {
-    summary=sapply(names(Rout), function(cellType)  {
-      print(cellType)
-      out=Rout[[toString(cellType)]]
-      if(length(out) >0 & is.na(out))
-        return(NULL)
-      cluster=factor(igraph::membership(out[[2]]))
-      if(cellType != "black")
-        cluster=paste(cellType, cluster)
-      cbind(cluster=cluster, row=out[[3]])
-    })
-    summary=data.frame(do.call(rbind, summary), stringsAsFactors = F)
-    clusters=as.character(summary$cluster[match(1:nrow(inMat), summary$row)])
-    clusters[is.na(clusters)] = colors[is.na(clusters)]
-  }
-
-  clusterSummary<-sapply(colnames(inMat), function(x) {
-    tapply(t(inMat[[x]]), as.factor(clusters), mean)
-  })
-  clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
-  pdf(pdfOut, useDingbats = F)
-  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), symm=F)
-  dev.off()
-  # igraph object
-  # plot(Rout[[1]], cex=0.1)
-  save(clusters,  file = clFile)
-  return(clusters)
-
-	
-}
-# Rphenograph
-run_FastPG<-function(inMat, p, colors) {
-  
-  outFile=paste0(p$run_id, ".out.RData.gz")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
-  pdfOut=paste0(p$run_id, ".heatmap.pdf")
-  if(file.exists(clFile)) {
-    load(clFile)
-    return(clusters)
-  }
-  nrClusters=length(unique(colors[!is.na(colors)]))
-  print(table(colors))
-  print('Calling FastPG')
-  if(!file.exists(outFile) | !file.exists(inMatFile)) {
-    if(nrClusters == 1) {
-	  print('Calling FastPG on all data')
-	  print(class(inMat))
-	  print(dim(inMat))
-      Rout=FastPG::fastCluster(as.matrix(inMat), k=p[["k"]], num_threads=p[['num_threads']])
-    } else {
-	   print(dim(inMat))
-        Rout=tapply(1:nrow(inMat), colors, function(subset) {
-          cluster=colors[subset[1]]
-          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
-          if(file.exists(outCellFile))  {
-            load(outCellFile)
-            return(out)
-          }
-          cat("\n", cluster, length(subset), "\n")
-          # Minimum group size for clustering 
-          if(length(subset) <= p[["k"]] * 150) return(NA)
-          out=FastPG::fastCluster(as.matrix(inMat[subset, ]), k=p[["k"]], num_threads=p[['num_threads']])
-          out$rows=subset
-          save(out, file=outCellFile, compress="gzip")
-          out
-      })
-    }
-    save(Rout, file=outFile, compress="gzip")
-    save(inMat, file=inMatFile)
-  } else {
-    load(outFile)
-    load(inMatFile)
-  }
-  if(nrClusters == 1) {
-    clusters=Rout$communities #factor(igraph::membership(Rout[[2]]))
-	print(head(clusters))
-  } else {
-    summary=sapply(names(Rout), function(cellType)  {
-      print(cellType)
-      out=Rout[[toString(cellType)]]
-      if(length(out) >0 & is.na(out))
-        return(NULL)
-      cluster=out$communities #factor(igraph::membership(out[[2]]))
-      if(cellType != "black")
-        cluster=paste(cellType, cluster)
-      cbind(cluster=cluster, row=out[[3]])
-    })
-    summary=data.frame(do.call(rbind, summary), stringsAsFactors = F)
-    clusters=as.character(summary$cluster[match(1:nrow(inMat), summary$row)])
-	cat('Number of clusters with na:', sum(is.na(clusters)), '\n')
-    clusters[is.na(clusters)] = colors[is.na(clusters)]
-  }
-  
-  clusterSummary<-sapply(colnames(inMat), function(x) {
-    tapply(t(inMat[[x]]), as.factor(clusters), mean)
-  })
-  clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
-  pdf(pdfOut, useDingbats = F)
-  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), symm=F)
-  dev.off()
-  # igraph object
-  # plot(Rout[[1]], cex=0.1)
-  save(clusters,  file = clFile)
-  return(clusters)
-}
-
-# Rphenograph metaclusters
-run_MC<-function(inMat, p, colors) {
-  
-  outFile=paste0(p$run_id, ".out.RData.gz")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
-  if(!file.exists(outFile)) {
-    Rout=Rphenograph::Rphenograph(inMat, k=p[["k"]])
-    save(Rout, file=outFile, compress="gzip")
-    save(inMat, clusters, file=inMatFile)
-  } else {
-    load(outFile)
-    load(inMatFile)
-  }
-  pheatmap::pheatmap(to_magnitude(inMat, p$magnitude))
-  clusters=factor(membership(Rout[[2]]))
-  # plot(Rout[[1]], cex=0.1)
-  save(clusters, file = clFile)
-  return(clusters)
-}
-
 # CellAssign
-run_cellassign<-function(inMat, p, colors)  {
+run_cellassign <- function(inMat, p, colors)  {
   
-  # Note: marker_gene_info requires an object of class matrix as input
+  # Note: marker_gene_list requires an object of class matrix as input
   # marker_mat rows must match inmat columns
   
   outFile=paste0(p$run_id, ".out.RData")
   inMatFile=paste0(p$run_id, ".inMat.RData")
   probsFile=paste0(p$run_id, ".probs.txt")
   clFile=paste0(p$run_id, ".clusters.RData")
-  if(!file.exists(outFile)) {
-    markerMat=cellassign::marker_list_to_mat(marker_gene_list[[p$markers]])
+  
+  if(! file.exists(outFile)) {
+	  
+	marker_list=get_node_list(marker_gene_list[[p$markers]])
+    markerMat=cellassign::marker_list_to_mat(marker_list)
     markerMat=markerMat[rownames(markerMat) %in% colnames(inMat), ]
-    markerMat=markerMat[, apply(markerMat, 2, function(x) !all(x == 0))]
+    markerMat=markerMat[, apply(markerMat, 2, function(x) ! all(x == 0))]
     # if same signature for multiple cells because of missing markers, keep the higest in lineage
     cellcode=apply(markerMat, 2, paste, collapse="")
     exclude=unlist(sapply(unique(cellcode[duplicated(cellcode)]), function(x) {
@@ -314,9 +175,8 @@ run_cellassign<-function(inMat, p, colors)  {
       })
       names(count)[count > min(count)]
     }))
-    if(length(exclude) > 0) {
+    if(length(exclude) > 0)
       markerMat=markerMat[, ! colnames(markerMat) %in% exclude]
-    }
     write.table(markerMat, append = T, file=f("{p$run_id}.log"))
     print(markerMat)
     cat("Using", nrow(markerMat), "markers and ", ncol(markerMat),  "celltypes.\n")
@@ -324,7 +184,7 @@ run_cellassign<-function(inMat, p, colors)  {
     cat("From them,", length(keep), "are found in inMat.\n")
     
     s=rep(1, nrow(inMat))
-    fit<-cellassign::cellassign(exprs_obj=as.matrix(inMat[, ..keep]),
+    fit <- cellassign::cellassign(exprs_obj=as.matrix(inMat[, ..keep]),
                     marker_gene_info=markerMat,
                     s=s, X=p$X,
                     learning_rate=p$learning_rate,
@@ -344,8 +204,193 @@ run_cellassign<-function(inMat, p, colors)  {
   return(clusters)
 }
 
+# Rphenograph
+run_Rphenograph <- function(inMat, p, colors) {
+
+  library(Rcpp)	
+  outFile=paste0(p$run_id, ".out.RData.gz")
+  inMatFile=paste0(p$run_id, ".inMat.RData")
+  clFile=paste0(p$run_id, ".clusters.RData")
+  pdfOut=paste0(p$run_id, ".heatmap.pdf")
+  if(file.exists(clFile)) {
+    load(clFile)
+    return(clusters)
+  }
+  nrClusters=length(unique(colors[!is.na(colors)]))
+  print(table(colors))
+  if(! file.exists(outFile) | ! file.exists(inMatFile)) {
+    if(nrClusters == 1) {
+		# From the Rphenograph code: (k > nrow(data)-2)
+	  if(nrow(inMat) - 2 < p[["k"]]) return(NA)
+      Rout=Rphenograph::Rphenograph(inMat, k=p[["k"]])
+    } else {
+        Rout=tapply(1:nrow(inMat), colors, function(subset) {
+          cluster=colors[subset[1]]
+		  cat(cluster, ' has ', sum(colors == cluster), p[["k"]], '\n')
+          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
+          if(file.exists(outCellFile))  {
+            load(outCellFile)
+            return(out)
+          }
+          cat("\n", cluster, length(subset), "\n")
+          # Minimum group size for clustering 
+          # EDIT: if(length(subset) <= p[["k"]] * 150) return(NA)
+		  if(length(subset) - 2 < p[["k"]]) return(NA)	  
+          out=Rphenograph::Rphenograph(inMat[subset, ], k=p[["k"]])
+          out$rows=subset
+          save(out, file=outCellFile, compress="gzip")
+          out
+      })
+    }
+    save(Rout, file=outFile, compress="gzip")
+    save(inMat, file=inMatFile)
+  } else {
+    load(outFile)
+    load(inMatFile)
+  }
+  print(nrClusters)
+  if(nrClusters == 1) {
+    clusters=factor(igraph::membership(Rout[[2]]))
+  } else {
+    summary=sapply(names(Rout), function(cellType)  {
+      print(cellType)
+      out=Rout[[toString(cellType)]]
+      if(length(out) >0 & is.na(out)) {
+		  cat('No clustering info for ', cellType, '\n')
+		  return(NULL)
+	  }
+      
+      cluster=factor(igraph::membership(out[[2]]))
+      if(cellType != "black")
+        cluster=paste(cellType, cluster)
+      cbind(cluster=cluster, row=out[[3]])
+    })
+    summary=data.frame(do.call(rbind, summary), stringsAsFactors = F)
+    clusters=as.character(summary$cluster[match(1:nrow(inMat), summary$row)])
+    clusters[is.na(clusters)] = colors[is.na(clusters)]
+  }
+  clusterSummary<-sapply(colnames(inMat), function(x) {
+    tapply(t(inMat[[x]]), as.factor(clusters), mean)
+  })
+  clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
+  pdf(pdfOut, useDingbats = F)
+  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), symm=F)
+  dev.off()
+  # igraph object
+  # plot(Rout[[1]], cex=0.1)
+  save(clusters,  file = clFile)
+  return(clusters)
+
+	
+}
+
+# FastPG
+run_FastPG <- function(inMat, p, colors) {
+	
+	outFile=paste0(p$run_id, ".out.RData.gz")
+	inMatFile=paste0(p$run_id, ".inMat.RData")
+	clFile=paste0(p$run_id, ".clusters.RData")
+	pdfOut=paste0(p$run_id, ".heatmap.pdf")
+	if(file.exists(clFile)) {
+		load(clFile)
+		return(clusters)
+	}
+	
+	nrClusters=length(unique(colors[!is.na(colors)]))
+	print(table(colors))
+	print('Calling FastPG')
+	if(! file.exists(outFile) | ! file.exists(inMatFile)) {
+		if(nrClusters == 1) {
+			if(nrow(inMat) - 2 < p[["k"]])
+				return(NA)
+			print('Calling FastPG on all data')
+			print(class(inMat))
+			Rout=FastPG::fastCluster(as.matrix(inMat), k=p[["k"]], num_threads=p[['num_threads']])
+    } else {
+        Rout=tapply(1:nrow(inMat), colors, function(subset) {
+          cluster=colors[subset[1]]
+          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
+          if(file.exists(outCellFile))  {
+            load(outCellFile)
+            return(out)
+          }
+          cat("\n", cluster, length(subset), "\n")
+		  
+          # Minimum group size for clustering
+          # EDIT: if(length(subset) <= p[["k"]] * 150 & nrow(inMat) > p[["k"]] * 500) return(NA)
+		  if(length(subset) - 2 < p[["k"]]) return(NA)
+		  out=FastPG::fastCluster(as.matrix(inMat[subset, ]), 
+		  	k=p[["k"]], 
+			num_threads=p[['num_threads']])
+          out$rows=subset
+          save(out, file=outCellFile, compress="gzip")
+          out
+      })
+    }
+    save(Rout, file=outFile, compress="gzip")
+    save(inMat, file=inMatFile)
+  } else {
+    load(outFile)
+    load(inMatFile)
+  }
+  
+  if(nrClusters == 1) {
+    clusters=Rout$communities #factor(igraph::membership(Rout[[2]]))
+  } else {
+    summary=sapply(names(Rout), function(cellType)  {
+      # cat(cellType, sum(clusters == cellType), '\n')
+      out=Rout[[toString(cellType)]]
+	  
+      if(length(out) >0 & is.na(out)) {
+		  cat('No clustering info for ', cellType, '\n')
+          return(NULL)
+	  }
+      cluster=out$communities # factor(igraph::membership(out[[2]]))
+	  
+      if(cellType != "black")
+        cluster=paste(cellType, cluster)
+      cbind(cluster=cluster, row=out[[3]])
+    })
+    summary=data.frame(do.call(rbind, summary), stringsAsFactors = F)
+    clusters=as.character(summary$cluster[match(1:nrow(inMat), summary$row)])
+    clusters[is.na(clusters)] = colors[is.na(clusters)]
+  }
+  clusterSummary<-sapply(colnames(inMat), function(x) {
+    tapply(t(inMat[[x]]), as.factor(clusters), mean)
+  })
+  clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary > 0])
+  pdf(pdfOut, useDingbats = F)
+  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), symm=F)
+  dev.off()
+  # igraph object
+  # plot(Rout[[1]], cex=0.1)
+  save(clusters,  file = clFile)
+  return(clusters)
+}
+
+# Rphenograph metaclusters
+run_MC <- function(inMat, p, colors) {
+  
+  outFile=paste0(p$run_id, ".out.RData.gz")
+  inMatFile=paste0(p$run_id, ".inMat.RData")
+  clFile=paste0(p$run_id, ".clusters.RData")
+  if(!file.exists(outFile)) {
+    Rout=Rphenograph::Rphenograph(inMat, k=p[["k"]])
+    save(Rout, file=outFile, compress="gzip")
+    save(inMat, clusters, file=inMatFile)
+  } else {
+    load(outFile)
+    load(inMatFile)
+  }
+  pheatmap::pheatmap(to_magnitude(inMat, p$magnitude))
+  clusters=factor(membership(Rout[[2]]))
+  # plot(Rout[[1]], cex=0.1)
+  save(clusters, file = clFile)
+  return(clusters)
+}
+
 # flowSOM
-run_flowSOM<-function(inMat, p, colors) {
+run_flowSOM <- function(inMat, p, colors) {
   
   # p         - is a list of all parameters for the functions: 
   # Functions - ReadInput, BuildSOM, BuildMST, and Metaclutersing
@@ -444,7 +489,7 @@ run_flowSOM<-function(inMat, p, colors) {
 }
 
 # rTSNE
-run_rtsne<-function(inMat, p, colors)  {
+run_rtsne <- function(inMat, p, colors)  {
   
   # check_duplicates: cells with the same value after PCA reduction
   # (best to make sure there are no duplicates, esp. for large datasets)
@@ -454,7 +499,7 @@ run_rtsne<-function(inMat, p, colors)  {
   outFile=paste0(p[["run_id"]], ".out.RData")
   inMatFile=paste0(p[["run_id"]], ".inMat.RData")
   if(!file.exists(outFile)) {
-    rtsne_out<-Rtsne(as.matrix(inMat),
+    rtsne_out<-Rtsne::Rtsne(as.matrix(inMat),
                        pca=as.logical(p[["pca"]]),
                        verbose=as.logical(p[["verbose"]]),
                        check_duplicates= p[["check_duplicates"]],
@@ -481,26 +526,8 @@ run_rtsne<-function(inMat, p, colors)  {
   return(colors)
 }
 
-# immunoClust
-run_immunoClust<-function(inMat, p, colors) {
-  obj<-convert_mat2fcs(inMat)
-  out<-immunoClust::cell.process(obj, classify.all=p[["classify.all"]])
-  return(out@label)
-}
-
-# kmeans
-run_kmeans<-function(inMat, p, colors) {
-  out=stats::kmeans(inMat, centers=p[["centers"]])
-  pheatmap(apply(out$centers, 2, to_percentile))
-  return(out$cluster)
-}
-
-# RClusterpp
-run_rclusterpp<-function(inMat, p, colors) {
-  Rclusterpp.hclust(inMat, method=p[["method"]])
-}
-
-run_umap<-function(inMat, p, colors)  {
+# UMAP
+run_umap <- function(inMat, p, colors)  {
   outFile=paste0(p[["run_id"]], ".umap.RData")
   if(file.exists(outFile)) {
     load(outFile)
@@ -508,55 +535,29 @@ run_umap<-function(inMat, p, colors)  {
     out=umap::umap(data.table::setDF(inMat), random_state=555)
     save(out, colors, p, file = outFile)
   }
+  # plot only subsampled from each cluster
   umapPdf=paste0(p$run_id, ".umap.pdf")
   pdf(file=umapPdf, width=7, height = 7)
   names(clusterColors)=sort(unique(colors))
-  plotUmap(x=out, labels=colors, colors=clusterColors, legend=F, cex=0.2)
+  plotUmap(x=out, labels=colors, colors=palette$cellTypeColors, legend=T, cex=0.1)
   dev.off()
+} 
+
+# kmeans
+run_kmeans <- function(inMat, p, colors) {
+  out=stats::kmeans(inMat, centers=p[["centers"]])
+  pheatmap(apply(out$centers, 2, to_percentile))
+  return(out$cluster)
 }
 
-get_probabilities <- function(cellIDs, clusters, probFile) {
-  
-  if(!file.exists(probFile))
-     return(rep(NA, nrow(inData)))
-  probs=data.table::fread(probFile, sep = "\t")
-  probMatch=match(cellIDs, probs$imagename)
-  probs=probs[probMatch, ]
-  export=tapply(1:length(cellIDs), clusters, function(subset) {
-    cluster=clusters[subset[1]]
-    print(cluster)
-    if(! cluster %in% colnames(probs)) {
-      values=as.matrix(rep(NA, length(subset)), ncol=1)  # Excluded cells
-    } else {
-      values=as.matrix(probs[subset, ..cluster, with=F])
-    }
-    rownames(values)=cellIDs[subset]
-    return(values)
-  })
-  export=do.call(rbind, export)
-  export[match(cellIDs, rownames(export)), 1]
+# RClusterpp - not tested
+run_rclusterpp <- function(inMat, p, colors) {
+  Rclusterpp.hclust(inMat, method=p[["method"]])
 }
 
-get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL, fun="max") {
-  if(!is.null(magnitude)) dfExp=to_magnitude(dfExp, magnitude)
-  clusterNames$cluster=gsub('\\.', ' ', clusterNames$cluster)
-  names=clusterNames$positive[match(clusters, clusterNames$cluster)]
-  names=gsub("up:(.*) down:.*", "\\1", names)
-  names=gsub("pos:(.*) neg:.*", "\\1", names)
-  names[is.na(names)] = ''
-  getExpSummary=match.fun(fun)
-  summary=tapply(1:nrow(dfExp), names, function(subset) {
-    cluster=names[subset[1]]
-    if(cluster == "") {
-      values=rep(NA, length(subset))
-    } else {
-      cols=strsplit(cluster, split = "_")[[1]]
-      cols=cols[cols %in% colnames(dfExp)]
-      values=apply(dfExp[subset, ..cols], 1, getExpSummary)
-    }
-    names(values)=rownames(dfExp)[subset]
-    return(cbind(values))
-  })
-  summary=do.call(rbind, summary)
-  summary[match(rownames(dfExp), rownames(summary)), 1]
+# immunoClust - not tested
+run_immunoClust <- function(inMat, p, colors) {
+  obj<-convert_mat2fcs(inMat)
+  out<-immunoClust::cell.process(obj, classify.all=p[["classify.all"]])
+  return(out@label)
 }

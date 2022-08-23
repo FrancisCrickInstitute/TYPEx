@@ -117,6 +117,7 @@ for(fileIn in inFiles) {
 	cellCols=palette$cellTypeColors[unique(unlist(cellTypes))]
 	cellCols=cellCols[order(names(cellCols))]
 	print(unique(unlist(cellTypes)))
+	print(table(unlist(cellTypes)))
 	print(cellCols)	
 	colorMat  = WGCNA::labels2colors(as.data.frame(cellTypes), colorSeq = cellCols, naColor = 'white')
 	colorLabels=sapply(1:length(cellTypes), function(x) tapply(colorMat[,x], cellTypes[[x]], unique))
