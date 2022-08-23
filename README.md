@@ -1,7 +1,7 @@
-# TYPEx
+# TYPEx -  Deep cell phenoTYPE characterisation using multipleX imaging
 
 
-| Deep cell phenoTYPE characterisation using multipleX imaging |  |
+| TYPEx |  |
 | ------------- | ------------- |
 | <img src="./doc/_static/typing3.png" width="30%" height="30%">  | ## Add description and quick start and
 ## Link to:
