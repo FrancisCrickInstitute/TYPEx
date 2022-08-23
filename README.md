@@ -1,9 +1,13 @@
 # TYPEx
-Deep cell phenoTYPE characterisation using multipleX imaging 
 
 
- <img src="./doc/_static/typing3.png" width="15%" height="15%">
-
-## Add description and quick start and
+| Deep cell phenoTYPE characterisation using multipleX imaging |  |
+| ------------- | ------------- |
+| <img src="./doc/_static/typing3.png" width="30%" height="30%">  | ## Add description and quick start and
 ## Link to:
-http://tracerx-phlex.readthedocs.io/
+http://tracerx-phlex.readthedocs.io/  |
+
+
+ 
+
+
