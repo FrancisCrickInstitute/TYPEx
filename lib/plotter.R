@@ -1,4 +1,4 @@
- library(plyr)
+library(plyr)
  
 plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_field='overlap') {
   
@@ -15,18 +15,22 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
      flt=data.frame(cbind(marker=upDfConf[[marker]],
                          cluster=gsub(f("^(.*).{effect_field}.*$"), "\\1", rownames(upDfConf)),
                          cluster2=gsub(f("^.*.{effect_field}.(.*)$"), "\\1", rownames(upDfConf))),
-                   stringsAsFactors = F)
+                   stringsAsFactors = F, check.names = F)
     flt$marker=as.numeric(as.character(flt$marker))
 	flt$cluster=gsub('^x', '', flt$cluster, ignore.case=T)
     flt$cluster2=gsub('\\.', ' ', flt$cluster2)
     flt$confidence='High'
     flt$confidence[grepl('^Excluded', flt$cluster2)] = 'Low'
-    flt$cellType=gsub("\\.[0-9]+", "", flt$cluster)
+    flt$cellType=gsub("\\ [0-9]+", "", flt$cluster)
     flt$cellType2=gsub(" [0-9]+", "", flt$cluster2)
-    
-    pdf(f("{runID}.{marker}.{effect_field}_prob.pdf"), width=6, height = 6)
+
+	plotDir=f("{runID}_{effect_field}")
+	if(! dir.exists(plotDir)) 
+		dir.create(plotDir)
+    pdf(f("{plotDir}/{marker}_prob.pdf"), width=6, height = 6)
     for(clusterName in unique(flt$cluster)) {
-        subsetIndices=grep(f('^{clusterName}\\.{effect_field}.'), gsub('^X', '', rownames(upDfConf)))
+        subsetIndices=gsub('^X', '', rownames(upDfConf)) %>% 
+			grep(f('^{clusterName}\\.{effect_field}.'), .)
         # Exclude comparisons to cells from the cluster 'Excluded'
         subsetIndices=setdiff(subsetIndices, grep(f('\\.{effect_field}.Excluded.*'), rownames(upDfConf)))
         if(clusterName != 'Excluded')
@@ -44,7 +48,6 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
       }
       pos=vartest[['p.value']] <= fdr
       positive[[clusterName]][[marker]] = c(vartest[['p.value']], vartest[['statistic']])
-      if(pos) cat(marker, clusterName, pos, '\n')
       
       flt$curr_cluster=F
       flt$curr_cluster[subsetIndices]=T
@@ -114,152 +117,52 @@ plot_overlap_distribution <- function(upDfConf, runID, positive, criticalValue, 
   }
 }
 
-# plot_overlap_distribution_per_marker <- function(upDf, runID, positive, ) {
-#   for(marker in colnames(upDf)) {
-#     pdf(f("{runID}.{marker}.overlap.pdf"), width=15)
-#     flt=data.frame(cbind(marker=upDf[[marker]],
-#                          cluster=gsub("^(.*).overlap.*$", "\\1", rownames(upDf)),
-#                          cluster2=gsub("^.*.overlap.(.*)$", "\\1", rownames(upDf))),
-#                    stringsAsFactors = F)
-#     flt$marker=as.numeric(as.character(flt$marker))
-#     flt$cluster2=gsub('\\.', ' ', flt$cluster2)
-#     flt=flt[grep('^Excluded', flt$cluster2, invert = T), ]
-#     pvals=lapply(flt$cluster %>% unique, function(cluster) {
-#       subset=flt[which(flt$cluster==cluster & flt$cluster2 != 'Excluded'), ]
-#       if(length(grep('^Excluded', cluster))) {
-#           cellType=gsub('^Excluded.(.*)\\.[0-9]+$', '\\1', cluster)
-#           subset=subset[subset$cluster2 != cellType, ]
-#       }
-#       vartest=ks.test(x = subset$marker, y = flt$marker, alternative = 'g')
-#       vartest
-#     })
-#     sdProf=sapply(flt$cluster %>% unique, function(cluster) {
-#       subset=flt[which(flt$cluster==cluster & flt$cluster2 != 'Excluded'), ]
-#       sd(subset$marker) < sd(flt$cluster)
-#     })
-#     names(pvals)=flt$cluster %>% unique
-#     # pvalues=sapply(names(pvals), function(x) pvals[[x]]$p.value)
-#     # print(names(pvalues)[pvalues > 0.05])
-#     # selection=sapply(names(pvals), function(x) pvals[[x]]$p.value > 0.05 & pvals[[x]]$statistic < 0.02)
-#     # names(pvals)[selection]
-#     # names(pvalues)[pvalues > 0.05][! names(pvalues)[pvalues > 0.05] %in% names(pvals)[selection]]
-#     orderCluster=sapply(names(pvals), function(x) pvals[[x]]$statistic) %>% order
-#       hist(flt$marker, breaks = 500, xlim = c(0, 1), col='yellow')
-#     for(cluster in names(pvals)[orderCluster])  {
-#       test=flt[which(flt$cluster==cluster), ]
-#       vartest=pvals[[cluster]]
-#       if(vartest$p.value <= 0.05) next
-#       title=paste(cluster, vartest$p.value, '\n', vartest$statistic)
-#       if(mean(test$marker) > mean(flt$marker) + sd(flt$marker)) {
-#         hist(test$marker, breaks = 500, main = title, xlim = c(0, 1), col='yellow')
-#       } else {
-#         hist(test$marker, breaks = 500, main = title)
-#       }
-#       threshold=qnorm(0.05, mean = 0.5, sd=sd(flt$marker), lower.tail = F)
-#       abline(v=threshold, col='red', lty=2, lwd=2)
-#       abline(v=mean(flt$marker) + sd(flt$marker), col='blue', lty=2, lwd=2)
-#       abline(v=mean(test$marker), col='green', lwd=4)
-#       plot(ecdf(flt$marker))
-#       plot(ecdf(test$marker), add=T, lty='dashed')
-#       # gsva(expr = as.matrix(upDf), gset.idx.list = list(cluster=grep(paste0('^', cluster, '.overlap'), rownames(upDf), value = T)))
-#     }
-#     dev.off()
-#   }
-#   confidence=rep("High", nrow(upDf))
-#   confidence[grep("excluded.overlap", rownames(upDf), ignore.case = T)] = "Low"
-#   cellPairs=gsub("Excluded.Excluded.", "Excluded.", rownames(upDf))
-#   # cellPairs=gsub("Excluded.overlap", "Excluded.100.overlap", cellPairs)
-#   cellPairs=gsub("Excluded.([^0-9]+.*)", "\\1", cellPairs)
-#   cellPairs=gsub("^X", "", cellPairs)
-#   pdf(f("{runID}.overlap.pdf"), width=15)
-#   for(marker in colnames(upDf)) { # c("CD4", "Ki67", "CD45RA")
-#     if(!marker %in% colnames(upDf)) next
-#     flt=data.frame(cbind(marker=upDf[[marker]],
-#                          cellType=gsub("^(.*)+\\.[0-9]+.overlap.*$", "\\1", cellPairs),
-#                          cluster=gsub("^(.*).overlap.*$", "\\1", cellPairs),
-#                          cluster2=gsub("^.*.overlap.(.*)$", "\\1", cellPairs),
-#                          confidence=confidence,
-#                          cellType2=gsub("^.*\\.[0-9]+.overlap.(.*)\\.[0-9]+$", "\\1", cellPairs)),
-#                    stringsAsFactors = F)
-#     flt$cellType=gsub(".overlap..*", "", flt$cellType)
-#     flt$cellType2=gsub(".*.overlap.", "", flt$cellType2)
-#     flt$equal=flt$cellType==flt$cellType2
-#     flt$marker=as.numeric(as.character(flt$marker))
-#     flt$cellType = gsub("\\.", " ", flt$cellType)
-#     # flt$cellType = gsub(" ", "\n", flt$cellType)
-#     fltStats=ddply(flt, .(cellType, equal, cluster), summarise, mean=mean(marker), count=length(cellType))
-#     fltStats=fltStats[order(fltStats$cellType, fltStats$equal, fltStats$mean),]
-#     flt$cluster=factor(flt$cluster, levels=unique(fltStats$cluster))
-#     calls=positive[match(gsub('\\.', ' ', flt$cluster), names(positive))] #, paste, sep = '_', collapse="_")
-#     calls=gsub("[A-Za-z]+", '', calls)
-#     flt$positive=get_marker_frequency(data = data.frame(calls=calls), marker = marker, column = 'calls')
-#     g <- ggplot(flt,  aes(cluster, marker, color=confidence))
-#     #subset(flt, !equal & cellType %in% c("CD4", "CD8", "Endothelial\ncells", "Epithelial\ncells")), aes(cluster, marker, color=confidence))
-#     plot=g + stat_summary(fun.data=mean_sdl, geom="linerange", aes(color=positive)) +
-#       stat_summary(fun.data=mean_sdl, geom="point", size=1) +
-#       facet_grid(confidence ~ cellType , scale = "free_x", space="free_x") +
-#       ggtitle(marker) +
-#       cowplot::theme_cowplot() +
-#       theme(legend.position = "top", 
-#             axis.text.x = element_text(angle=90),
-#             strip.background = element_blank())  +
-#       scale_color_manual(values=c("High"="black", "Low"="grey", '+'='red', '-'='black')) +
-#       # guides(color=F) +
-#       # geom_hline(data=cellStats, aes(yintercept =mean, color=cellType)) +
-#       geom_hline(yintercept = mean(flt$marker) + sd(flt$marker), color='black', linetype="dashed") +
-#       xlab("Cell clusters")  + ylab("Probability of high expression") 
-#     # coord_flip()
-#     print(plot)
-#     # dev.off()
-#   }
-#   dev.off()
-# }
-
 plot_heatmap <- function(dfExp, clusters,  runID, labels) {
-	
-	heatmapData=paste0(runID, ".heatmap.RData")
+
+    print('Plotting heatmap')	
+	heatmapData=f('{runID}.heatmap.RData')
 	save(dfExp, clusters, runID, labels, file=heatmapData)
-    print('Plotting heatmap') 
-	print(dim(dfExp))
-	print(length(clusters))
-	print(colnames(dfExp)[!colnames(dfExp) %in% clusters])
+
+    clusterSize=table(clusters) %>% as.data.frame
+
     clusterSummary<-sapply(colnames(dfExp), function(x) {
       tapply(t(dfExp[[x]]), as.factor(clusters), median)
     })
-    clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
-	clusterSummary=log2(clusterSummary)
-    clusterSize=table(clusters) %>% as.data.frame
     
+   # clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
+	#clusterSummary=log2(clusterSummary)
+
     # save(clusterSummary, labels, runID, clusterSize, file=f('{runID}.clusterSummary.RData'))
     # load("/Users/angelom/Documents/presentations/20_12_09_TME_meeting/major_mcsa/30_0.67_none_FALSE.clusterSummary.RData")
     
-    clusterNorm=apply(clusterSummary, 2, to_robust_zscore)
-    pdfOut=paste0(runID, ".heatmap.pdf")
+    clusterNorm=apply(clusterSummary, 2, to_zscore)
+    density_scale=pretty(c(-4, 4))
+	labelsMatch=match(rownames(clusterNorm), labels$cluster)
+
+	celltypes = labels$majorType[labelsMatch]
+	# cases when no positivity but found most likely celltype
+	celltypes[is.na(celltypes)] = rownames(clusterNorm)[is.na(celltypes)]
+
+    pdfOut=paste0(runID, ".maps.pdf")
 	pdf(pdfOut, useDingbats = F, height = 12, width = 10)
 	if(grepl(majorDir, runID) | grepl(sampledDir, runID)) {
 		subsets='all'
 	} else {
-		subsets = unique(labels$majorType)
+		subsets = unique(celltypes)
 	}
-    # ph=pheatmap(clusterNorm, symm=F, 
-    #             clustering_method = 'ward.D2', 
-    #             fontsize_row = 6, fontsize_col = 6,
-    #             cellheight =  6,
-    #             cellwidth = 6, na_col = 'white',
-    #             angle_col = 90)
-	density_scale=pretty(c(-4, 4))
-	celltypes = labels$majorType[match(rownames(clusterNorm), labels$cluster)]
 
 	for(subset in subsets) {
 		
-		print(subset)
+		cat('Plotting subset of clusters: ', subset, '\n')
 		clusterNormSub = clusterNorm
 		clusterSizeSub=clusterSize
+
 		if(subset != 'all') {
 			clusterNormSub = clusterNorm[celltypes == subset, ]
 			clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
 		}
-		if(is.null(nrow(clusterNormSub))) next
+		if(is.null(nrow(clusterNormSub)))
+			next
 
     	heat=ComplexHeatmap::Heatmap(t(clusterNormSub),
                                  na_col = "grey90",
@@ -271,8 +174,8 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
                                  border = "grey85",
                                  row_labels = gsub(".*:", "", colnames(clusterSummary)),
                                  column_title_gp = gpar(fontsize=8),
-								 name = subset,
-								column_title = subset,
+								 name = subset,	
+								 column_title = subset,
                                  width=unit(nrow(clusterNormSub)/10, 'in'),
                                  height=unit(ncol(clusterNormSub)/5, "cm"),
                                  clustering_method_rows = "ward.D2",
@@ -289,15 +192,15 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 	   # print(heat)
 		print(unit(nrow(clusterSummary)/10, 'in'))
 		print(unit(ncol(clusterSummary)/5, "cm"))
-    	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive)
-	    labels$positive=gsub('up:(.*) down:', '\\1', labels$positive)
-    	# labels=labels[order(match(labels$cluster, rownames(clusterSummary)[row_order(heat)])), ]
-	    markers=sapply(labels$positive,  function(x) strsplit(x, split='_')[[1]]) %>% unlist %>% unique
-		clusterLabels=rownames(clusterNormSub) #[column_order(heat)]
-		#    markers=markers[order(match(markers, colnames(clusterSummary)[column_order(heat)]))]
+    	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 
+			gsub('up:(.*) down:', '\\1', .)
+		markers=sapply(labels$positive,  function(x) strsplit(x, split='_')[[1]]) %>% 
+																unlist %>% unique
+		clusterLabels=rownames(clusterNormSub)
 		markers=colnames(clusterSummary)[row_order(heat)]
 	    binMat=sapply(clusterLabels, function(cluster) {
-    	  positive=labels$positive[labels$cluster == cluster] %>% strsplit(split = '_') %>% unlist
+    	  positive=labels$positive[labels$cluster == cluster] %>% 	
+		  						strsplit(split = '_') %>% unlist
 	      sapply(markers %in% positive, sum)
     	})
 		binMat=as.data.frame(binMat)
@@ -305,22 +208,25 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 	    rownames(binMat) = markers
 	 
     	clusterSizeSub$label=labels$positive[match(clusterSizeSub$clusters, labels$cluster)]
-	    clusterSizeSub$clusters=factor(clusterSizeSub$clusters, levels=rev(rownames(clusterNormSub)[column_order(heat)]))
-    	rowLabels=sapply(clusterLabels, function(x) paste0(labels$cellType[labels$cluster == x][1], " (",x, ',n=', sum(clusters == x), ")"))
-
-		print(sapply(clusterLabels, function(x) labels$cellType[labels$cluster == x][1]))
-		print(palette$cellTypeColors)
+	    clusterSizeSub$clusters=factor(clusterSizeSub$clusters, 
+			levels=rev(rownames(clusterNormSub)[column_order(heat)]))
+    	rowLabels=sapply(clusterLabels, function(x) paste0(labels$cellType[labels$cluster == x][1], 
+															" (", x, 
+															',n=', sum(clusters == x), ")"))
 	
-	    row_ha = HeatmapAnnotation("# Cells"=anno_barplot(border = F, x = clusterSizeSub$Freq[match(clusterSizeSub$clusters, clusterLabels)],
-                        	                                                      gp=gpar(fill='#0571B0', col='transparent',
-                    	                                                                  fontsize=8, title=expression("# Cells"))), 
-						which = 'column', cellType = sapply(clusterLabels, function(x) labels$cellType[labels$cluster == x][1]),
-            	               col=list(cellType = unlist(palette$cellTypeColors)),
+	    row_ha = HeatmapAnnotation("# Cells"=anno_barplot(border = F,
+			x = clusterSizeSub$Freq[match(clusterSizeSub$clusters, clusterLabels)],
+					gp=gpar(fill='#0571B0', col='transparent',
+					fontsize=8, title=expression("# Cells"))), 
+						which = 'column', cellType = sapply(clusterLabels, 
+								function(x) labels$cellType[labels$cluster == x][1]),
+							col=list(cellType = unlist(palette$cellTypeColors)),
 						 gp = gpar(col = "grey50"))
 	
     	if(!all(binMat == 0) & !all(binMat == 1)) {
 
 			print('Plotting bin mat')
+			print(binMat)
 		    bin=ComplexHeatmap::Heatmap(binMat, cluster_rows = F,
 									cluster_columns = F,
         	                        bottom_annotation = row_ha,
@@ -339,26 +245,24 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
                 	                row_labels = markers,
             	                    column_labels = rowLabels,
         	                        heatmap_legend_param = list(title="Expressed marker", direction='horizontal', fontsize=8))
-		#	print(bin)
-	 		if(!grepl('mcsamy|mcsanov', runID)) {
-	    		ht_list=heat %v%  bin
-			    draw(ht_list, annotation_legend_side = "bottom", heatmap_legend_side = "bottom", merge_legend=T)
-			}
-			print('Binary')
+	 			if(! grepl('mcsamy|mcsanov', runID)) {
+	    			ht_list=heat %v%  bin
+			    	draw(ht_list, annotation_legend_side = "bottom", heatmap_legend_side = "bottom", merge_legend=T)
+				}
+				print('Binary')
+			} else {
+				cat('Skipping binary plot for ', subset, '\n')
 			}
 		}
 
 		clusterSize$cellType=labels$cellType[match(clusterSize$clusters, labels$cluster)]
 		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))    
-		write.table(stats, f('{runID}.major_stats.txt'), sep = '\t', row.names = F, quote = F)
-		print(head(stats))
+		write.tab(stats, f('{runID}.major_stats.txt'))
 		
 		cellTypeColors=rep(unlist(palette$cellTypeColors), 2)
 		names(cellTypeColors) = c(names(palette$cellTypeColors), paste('Excluded', names(palette$cellTypeColors)))
 		cellTypeColors=palette$cellTypeColors[names(palette$cellTypeColors) %in% stats$cellType]
 		missing=unique(stats$cellType[! stats$cellType %in% names(cellTypeColors)])
-		print(missing)
-		print(cellTypeColors)
 
 		cellOrder = order(match(stats$cellType, names(cellTypeColors)))
 		stats$cellType = factor(stats$cellType, levels = unique(stats$cellType[cellOrder]))
@@ -435,12 +339,18 @@ plot_binary <- function(labels, runID, clusters_order=NULL, markers_order=NULL) 
 
 plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
 
-  if(!is.null(magnitude))
+  if(! is.null(magnitude))
     dfExp=to_magnitude(dfExp, magnitude)
-  dfExpMag=dfExp + .1
+  # TODO: e.g. no positivity but with majorType doesn't end up in clusterNames
+  if(! all(clusters %in% clusterNames$cluster)) {
+	  dfExp = dfExp[clusters %in% clusterNames$cluster, ]
+  	  clusters = clusters[clusters %in% clusterNames$cluster]
+ }
+
   clusterNames$up = gsub("pos:(.*) neg:.*", "\\1", clusterNames$cellType_rev)
   positive=clusterNames$up[match(clusters, clusterNames$positive)]
   up=paste(clusters, positive)
+  dfExpMag=dfExp
   medianVal=apply(dfExpMag, 2, median)
   pdf(file=paste0(p$run_id, ".inMat.per_cluster.pdf"), width=7)
   par(mfrow=c(2, 2))
@@ -473,8 +383,10 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
     cat(".")
     values=dfExpMag[[cellMarker]]
     clNamesOrder=names(table(clusters))
+	print(clNamesOrder)
     cols=get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
-    cols=cols[match(clusterNames$cluster, clNamesOrder)]
+	cols=cols[match(clusterNames$cluster, clNamesOrder)]
+
     cols=sapply(cols, function(col) ifelse(length(grep('\\+', col)), 'red', 'transparent'))
     # hist(values, breaks = 1000, main = cellMarker)
     boxplot(values ~ clusters, col=cols,

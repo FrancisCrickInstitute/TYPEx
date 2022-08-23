@@ -30,10 +30,10 @@ ref=with(args, list(subset=reference_subset, method=reference_method,
       markers=reference_markers, subtype_markers=reference_markers, run=run))
 
 inDir=file.path(args$inDir, with(args, f(analysisPath)))
-inFiles=list.files(inDir, pattern=resultPattern, full.names = T, recursive = T)
+inFiles=list.frec(inDir, pattern=resultPattern)
 
 refDir=file.path(args$inDir, with(ref, f(analysisPath)))
-refFile=list.files(refDir, pattern=resultPattern, full.names = T, recursive = T)
+refFile=list.frec(refDir, pattern=resultPattern
 
 outDir=file.path(args$inDir, args$subset, "robustness")
 if(!dir.exists(outDir))  dir.create(outDir)

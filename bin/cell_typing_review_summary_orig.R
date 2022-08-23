@@ -11,93 +11,107 @@ source(glue::glue(Sys.getenv("BASE_DIR"), '/conf/settings.R'))
 
 # Overlay function
 
-# TODO
-# get marker names from input params and infer the name of the model with one celltype excluded
-# 
-
 # MeanIntensity 0 for some cells (Mesenchymal)
 arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
-arg_parser=add(arg_parser, "--celltypeReviewFile", 
-		help='File with image annotations')
+arg_parser=add(arg_parser, "--celltypeReviewFile", help='File with image annotations')
 arg_parser=add(arg_parser, arg="--wDir", help="output")
-arg_parser=add(arg_parser, arg="--cellReviewDir", 
-	help=paste("review"))
-arg_parser=add(arg_parser, arg="--subset", 
-	default="major", help='major/sampled')
-arg_parser=add(arg_parser, arg="--panel",
-	 default='p1', help="Panel of markers")
-arg_parser=add(arg_parser, arg="--major_method",
-	 default="cellassign", help="Panel of markers")
-arg_parser=add(arg_parser, arg="--markers", 
-	default="major_markers", help="Panel of markers")
-arg_parser=add(arg_parser, "--stratify_label", 
-	default=NULL, help="file or NULL")
-
-arg_parser=add(arg_parser, arg="--subtype_markers", 
-	default="subtype_markers", help="Marker lists defined in TME_settings.R")
+arg_parser=add(arg_parser, arg="--cellReviewDir", help=paste("review"))
+arg_parser=add(arg_parser, arg="--subset", default="major", help=paste('major/sampled'))
+arg_parser=add(arg_parser, arg="--panel", default='p1', help="Panel of markers")
+arg_parser=add(arg_parser, arg="--run", default="final", help="NextFlow run") 
+arg_parser=add(arg_parser, arg="--cohort", default="tx100", help="Panel of markers")
+arg_parser=add(arg_parser, arg="--study", default="tracerx", help="Panel of markers")
+arg_parser=add(arg_parser, arg="--major_method", default="cellassign", help="Panel of markers")
+arg_parser=add(arg_parser, arg="--subtype_markers", default="mcsa",
+               help="Marker lists defined in TME_settings.R")
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 
 methods=c(args$major_method ,"csm")
 features=c('area', 'meanIntensity', 'probability')
+leukocytes=c("T cells", "Leukocytes - Other", "CD4 T cells", "CD8 T cells")
 cellTypePattern=".review.fst"
+colsExclude=c("Argon", "131Xe", "134Xe", "DNA1", "DNA2", "processed")
 
-subsetReview=read.delim(args$celltypeReviewFile, stringsAsFactors = F)
-subsetReview=subset(subsetReview, control=="review")
+subsetReview=read.csv(args$celltypeReviewFile, sep = "\t", stringsAsFactors = F)
+necroticSamples=subsetReview$imagename[subsetReview$description == "necrotic"]
+subsetReview=subsetReview[ subsetReview$control=="review", ]
+print(args)
+if(args$panel == "p1" & args$cohort != 'peace') {
+  markerSets=c("mcsa", "mcsanov")
+  excludedCell=c("Mesenchymal cells")
+  dependentCell=leukocytes
+  mostLikelyCells=c('Epithelial cells', 'Epithelial cells')
+} else if(args$panel == 'p1' & args$cohort == 'peace') {
+  markerSets=c("mcsa", "mcsanov")
+  excludedCell=c("Mesenchymal cells")
+  dependentCell=c()
+  mostLikelyCells=c('Leukocytes - Other', 'Leukocytes - Other')
+} else if(args$panel == "p2" & args$cohort!='peace') {
+  markerSets=c("mcsa", "mcsamy")
+  excludedCell = c("Myeloid cells - Other")
+  mostLikelyCells=c("Leukocytes - Other", "Leukocytes - Other")
+  dependentCell=c("Monocytes", 'Macrophages')
+  # markerSets=c("mcsa", "mcsanov")
+  # excludedCell = c("Endothelial cells")
+  # mostLikelyCells=c("Leukocytes - Other", "Epithelial cells")
+  # Released
+  # dependentCell=c()
+  # mostLikelyCell="Leukocytes - Other"
+  # markerSets=c("mcsa", "mcsanov")
+  # excludedCell = c("Monocytes")
+}  else if(args$panel == "p2" & args$cohort=='peace') {
+  markerSets=c("mcsa", "mcsapeace")
+  excludedCell = c("Leukocytes - Other", "None")
+  # Check on the image: P2_TMA017_20201217_roi_5
+  mostLikelyCells=c("Leukocytes - Other", "Myeloid cells - Other") # Endothelial cells
+  dependentCell=c("")
+}
 
-if(! args$stratify_label %in% names(pars_stratify)) 
-	stop("ERROR: parameters label ", args$stratify_label,
-		"does not exist in conf/stratification.json")
+csmCol=paste0("cellType_csm_", markerSets[1])
+regionCol=f("region_cellassign_{markerSets[1]}")
+cellAsCols=sapply(markerSets, function(marker) paste0("cellType_cellassign_", marker))
 
-args=c(args, pars_stratify[[args$stratify_label]])
-csmCol=f("cellType_csm_{args$markers}")
-regionCol=f("region_cellassign_{args$markers}")
-markerSets=c(args$markers, args$excludedCellType)
-cellAsCols=sapply(markerSets, 
-	function(marker) f("cellType_cellassign_{marker}"))
-
-abrv=strsplit(args$stratify_label, split = '')[[1]][1:3] %>% 
-	tolower %>% paste0(., collapse = "")
-ref_markers_list=paste1(pars$markers, abrv)
-	
 # IO
-out=f("{args$wDir}/review/{args$panel}_{args$markers}")
+out=f("{args$wDir}/review/{args$cohort}_{args$run}_{args$panel}_{markerSets[1]}")
+pixelDir=f("{out}/pixel_data")
 visDir=f("{out}/overlay")
-analysisID=with(args, f("{panel}_{markers}"))
-modelOut=with(args, f("{cellReviewDir}/{analysisID}.RData"))
+analysisID=f("{args$cohort}_{args$subset}_{args$panel}_{args$run}_", markerSets[1])
+modelOut=f("{args$cellReviewDir}/{args$cohort}_{args$run}_{args$panel}_", markerSets[1], ".RData")
 
-if(! dir.exists(out))
-	dir.create(out, recursive = T)
-if(! dir.exists(visDir)) 
-	dir.create(visDir, recursive =T)
-
+if(! dir.exists(out)) dir.create(out, recursive = T)
+if(! dir.exists(visDir)) dir.create(visDir, recursive =T)
+if(! dir.exists(args$cellReviewDir)) dir.create(args$cellReviewDir, recursive = T)
 print('Merging files')
 data=vector(mode="list")
 for(markers in markerSets) {
   for(method in methods) {
     wdir=f("{args$wDir}/", with(args, f(analysisPath)))
-    if(method == "csm" & length(grep(method, names(data)))) 
-		next
+    if(method == "csm" & length(grep(method, names(data)))) next
     revFile=list.files(wdir, pattern=cellTypePattern, full.names = T)
-	print(wdir)
-	print(cellTypePattern)
-    if(! length(revFile)) 
-		next
+    if(! length(revFile)) next
     tmp=fst::read_fst(revFile)
     cat(markers, method, length(unique(tmp$imagename)), '\n')
-	if(method == "csm")
+	if(method == "csm") {
+		table(tmp$positive)
 		tmp$positive=tmp$names
-	
-	# Only keep CD3+CD4+ T cells as a positive control for CD4 T cells
-    tmp$CD3=get_marker_frequency(marker = 'CD3', data = tmp, column='positive')
+    }
+    tmp$CD3 = get_marker_frequency(marker = 'CD3', data = tmp, column='positive')
     tmp$cellType[tmp$cellType == 'CD4 T cells' & grepl('\\-', tmp$CD3)] = NA
-	tmp$cellType=gsub(" - Other", "", .) %>% 
-		gsub('Smooth muscle cells', "Myofibroblasts", .)
-   
+	tmp$cellType = gsub('CD([48])$', 'CD\\1 T cells', tmp$cellType)
+    tmp$cellType =  gsub(" - Other", "", tmp$cellType)
+    tmp$cellType =  gsub('Smooth muscle cells', "Myofibroblasts", tmp$cellType)
+    tmp=tmp[, !colnames(tmp) %in% c("NN", "background.region", 'positiveFiltered', 
+                                    'positiveSpecific', 'majorType', "background.Background")] #"Tumour", "Immune", "Background", "Stroma", 
+    if(method == "csm") table(tmp$positive)
+    if(markers==markerSets[2] & args$cohort=='tx100') {
+      # e.g. Myeloid cells vs Leukocytes - Other in mcsamy
+      tmp$cellType[tmp$cellType %in% excludedCell] = mostLikelyCells[2]
+    }
     data[[paste1(method, markers)]]=data.table::as.data.table(cbind(tmp, method=method, markers=markers))
   }
 }
-if(! length(data)) {
+if(!length(data)) {
 	print('WARNING: Skipping stratification by confidence. 
 		No images for manual review selected.')
 } else {
@@ -120,21 +134,21 @@ if(! length(data)) {
 	# Those in csm that do not have any associated raw masks
 	recast$cellType_csm_mcsa[is.na(recast$cellType_csm_mcsa)] = 'None'
 
-	imagenames=unique(recast$imagename)
+	imagenames=setdiff(unique(recast$imagename), necroticSamples)
 	# Exclude the cells that have been correctly called by CSM in the negative control
 	negative=setdiff(which(recast[[csmCol]] == recast[[cellAsCols[1]]] &
 	                         recast[[cellAsCols[1]]] != recast[[cellAsCols[2]]] |
 	                         recast[[csmCol]] == 'None' & 
-	                         recast[[cellAsCols[1]]] %in% args$mostLikelyCellType_full & 
-	                         recast[[cellAsCols[2]]] %in% args$mostLikelyCellType_ref),
-	                 which(recast[[cellAsCols[1]]] %in% c(args$excludedCellType,args$dependentCell) &
-	                         recast[[cellAsCols[2]]] %in% args$dependentCell))
+	                         recast[[cellAsCols[1]]] %in% mostLikelyCells[1] & 
+	                         recast[[cellAsCols[2]]] %in% mostLikelyCells[2]),
+	                 which(recast[[cellAsCols[1]]] %in% c(excludedCell,dependentCell) &
+	                         recast[[cellAsCols[2]]] %in% dependentCell))
 	if(toupper(args$panel)=='P2')
 	  negative = union(negative,
-	                   which(recast[[csmCol]] != args$mostLikelyCellType_full & 
-	                           recast[[cellAsCols[1]]] == args$mostLikelyCellType_full &
-	                           recast[[cellAsCols[2]]] == args$mostLikelyCellType_ref & #recast[[cellAsCols[2]]]
-	                           recast$imagename %in% review$imagename[subsetReview$description=='Carcinosarcoma']))
+	                   which(recast[[csmCol]] != mostLikelyCells[1] & 
+	                           recast[[cellAsCols[1]]] == mostLikelyCells[1] &
+	                           recast[[cellAsCols[2]]] == mostLikelyCells[2] & #recast[[cellAsCols[2]]]
+	                           recast$imagename %in% subsetReview$imagename[subsetReview$description=='Carcinosarcoma']))
 						   
 	# Exclude low-intensity lymphocytes that might have been assigned to Mesenchymal
 	negative=recast$cellID[negative]
@@ -142,39 +156,36 @@ if(! length(data)) {
 	                             recast[[csmCol]] == recast[[cellAsCols[1]]])]
 	if(regionCol %in% colnames(recast))
 	  positive=union(positive, recast$cellID[which(recast[[regionCol]] == "Tumour" & recast[[cellAsCols[2]]] == "Epithelial cells")])
-	positiveExcluded=recast$cellID[which(recast[[cellAsCols[1]]] %in% args$excludedCellType &
-	                                     recast[[cellAsCols[2]]] %in% c(args$dependentCell, args$mostLikelyCellType_ref) &
-	                                     recast[[csmCol]] %in% c(args$dependentCell, args$excludedCellType))]
+	positiveExcluded=recast$cellID[which(recast[[cellAsCols[1]]] %in% excludedCell &
+	                                     recast[[cellAsCols[2]]] %in% c(dependentCell, mostLikelyCells[2]) &
+	                                     recast[[csmCol]] %in% c(dependentCell, excludedCell))]
 	negativeExcluded=recast$cellID[which(recast[[csmCol]] != recast[[cellAsCols[1]]] &
-	                                     recast[[cellAsCols[1]]] %in% args$excludedCellType &
-	                                   ! recast[[cellAsCols[2]]] %in% c(args$mostLikelyCellType_ref, args$dependentCell))]
+	                                     recast[[cellAsCols[1]]] %in% excludedCell &
+	                                   ! recast[[cellAsCols[2]]] %in% c(mostLikelyCells[2], dependentCell))]
 	#recast$cellType_cellassign_mcsamy[recast$cellID %in% grepv('P2_TMA001_L_20190508-roi_11', negativeExcluded)] %>% table
-	totalargs$excludedCellType=mrg$markers==args$markers & mrg$method == "cellassign" &
-	  !is.na(mrg$probability) & mrg$cellType %in% args$excludedCellType
-	posExcludedIndices=mrg$cellID %in% positiveExcluded & totalargs$excludedCellType
-	negExcludedIndices=mrg$cellID %in% negativeExcluded & totalargs$excludedCellType
+	totalExcludedCell=mrg$markers==markerSets[1] & mrg$method == "cellassign" &
+	  !is.na(mrg$probability) & mrg$cellType %in% excludedCell
+	posExcludedIndices=mrg$cellID %in% positiveExcluded & totalExcludedCell
+	negExcludedIndices=mrg$cellID %in% negativeExcluded & totalExcludedCell
 
 	print('Negative')
-	paste(recast[[cellAsCols[1]]][recast$cellID %in% negative],
-	                       recast[[cellAsCols[2]]][recast$cellID %in% negative]) %>%
-						   		table %>% sort %>% print
+	print(sort(table(paste(recast[[cellAsCols[1]]][recast$cellID %in% negative],
+	                       recast[[cellAsCols[2]]][recast$cellID %in% negative]))))
 	print('Positive')
-	paste(recast[[cellAsCols[1]]][recast$cellID %in% positive],
-	                       recast[[cellAsCols[2]]][recast$cellID %in% positive]) %>% 
-						   table %>% sort %>% print
+	print(sort(table(paste(recast[[cellAsCols[1]]][recast$cellID %in% positive],
+	                       recast[[cellAsCols[2]]][recast$cellID %in% positive]))))
 	print('positiveExcluded')
-	recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% args$excludedCellType &
-						  recast$cellID %in% positiveExcluded] %>% table %>% 
-						  	sort(., decreasing = T) %>% head %>% print 
+	print(head(sort(table(recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% excludedCell &
+	                                         recast$cellID %in% positiveExcluded]), decreasing = T)))
 	print('Negative excluded')
-	recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% args$excludedCellType &
-						  recast$cellID %in% negativeExcluded] %>% table %>%
-						 	 sort(., decreasing = T) %>% head %>% print
+	print(head(sort(table(recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% excludedCell &
+	                                         recast$cellID %in% negativeExcluded]), decreasing = T)))
 
 	mrg$control="undetermined"
 	mrg$control[which(mrg$cellID %in% negative)] = "negative"
 	mrg$control[which(mrg$cellID %in% positive)] = "positive"
-	mrg$control[totalargs$excludedCellType]="undetermined"
+	mrg$control[mrg$imagename %in% necroticSamples]="necrotic"
+	mrg$control[totalExcludedCell]="undetermined"
 	mrg$control[negExcludedIndices]="negative"
 	mrg$control[posExcludedIndices]="positive"
 	print(table(mrg$control))
@@ -183,7 +194,7 @@ if(! length(data)) {
 	# mrg$cellType[smoothMuscle]="Smooth muscle cells"
 	# Predict positive and negative cell objects
 	controlCellIDs=mrg$control %in% c("positive", "negative") &
-	  mrg$markers==ref_markers_list & mrg$method == "cellassign" &
+	  mrg$markers==markerSets[2] & mrg$method == "cellassign" &
 	  !is.na(mrg$probability)
 	print('Probability')
 	print(table(mrg$cellType[is.na(mrg$probability & mrg$method == "cellassign")]))
@@ -221,7 +232,7 @@ if(! length(data)) {
 
 	mrg$predicted=predictProb > modelCutoff
 	mrg$predicted=ifelse(mrg$predicted, "positive", "negative")
-	dfMrg=droplevels(mrg[mrg$method == "cellassign" & mrg$markers == ref_markers_list |
+	dfMrg=droplevels(mrg[mrg$method == "cellassign" & mrg$markers == markerSets[2] |
 				posExcludedIndices | negExcludedIndices, ])
 	print(table(dfMrg$cellType, dfMrg$predicted))
 
@@ -284,11 +295,11 @@ if(! length(data)) {
 	for(feature in features) {
 
 	  dfMrg=droplevels(mrg[mrg$method == "cellassign" & 
-	  					   mrg$markers == ref_markers_list |
-	                       mrg$cellType %in% args$excludedCellType &
-						   mrg$markers== args$markers, ]
+	  					   mrg$markers == markerSets[2] |
+	                       mrg$cellType %in% excludedCell &
+						   mrg$markers== markerSets[1], ]
 	  )
-	  # dfMrg=dfMrg[dfMrg$cellType!= args$excludedCellType, ]
+	  # dfMrg=dfMrg[dfMrg$cellType!= excludedCell, ]
 	  cat(feature, nrow(dfMrg), "\n")
 	  cellTypeStats=table(dfMrg$cellType)
 	  print(cellTypeStats)
@@ -343,7 +354,7 @@ if(! length(data)) {
 	        overlay_cell_types(imagename, imageDf=mrg[regionSel, ],
 	                           cellTypeCol="cellType", cellTypes=column,
 	                           title=f("{imagename} {region} {column} {markers}"), 
-	                           legend = T, ptx=0.1)
+	                           legend = T, ptx=0.1, run = args$run)
 	        dev.off()
 	      }
 	    }

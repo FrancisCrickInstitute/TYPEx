@@ -11,7 +11,7 @@
   "ilastik":[false],
   // 10 ** 6 - based on imcyto cellprofiler transformations
   
-  "magnitude":[1],
+  "magnitude":[1000000],
   "ubiquitous":["Vimentin","panactin"],
   "features":["MeanIntensity"],
   //METHOD-SPECIFIC PARAMETERS

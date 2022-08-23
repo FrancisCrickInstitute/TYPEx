@@ -1,9 +1,11 @@
 
 # Read in cell type annotations
+library(tidyr)
 baseDir=Sys.getenv('BASE_DIR')
 marker_gene_list=jsonlite::fromJSON(glue::glue("{baseDir}/conf/cell_type_annotation.json"))
 # Load parameters
 pars=jsonlite::fromJSON(glue::glue('{baseDir}/conf/typing_params.json'))
+pars_stratify=jsonlite::fromJSON(glue::glue('{baseDir}/conf/stratification.json'))
 
 
 analysisPath="{subset}/{markers}/{method}"
@@ -14,16 +16,10 @@ majorDir='major'
 txpalette=jsonlite::fromJSON(glue::glue("{baseDir}/conf/TRACERx_palette.json"))
 palette=jsonlite::fromJSON(glue::glue("{baseDir}/conf/celltype_colors.json"))
 
+dimred_methods=c('umap', 'rtsne')
 
 
 clusterColors=c( 
-		"#f2b6b6", "#594c43", "#919973", "#e1ffbf", "#26332f", "#99ccc9", "#a099cc", "#4d394b", "#8c4f46", 
-	  	"#ffa280", "#a67453", "#f2da79", "#20331a", "#79f2ca", "#669ccc", "#7979f2", "#624080", "#cc66aa",
-	  	"#33260d", "#1a3866", "#3333cc", "#bf40ff", "#ff408c", "#661a2e", "#f23d55", "#660000", "#ff2200",
-	  	"#592400", "#ff6600", "#bf8000", "#665f00", "#99bf00", "#366600", "#00bf33", "#006652", "#00eeff",
-		"#003d4d", "#000840", "#440066", "#ff00cc", "#330022",
-
-
 		"#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
         "#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762", "#004D43", "#8FB0FF", "#997D87",
         "#5A0007", "#809693", "#FEFFE6", "#1B4400", "#4FC601", "#3B5DFF", "#4A3B53", "#FF2F80",
@@ -62,24 +58,4 @@ clusterColors=c(
         
         "#2F5D9B", "#6C5E46", "#D25B88", "#5B656C", "#00B57F", "#545C46", "#866097", "#365D25",
         "#252F99", "#00CCFF", "#674E60", "#FC009C", "#92896B")
-
-# Analysis
-#cellAssignFile='{typingDir}/metadata/{panel}_reassign.{study}.{cohort}.txt'
-#celltypeReviewFile=f("{typingDir}/metadata/cell_typing_review.txt")
-#abReviewFile="{typingDir}/metadata/nonspecific_binding.{panel}.txt"
-#abspecificityFile=f("{typingDir}/metadata/specific_binding.txt")
-#cellReviewDir=f("{labwd}/analyses/imc/typing/review")
-#celltypeModelFile="{cellReviewDir}/{subset}_{cohort}_{run}_{panel}_{markers}.RData"
-#analysisPath="{subset}/{markers}/{method}/{run}/{panel}/{cohort}/{ref_markers}"
-#pixelDir="{rubiconDir}/outputs/pixel_analysis/analysis/object_analysis/"
-#pixelRunDir=".*_Run_{run}_masks_{panel}"
-#pixelFile="object_pixels_summary/cell_typing_pixel_countsRun_{run}_{panel}_allmarkers_overmean_spillovermax_hpr.fst"
-#  # _pixel_counts_hpr.fst # object_pixels_summary/cell_typing_pixel_counts/Run_BMS_P1_allmarkers_overmean_spillovermax_hpr.fst
-#coordFile="{labwd}/analyses/imc/segmentation_regions/pilot_region_coordinates.edit2.txt"
-
-# Tissue segmentation
-# tissAreaDir =f("{rubiconDir}/outputs/tissue_categories/")
-#tissSegDir  =f("{labwd}/analyses/imc/tissue_classification")
-#tissAreaDir=f('{tissSegDir}/tissue_area/')
-#categArea="{tissSegDir}/segmentation/preprocess_direct_D_last_without_one/summary_tables/Summary_final.{panel}.edit.txt"
 

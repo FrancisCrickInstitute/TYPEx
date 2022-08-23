@@ -3,8 +3,8 @@
 nextflow.enable.dsl=2
 
 // to define help function & hlp argument
-include { helpMessage } from './lib/core_functions'
-include { MAJOR_ONLY } from './workflows/major_only.nf' 
+include { helpMessage } from './lib/functions.nf'
+include { TYPEx } from './workflows/typex.nf' 
 
 // Show help message
 if (params.help) {
@@ -15,7 +15,7 @@ if (params.help) {
 
 workflow {
 
-	MAJOR_ONLY()
+	TYPEx()
 		
 }
 

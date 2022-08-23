@@ -107,26 +107,26 @@
   		"Leukocytes - Other":["Vimentin", "CD45"],
   		"Lymphocytes":{
   		    "T cells":{
-  				"T cells - Other":["Vimentin", "CD45", "CD3"],
+  				"T cells - Other":["Vimentin", "CD45", "CD3", "CD2", "CD5", "CD7"],
   				"CD8 T cells":["Vimentin", "CD45", "CD3", "CD8"],
   				"CD4 T cells":["Vimentin", "CD45", "CD3", "CD4"]
   			},
-  		    "B cells":["Vimentin", "CD45", "CD20"]
-			//"NK cells":["Vimentin", "CD45", "CD56"]
+  		    "B cells":["Vimentin", "CD45", "CD20"],
+			"NK cells":["Vimentin", "CD45", "CD56", "CD7"]
   		},
   		"Myeloid cells": {
   		    "Myeloid cells - Other":["Vimentin", "CD45", "CD11b"],
-			"Granulocytes":["Vimentin", "CD45", "CD11b", "CD15", "GFAP"],
+			"Granulocytes":["Vimentin", "CD45", "CD11b", "CD15"],
   		    "Macrophages":["Vimentin", "CD45", "CD11b", "CD68", "CD163"]
   		}
 	},
-	"Endothelial cells":["Vimentin", "CD31"],
+	"Endothelial cells":["Vimentin", "CD31", "Podoplanin"],
 	"Mesenchymal cells":{
 		"Mesenchymal cells - Other":["Vimentin"],
   		"aSMA+ cells":["Vimentin", "aSMA"],
 		"Smooth muscle cells":["aSMA"]
   	},
-	"Nerves":["GFAP"], //Non-specific, also Schwann cells, Neutrophils, Mac?
+	"Nerves":["GFAP"],
   	"Epithelial cells":["Cytokeratin"]
   }
 }

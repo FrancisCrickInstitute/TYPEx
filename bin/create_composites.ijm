@@ -2,7 +2,7 @@
 #@String runPattern
 #@Boolean mcd
 #@String rootDir
-#@String outDir
+#@String compositeDir
 
 // Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
 image="all";
@@ -12,9 +12,6 @@ directional='none';
 // Choose the NextFlow run iteration
 panck_threshold=15;
 
-print(rootDir);
-if(File.isDirectory(outDir) == 0)
-	File.makeDirectory(outDir);
 
 if(panel == "p1" && mcd) {
 	immune_markers="image1=[Median of 152Sm_CD45.tiff] image2=[Median of 170Er_CD3.tiff] image3=[Median of 162Dy_CD8a.tiff] image4=[Median of 156Gd_CD4.tiff] image5=[-- None --]";
@@ -50,7 +47,7 @@ if(panel == "p1" && mcd) {
 	nonstroma='image1=[Tumour] image2=SUM_DNA image3=[-- None --]';
 }
 
-f = File.open(outDir + 'panck_range.txt');
+f = File.open('panck_range.txt');
 
 setBatchMode(true);
 runs=getFileList(rootDir);
@@ -72,7 +69,6 @@ for (k = 0; k< runs.length;  k++)	{
 
 				imgName=tma + "-" + roi;
 				print('IMG name:  ', imgName);
-				//if(imgName != 'P2_TMA_REC_20190508-roi_8') continue;	
 				if(image != "all" && imgName != image) {
 					print(image, 'skipping');
 						continue;
@@ -92,7 +88,7 @@ for (k = 0; k< runs.length;  k++)	{
 					}
 					if(stacks[m] != "full_stack/")
 						continue;
-					fileOut = outDir + tma + "-" + roi + ".tiff";
+					fileOut = tma + "-" + roi + ".tiff";
 				    if(File.exists(fileOut)) {
 						print('File exists', fileOut);
 						 continue;	
@@ -143,8 +139,8 @@ for (k = 0; k< runs.length;  k++)	{
 						getMinAndMax(min, max);
 						print(imgName, 'Tumour', min, max);
 						if(max < panck_threshold) {
-							open(outDir + 'panckf_' + imgName + '.tif');
-							print(outDir + 'panckf_' + imgName  + '.tif');
+							open(compositeDir + 'panckf_' + imgName + '.tif');
+							print('panckf_' + imgName  + '.tif');
 						} else {
 							run("Median (3D)");
 						}
@@ -153,15 +149,6 @@ for (k = 0; k< runs.length;  k++)	{
 						rename(singleMarkerImg);
 					}
 
-					 list = getList("image.titles");
-                    if (list.length==0)
-                      print("No non-image windows are open");
-                    else {
-                      print("Non-image windows:");
-                    for (i=0; i<list.length; i++)
-                      print("   "+list[i]);
-                    }
-                    print("");
 					// Stroma
 					if(panel == 'p1') {
 						run("Concatenate...", "  title=Nonsp open " + auxStromaMarkers);
@@ -184,7 +171,6 @@ for (k = 0; k< runs.length;  k++)	{
 					run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 					print('Immune');
 					autoAdjust();
-					// run("Median...", "radius=1");
 					run("Enhance Contrast", "saturated=0.35");
                    
 					run("Concatenate...", "  title=NonStroma keep open " + nonstroma); 
@@ -212,36 +198,8 @@ for (k = 0; k< runs.length;  k++)	{
 					run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
 					run("Median (3D)");
 					autoAdjust();
-					// saveAs('Tiff',  outDir + "stroma" + tma + "-" + roi + ".tiff");
 					rename('Stroma_Only');
 
-					if(imgName == 'P1_TMA_REC_20190508-roi_10') {
-
-                            selectWindow('SUM_Stroma');
-                            run("Duplicate...", " ");
-                            run("Magenta");
-                            saveAs('Tiff',  outDir + "stroma" + tma + "-" + roi + ".tiff");
-							close();
-
-							selectWindow('SUM_DNA');
-							run("Duplicate...", " ");
-                            run("Blue");
-                            saveAs('Tiff',  outDir + "dna" + tma + "-" + roi + ".tiff");
-							close();
-
-							selectWindow('SUM_Immune');
-							run("Duplicate...", " ");
-                            run("Magenta");
-                            saveAs('Tiff',  outDir + "immune" + tma + "-" + roi + ".tiff");
-							close();
-							
-							selectWindow('Tumour');
-							run("Duplicate...", " ");
-							run("Yellow");
-                            saveAs('Tiff',  outDir + "tumour" + tma + "-" + roi + ".tiff");
-							close();
-					}
-	
 					run("Concatenate...", "  title=StromaStack open image1=SUM_Immune image2=[Stroma_Only] image3=[-- None --]");
 					run("Z Project...", "projection=[Sum Slices]");
 					rename("Stroma_merge");
@@ -268,13 +226,14 @@ function autoAdjust() {
          * Damien Guimond
          * 20120516
          * Acknowledgements: Kota Miura
-         */
-         /*
-          * Edits by 
-          * Mihaela Angelova
-          */
-	aggregateMax=5000;
-	aggregateMin=15;
+        */
+        /*
+         * Edits by 
+         * Mihaela Angelova
+        */
+          
+		  aggregateMax=5000;
+		  aggregateMin=15;
         noiseLevel=3;
         AUTO_THRESHOLD = 5000;
         pctPixels=10;
