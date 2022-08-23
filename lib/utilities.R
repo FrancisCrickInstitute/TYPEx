@@ -176,10 +176,17 @@ load_files <- function(inDir, pattern="*.txt",
 plotUmap <- function(x, labels, main="",
                      colors=c("1"="#ff7f00", "2"="#e377c2", "3"="#17becf"),
                      pad=0.1, cex=0.2, pch=19, add=FALSE, legend.suffix="",
-                     cex.main=1, cex.legend=1, legend = F) {
+                     cex.main=1, cex.legend=1, legend = F, subsample=NULL) {
 
   layout = x
   if (is(x, "umap")) layout = x$layout
+
+  if(!is.null(subsample)) {
+	indices = tapply(1:nrow(layout), labels, function(x)
+		sample(x, size = subsample * length(x)))
+	layout = do.call(rbind, lapply(indices, function(x) layout[x, ]))
+	labels = labels[ unlist(indices) ]
+  }
   
   xylim = range(layout)
   xylim = xylim + ((xylim[2]-xylim[1])*pad)*c(-0.5, 0.5)

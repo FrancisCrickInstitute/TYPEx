@@ -1,0 +1,153 @@
+---
+title: "Positivity p2"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  library(knitr)
+  library(tibble)
+  library(magrittr)
+  library(glue)
+  library(grDevices)
+  library(data.table)
+  # library(raster)
+  library(tiff)
+  library(ggplot2)
+  f<-glue::glue
+  
+  w="30%"
+  opts_chunk$set(echo = FALSE, out.width = "50%", fig.align = "center")
+  # baseDir=Sys.getenv('BASE_DIR')
+  baseDir='.'
+  
+
+  panel="p2"
+  runDir='test_pub_p2'
+  run="publication"
+  
+  markers="all"
+  method="FastPG"
+  subset="subtypes"
+
+  BASE_DIR=f("/camp/lab/swantonc/working/angelom/analyses/imc/{runDir}")
+  ROOTDIR=f("/camp/project/proj-tracerx-lung/tctProjects/rubicon/tracerx/tx100/imc/outputs/nextflow/{panel}/{run}/")
+  RAWDIR=f("/camp/lab/swantonc/working/angelom/analyses/imc/{runDir}/output/single_channel/")
+  analysisID=f("{run}_{panel}_{method}")
+  
+  Sys.setenv('BASE_DIR'=BASE_DIR)
+  source(file.path(BASE_DIR, "conf/settings.R"))
+  source(file.path(BASE_DIR, "lib/imc_utils.R"))
+
+  outDir=f("{BASE_DIR}/output/pos_overlay/pos_{method}_{subset}")
+  if(!dir.exists(outDir)) dir.create(outDir, recursive = T)
+  
+  qcDf=read.csv(f('{BASE_DIR}/data/over_under_qc_images.txt'), sep = '\t', header = F)
+  imagenames=qcDf[[1]]
+  markersList=unique(qcDf[[2]])
+  revFile=list.files(f('{BASE_DIR}/output/{subset}/{markers}/{method}'), pattern="cell_objects.*fst", full.names = T)
+
+
+  
+```
+
+
+
+```{r cars}
+  data=fst::read_fst(revFile, as.data.table = T)
+  data$object=as.numeric(as.character(data$object))
+  data=data[data$imagename %in% imagenames, ]
+  
+  combos = paste(qcDf$V1, qcDf$V2)
+
+  
+  for(combo in combos) {
+	
+	  imagename=strsplit(combo, split = ' ')[[1]][1]
+	  marker=strsplit(combo, split = ' ')[[1]][2] 
+
+      file=list.files(RAWDIR, pattern = f("{marker}\\..{imagename}.*.png"), full.names = T)
+      if(! length(file)) next
+      pngOut=f("{outDir}/outlines_{basename(file)}")
+      clOut=f("{outDir}/clusters_{basename(file)}")
+      # if(file.exists(pngOut)) next
+      runDir=sapply(list.dirs(ROOTDIR, recursive = F), function(x) 
+        file.exists(f('{x}/results/segmentation/', gsub("-", "/", imagename))))
+      outlineImg=file.path(names(runDir)[runDir], "results/segmentation", gsub("-", "/", imagename), "total_cells_mask.tiff")
+      data$type=get_marker_frequency(data, marker, "positive")
+      positive=intersect(grep("\\+", data$type), which(data$imagename == imagename))
+      if(! length(positive)) next
+      raw=rasterImage(file)
+      r<-rasterImage(outlineImg)
+      pos=neg=r
+      pos[! pos %in% data$object[positive]] = NA
+      par(mar=c(0, 0, 0, 0))
+      png(pngOut, width=dim(raw)[2], height=dim(raw)[1], units='px')
+      plot(raw, axes=F, legend=F, col=colorRampPalette(c("white","black"))(20),
+           maxpixels=dim(raw)[1] * dim(raw)[2]*10)
+      plot(pos, legend=F, axes = F,
+           maxpixels=dim(r)[1] * dim(r)[2], add = T, alpha=0.4,
+           col=hcl.colors(length(positive)))
+      dev.off()
+      browseURL(pngOut)
+      # png(clOut, width=dim(raw)[2], height=dim(raw)[1], units='px')
+      # g<-ggplot(data[positive, ], aes(centerX, centerY, color=)
+      # dev.off()
+      browseURL(pngOut)
+  }
+```
+
+
+```{r pressure, echo=FALSE}
+content=lapply(combos, function(combo) {
+	
+	imagename=strsplit(combo, split = ' ')[[1]][1]
+	marker=strsplit(combo, split = ' ')[[1]][2]	
+
+  files=list.files(rawDir, pattern = f(".*{imagename}\\.\\..*.png"), full.names = T)
+  if(!length(files)) {
+    print(combo)
+    return(NULL)
+  } 
+  markernames=sapply(files, function(file)
+    strsplit(gsub(".png", "", basename(file)), split = '\\.\\.')[[1]][2] %>% paste(collapse=" ")
+  )
+  pngs=sapply(1:length(files), function(idx)  {
+    pngOut=f("{outDir}/outlines_{basename(files[idx])}")
+    return(pngOut)
+  })
+  # composites=get_composite(cellIDs = imagename, run = "final")
+  
+  imagenames=sapply(files, function(file)
+    strsplit(gsub(".png", "", basename(file)), split = '\\.\\.')[[1]][c(2, 4, 5)] %>% paste(collapse=" ")
+  )
+  cbind(imagename1=imagename, 
+        marker1 = markernames[1], 
+        marker2 = markernames[2],
+        png1=pngs[1], 
+        png2=pngs[2], 
+        file1 = files[1], # compo1=composites[1],
+        file2 = files[2]) #, compo3=composites[2])
+})
+
+content=as.data.table(do.call(rbind, content))
+
+slides_text <- glue_data(
+  content,
+"
+## {imagename}
+  
+Image ID: {basename(file1)}
+
+![{marker1}]({file1}){{width={w} height={w}}} ![{marker2}]({file2}){{width={w} height={w}}}
+
+![{marker1}]({png1}){{width={w} height={w}}} ![{marker1}]({png2}){{width={w} height={w}}}
+
+\n
+"
+)
+```
+
+`r print(slides_text)`
+`r slides_text %>% paste(collapse = "\n", sep="\n")`
+

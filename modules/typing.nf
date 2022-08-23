@@ -11,7 +11,7 @@
 
 process call_major {
 	tag "major"
-	label 'xs' //'medium_mem' //'max'
+	label  'medium_mem' //'max'
 	maxRetries 1
 	
 	input:
@@ -40,7 +40,7 @@ process call_major {
 
 process call_major_ref {
     tag "major"
-    label 'xs' // 'medium_mem' //'max'
+    label 'medium_mem' //'max'
     maxRetries 1
 
     input:
@@ -97,7 +97,7 @@ process review_major_types {
 process call_subtypes {
 
         tag "sub"
-        label 'xs' // 'medium_mem'
+        label 'medium_mem'
         maxRetries 1
 
         input:
@@ -126,7 +126,7 @@ process call_subtypes {
 process call_subtypes_nostrat {
 
         tag "sub"
-        label 'xs' // 'medium_mem'
+        label 'medium_mem'
         maxRetries 1
 
         input:

@@ -33,10 +33,11 @@ for (i = 0; i < slideDirList.length; i++) {
 
 	if(! endsWith(slideDirList[i], "_Probabilities.h5")) continue;
 		imgName = replace(slideDirList[i], "_Probabilities.h5", "");
-		// if(imgName != 'P1_TMA003_L_20190619_correct-roi_4') continue;
+		//if(imgName != 'P2_TMA002_R_20190619-roi_3') continue;
 		print(imgName);
 		fileOut=outDirOverlay + "overlay_" + imgName +".png";
 		fdOut=outDirFract +  imgName + "_fd.csv";
+		if(File.exists(fileOut)) continue;
 
 		run("Import HDF5", "select=" + probDir+slideDirList[i] + " datasetname=[/exported_data: (1747, 1756, 2) uint8] axisorder=yxc");
 		run("Make Composite", "display=Color");
@@ -69,12 +70,13 @@ for (i = 0; i < slideDirList.length; i++) {
 			run("8-bit");
 			//setAutoThreshold("Default white");
 			//run("Convert to Mask");
-			rename(outFile);
-			print(outFile);
-		//	run("Median...", "radius=3");
+			run("Median (3D)");
 			run("Options...", "iterations=2 count=4 black pad do=Dilate");
 			run("Options...", "iterations=2 count=4 black pad do=Erode");
-	    	// saveAs("tiff", outDirMasks + "test3_" +  imgTitle[j]);
+			rename(outFile);
+			print(outFile);
+			close(imgTitle[j]);
+	    //	saveAs("tiff", outDirMasks + "test3_" +  imgTitle[j]);
 		}
 		
 		imgTitle = getList("image.titles");
@@ -83,12 +85,20 @@ for (i = 0; i < slideDirList.length; i++) {
 			selectWindow(imgTitle[j]);
 			//run("Open", "stack");
 			
-		//	if(startsWith(imgTitle[j], "Tumour")) {
-		//		imageCalculator("Subtract ", imgTitle[j], "Background_"+ imgName + ".tiff" );
-	//			imageCalculator("Subtract ", imgTitle[j], "Stroma_"+ imgName + ".tiff" );
-	//		} else if(isOpen("Tumour_" + imgName + ".tiff")) {
-	//			imageCalculator("Subtract ", imgTitle[j], "Tumour_" + imgName + ".tiff" );
-	//		}
+			// for intratumoral infiltration
+			if(startsWith(imgTitle[j], "Tumour")) {
+				run("Calculator Plus", "i1=Tumour_" + imgName + ".tiff i2=Stroma_" + imgName + ".tiff operation=[Add: i2 = (i1+i2) x k1 + k2] k1=1 k2=0 create");
+				close(imgTitle[j]);
+				run("Calculator Plus", "i1=Result i2=Stroma_" + imgName + ".tiff operation=[Subtract: i2 = (i1-i2) x k1 + k2] k1=1 k2=0 create");
+				rename(imgTitle[j]);
+				close('Result');
+				//run("Calculator Plus", "i2=" +  imgTitle[j] + " i1=Tumour_" + imgName + '.tiff' + " operation=[Subtract: i2 = (i2-i1) x k1 + k2] k1=1 k2=0");
+//				imageCalculator("Subtract ", imgTitle[j], "Background_"+ imgName + ".tiff" );
+//				imageCalculator("Subtract ", imgTitle[j], "Stroma_"+ imgName + ".tiff" );
+			} 
+			//	else if(isOpen("Tumour_" + imgName + ".tiff")) {
+			//	imageCalculator("Subtract ", imgTitle[j], "Tumour_" + imgName + ".tiff" );
+			//}
 			// run("Options...", "iterations=2 count=4 black pad do=Dilate");
 			// run("Fill Holes");
 			// run("Options...", "iterations=2 count=4 black pad do=Erode");
@@ -110,7 +120,7 @@ for (i = 0; i < slideDirList.length; i++) {
 			// continue;
 			//}
 		
-			//run("Invert");
+//			run("Invert");
 			run("Connected Components Labeling", "connectivity=4 type=[16 bits]");
 			saveAs("tiff", outDirLabels + "labeled_regions_" + imgTitle[j]);
 			close();

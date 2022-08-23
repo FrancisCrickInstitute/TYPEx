@@ -54,7 +54,7 @@ process exporter_major {
 process plot_dr {
 
         tag "sub"
-        label  'median_mem' //'max'
+        label 'median_mem'  // 'max'
         maxRetries 1
 
         input:

@@ -50,7 +50,7 @@ process csm_export {
 		csm_exporter.R --inDir ${csmDir} \
 			--run ${params.run} --panel ${params.panel} --cohort ${params.cohort} \
 			--study ${params.study} --celltypeReviewFile ${params.celltypeReviewFile} \
-			--markers ${params.major_markers} --nndist 5\
+			--markers ${params.major_markers} --nndist 5 \
 			--tissAreaDir "${params.outDir}/tissue_seg/" 
 	"""
 }

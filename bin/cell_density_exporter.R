@@ -68,6 +68,7 @@ for(file in resultFiles) {
                                          positivity = dfIn$positive, panel=args$panel,
                                          study=args$study, cohort=args$cohort, cellAssignFile=args$cellAssignFile)
   dfIn$majorType = gsub(' Region', '', dfIn$majorType)
+
   # write for each cohort
   cohorts=imgData$cohort[match(dfIn$imagename, imgData$imagename)]
   if(any(is.na(cohorts)) & args$cohort=='peace') {
@@ -84,7 +85,7 @@ for(file in resultFiles) {
     
     write.table(dfSub[, c("imagename", 'object',  "centerX", "centerY", 'region', "majorType", "cellType", 'positive')],
                 file = f("{inDir}/{cohort}_{releaseOut}"), sep = '\t', row.names = F)
-    fst::write.fst(dfSub[, c("imagename", 'object', "centerX", "centerY", 'region', "majorType", "cellType", 'positive')],
+    fst::write.fst(dfSub[, c("imagename", 'object', "centerX", "centerY", 'region', "majorType", "cellType", 'positive', 'cluster')],
               path = f("{inDir}/{cohort}_{releaseFst}"))  
     
     if(file.exists(args$cellAssignFile)) {
@@ -136,6 +137,7 @@ for(file in resultFiles) {
 									category = region, tissAreaDir=args$tissAreaDir),
                                     Region=region, imagename=imagenames)
   }
+
   regionArea=do.call(rbind, regionArea)
   print(head(regionArea))
   cell_stats=vector(mode="list")
@@ -177,7 +179,8 @@ for(file in resultFiles) {
                                           with(regionArea, paste(Region, imagename)))]
 	  dfStatsCateg[, cellDensity:=cellCount/area]
 		print(colnames(dfStatsCateg))
-	  dfStatsCateg = subset(dfStatsCateg, select = c( "imagename", "panel", "cellType", "majorType", "positivity", "region", "cellCount", "cellDensity"))
+	  dfStatsCateg = subset(dfStatsCateg, select = c( "imagename", "panel", "cellType", "majorType", 
+		"positivity", "region", "cellCount", "cellDensity"))
 	  write.tab(dfStatsCateg, file=f("{inDir}/categs_{fileOut}"))
 	  fst::write.fst(dfStatsCateg, path=f("{inDir}/categs_{fileFst}"))
  }
