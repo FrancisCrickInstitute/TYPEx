@@ -2,7 +2,7 @@
 Deep cell phenoTYPE characterisation using multipleX imaging 
 
 
- <img src="./doc/_static/typing3.png" width="30%" height="30%">
+ <img src="./doc/_static/typing3.png" width="15%" height="15%">
 
 ## Add description and quick start and
 ## Link to:
