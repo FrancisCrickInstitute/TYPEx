@@ -1,0 +1,69 @@
+{
+  // General analysis parameters
+  "channels_exclude":["Argon","131Xe","134Xe","DNA1","DNA2","processed","Collagen"],
+  //# Include Additional columns for clustering: e.g. Area, Location (code)
+  "additional_features":[null],
+  //# Exlude cells with an area smaller or eqiual to pars$area_exclude
+  "area_exclude":[12.5664],
+  "min_expresssion":[0],
+  "defaultMarkersList":["all"],
+  "ref_markers":["mcsa"],
+  "ilastik":[false],
+  // 10 ** 6
+  "magnitude":[1000000],
+  "ubiquitous":["Vimentin","panactin"],
+  "features":["MeanIntensity"],
+  //METHOD-SPECIFIC PARAMETERS
+  "FastPG":{
+	"k":[30],
+    "resample_frac":[0.67],
+	"num_threads":[2],
+    "transformation":["none"]
+  },
+  "Rphenograph":{
+    "k":[30],
+    "resample_frac":[0.67],
+    "transformation":["none"]
+  },
+  "cellassign":{
+    "transformation":["magnitude"],
+    "learning_rate":[0.01],
+    "shrinkage":[true],
+    "resample_frac":[0.67],
+    "verbose":[true]
+  },
+  "flowSOM":{
+    "scale":[false],
+    "rlen":[10000],
+    "xdim":[10],
+    "ydim":[10],
+    "tSNE":[true],
+    "maxClust":[80],
+    "resample_frac":[0.67],
+    "transformation":["none"]
+  },
+  "kmeans":{
+    "centers":[30],
+    "resample_frac":[0.67],
+    "transformation":["none"]
+  },
+  "rtsne":{
+    "pca":[false],
+    "verbose":[true],
+    "alpha":[0.5],
+    "check_duplicates":[false],
+    "nthread":[6],
+    "resample_frac":[0.05],
+    "transformation":["asinh"],
+    "refMethod":["FastPG"],
+    "resample":[true]
+  },
+  "umap":{"resample_frac":[0.2],
+    "refMethod":["FastPG"],
+    "resample":[true],
+    "transformation":["asinh"]
+  }
+}
+
+//Rclusterpp
+	//"Rclusterpp":{"method":["ward"]},

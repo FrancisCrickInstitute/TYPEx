@@ -1,0 +1,793 @@
+positivity	majorType	cellType	newMajor	newCellType	Review	Comment	count	clusters
+CD103_CD11c_CD3_CD4_CD45_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PDL1_TIM3_VISTA	Ambiguous	mDC	Ambiguous	Ambiguous	F	NA	168	Excluded CD8
+CD103_CD20_CD3_CD4_CD45_CD8a_IDO_MHCII_panactin_PD1_TIM3	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	F	NA	332	Excluded CD8
+CD103_CD20_CD3_CD4_CD45_CD8a_LAG3_panactin_VISTA	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	F	NA	254	Excluded CD8
+CD103_CD20_CD4_CD45_CD8a_panactin	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	F	NA	285	Excluded CD8
+CD103_CD20_CD45_CD8a_CLEC9a_LAG3_panactin_TIM3_VISTA	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	282	Excluded CD8
+CD103_CD20_CD45_CD8a_KIR2DL3_LAG3_panactin_PD1_TIM3	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	F	NA	144	Excluded CD8
+CD103_CD20_CD45_CD8a_KIR2DL3_LAG3_panactin_TIM3	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	F	NA	144	Excluded CD8
+CD103_CD20_CD45_CD8a_LAG3_panactin_TIM3	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	324	Excluded CD8
+CD103_CD20_CD45_CD8a_panactin	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	225	Excluded CD8
+CD103_CD3_CD4_CD45_CD8a_CLEC9a_IDO_LAG3_panactin_TIM3_VISTA	Ambiguous	CD8 Trm	Ambiguous	Ambiguous	F	NA	223	Excluded CD8
+CD16_CD163_CD38_CD4_CD56_CD66b_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Ambiguous	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	107	Excluded CD4
+CD20_CD4_CD45_panactin	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	588	Excluded Leukocytes
+CD38_CD4_CD79a_CLEC9a_IDO_KIR2DL3_TCRd	Ambiguous	Tgd	Ambiguous	Ambiguous	F	NA	39	Excluded CD4
+CD4_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_TCRd	Ambiguous	Tgd	Ambiguous	Ambiguous	F	NA	133	Excluded CD4
+CD56_TIM3_CD20_CD8a_PD1_CD103	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	FALSE		100	Excluded CD8
+CLEC9a_KIR2DL3_CD56_CD79a_CD4_IDO_CD16_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Ambiguous	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE		102	Excluded CD4
+CLEC9a_KIR2DL3_CD56_CD79a_CD4_IDO_CD16_CD66b_CD38_TCRd_MCT4	Ambiguous	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	34	Excluded CD4
+CLEC9a_KIR2DL3_CD56_TIM3_CD79a_CD14_CD4_IDO_CD16_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Ambiguous	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	105	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_CD56_CD79a_CD4_IDO_CD11c_CD66b_CD38_LAG3_CD103_PDL1	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	FALSE		16	Excluded B cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD14_CD20_CD8a_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103_MCT4	Ambiguous	Lymphocytes	T cells	T cells DP	FALSE		142	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_CD38_LAG3_CD103_MCT4	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	FALSE		282	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_CD66b_CD38_LAG3_CD103_MCT4_PDL1	Ambiguous	Lymphocytes	T cells	T cells DP	FALSE		168	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_LAG3_CD103	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	FALSE		254	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_CD66b_CD38_LAG3_CD103_PDL1	Ambiguous	mDC	T cells	T cells DP	FALSE		223	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD79a_CD4_PD1_IDO_CD11c_CD66b_CD38_LAG3_CD103_TCRd_PDL1	Ambiguous	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	16	Excluded B cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD14_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103	Ambiguous	Lymphocytes	T cells	T cells DP	FALSE		285	Excluded CD8
+KIR2DL3_VISTA_CD56_TIM3_panactin_CD14_CD20_CD4_PD1_IDO_CD16_CAIX_CD11c_CD66b_CD38_LAG3_CD103_MCT4	Ambiguous	Lymphocytes	Ambiguous	Ambiguous	FALSE		9	Excluded B cells
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD3_CD31_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_VISTA	B cells	Neutrophils	Ambiguous	Ambiguous	F	NA	258	Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD31_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_VISTA	B cells	Neutrophils	Ambiguous	Ambiguous	F	NA	254	Macrophages
+CAIX_CD103_CD11b_CD11c_CD16_CD163_CD20_CD38_CD56_CD66b_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PD1_PDL1_TCRd_VISTA	B cells	Neutrophils	Ambiguous	Ambiguous	F	NA	14	Excluded B cells
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD31_CD38_CD4_CD45_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PD1_PDL1_TCRd_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	321	Excluded CD8
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD38_CD4_CD45_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_PDL1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	223	Excluded CD8
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD38_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PD1_PDL1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	489	Excluded CD4
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD38_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_PDL1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	332	Excluded CD4_Excluded CD8
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	287	Excluded CD4
+CAIX_CD103_CD11c_CD14_CD20_CD3_CD4_CD45_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	296	CD4
+CAIX_CD103_CD11c_CD20_CD3_CD31_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	330	Excluded CD8
+CAIX_CD103_CD11c_CD20_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_MHCII_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	495	Excluded Leukocytes
+CAIX_CD103_CD11c_CD20_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_MHCII_panactin_TIM3_VISTA	B cells	mDC	B cells	B cells	F	NA	561	B cells
+CAIX_CD103_CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	254	Excluded CD8
+CD103_CD11c_CD20_CD3_CD4_CD45_CD66b_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	130	Excluded CD8
+CD103_CD11c_CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	288	Excluded CD8
+CD103_CD11c_CD20_CD38_CD45_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PD1_PDL1_TCRd_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	?	16	Excluded B cells
+CD103_CD11c_CD20_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	231	Excluded Leukocytes
+CD103_CD163_CD20_CD206_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_TIM3_VISTA	B cells	Lymphocytes	Macrophages	M2	F	NA	1913	Macrophages
+CD103_CD20_CD3_CD38_CD56_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_panactin_TCRd_TIM3	B cells	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	32	Excluded T cells
+CD103_CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	4086	CD8
+CD103_CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	4086	CD8
+CD103_CD20_CD3_CD4_CD45_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	490	Excluded CD4
+CD103_CD20_CD3_CD4_CD45_CD79a_CD8a_CLEC9a_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	225	Excluded CD8
+CD103_CD20_CD3_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	230	Excluded CD8
+CD11b_CD11c_CD14_CD20_CD45_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PD1_PDL1_VISTA	B cells	mDC	Ambiguous	Ambiguous	F	NA	301	Excluded Myeloid cells
+CD11b_CD11c_CD163_CD20_CD66b_CD79a_CLEC9a_GZMB_TCRd	B cells	mDC	B cells	B cells	F	NA	363	B cells
+CD11b_CD20_CD73_CD79a_panactin	B cells	B cells	NA	NA	T	NA	301	Excluded Myeloid cells
+CD11c_CD14_CD20_CD38_CD4_CD45_CD73_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_PDL1_VISTA	B cells	mDC	Ambiguous	Ambiguous	F	NA	162	Excluded Leukocytes
+CD11c_CD163_CD20_CD66b_CD79a_CLEC9a_GZMB_MPO_TCRd	B cells	Neutrophils	B cells	B cells	F	NA	363	B cells
+CD11c_CD20_CD3_CD4_CD45_CD66b_CD79a_CD8a_IDO_MHCII_panactin_PD1_PDL1_TIM3_VISTA	B cells	mDC	Ambiguous	Ambiguous	F	NA	301	Excluded CD4
+CD11c_CD20_CD3_CD4_CD45_CD79a_CD8a_IDO_MHCII_panactin	B cells	mDC	B cells	B cells	F	NA	7036	B cells
+CD11c_CD20_CD38_CD4_CD45_CD66b_CD73_CD79a_CD8a_IDO_MHCII_panactin_VISTA	B cells	mDC	B cells	B cells	F	?	7036	B cells
+CD11c_CD20_CD45_CD66b_CD79a_MHCII_panactin	B cells	mDC	B cells	B cells	F	NA	7797	B cells
+CD11c_CD20_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_MHCII_panactin_TIM3_VISTA	B cells	mDC	B cells	B cells	F	NA	561	B cells
+CD11c_CD20_CD45_CD79a_MHCII_panactin	B cells	mDC	B cells	B cells	F	NA	7797	B cells
+CD11c_CD20_CD79a_MHCII_panactin	B cells	B cells	NA	NA	T	NA	6777	B cells
+CD14_CD16_CD20_CD31_CD38_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_TIM3_VISTA	B cells	Lymphocytes	B cells	B cells	F	NA	21398	B cells
+CD14_CD31_CD38_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_TIM3_VISTA	B cells	Endothelial cells	B cells	B cells	F	?	21398	B cells
+CD16	B cells	B cells	NA	NA	TRUE		2224	B cells
+CD16_CD20_CD79a	B cells	B cells	NA	NA	T	NA	2224	B cells
+CD16_CD206_CD31_CD38_CD56_CD79a_CLEC9a_LAG3_VISTA	B cells	Endothelial cells	B cells	Plasma cells	F	NA	10950	B cells
+CD163_CD20_CD206_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	1913	Macrophages
+CD20	B cells	B cells	NA	NA	TRUE		17787	B cells
+CD20_CD3_CD4_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	593	Excluded Leukocytes
+CD20_CD3_CD4_CD45_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	193	Excluded CD4
+CD20_CD3_CD4_CD45_CD79a_CD8a_CLEC9a_LAG3_panactin_PD1_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	440	Excluded Leukocytes
+CD20_CD3_CD4_CD45_CD79a_CD8a_panactin	B cells	Lymphocytes	B cells	B cells	F	NA	11415	B cells
+CD20_CD3_CD4_CD45_CD79a_CD8a_panactin_PD1_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	508	Excluded CD4
+CD20_CD3_CD4_CD45_CD79a_LAG3_panactin_PD1	B cells	B cells	Ambiguous	Ambiguous	F	NA	287	Excluded CD4
+CD20_CD3_CD45_CD79a_CD8a_MHCII_panactin	B cells	B cells	Ambiguous	Ambiguous	F	?	2519	CD8
+CD20_CD31_CD38_CD45_CD56_CD66b_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_PDL1_TCRd_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	27	Excluded B cells
+CD20_CD31_CD38_CD73_CD79a_CLEC9a_LAG3_TIM3_VISTA	B cells	Endothelial cells	Ambiguous	Ambiguous	F	NA	398	Endothelial cells
+CD20_CD31_CD38_CD79a_CLEC9a_KIR2DL3_LAG3_TIM3_VISTA	B cells	Endothelial cells	Endothelial cells	Endothelial cells	F	NA	398	Endothelial cells
+CD20_CD38_CD4_CD45_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3	B cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	52	Excluded Leukocytes
+CD20_CD38_CD66b_KIR2DL3_LAG3_PDL1_TCRd	B cells	Tgd	B cells	B cells	F	NA	14	Excluded B cells
+CD20_CD38_CD79a	B cells	B cells	B cells	Plasma cells	F	NA	13414	B cells
+CD20_CD38_CD79a_MHCII	B cells	B cells	B cells	Plasma cells	F	?	3062	B cells
+CD20_CD4_CD45_CD79a_CD8a_panactin	B cells	B cells	NA	NA	T	?	11415	B cells
+CD20_CD45_CD66b_CD79a	B cells	B cells	NA	NA	T	NA	310	B cells
+CD20_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_panactin	B cells	Lymphocytes	NA	NA	T	?	17581	Leukocytes
+CD20_CD45_CD73_CD79a_CD8a_CLEC9a_LAG3_panactin_VISTA	B cells	B cells	NA	NA	T	?	17581	Leukocytes
+CD20_CD45_CD73_CD79a_CLEC9a_LAG3_panactin	B cells	B cells	NA	NA	T	NA	103	Excluded Leukocytes
+CD20_CD45_CD73_CD79a_CLEC9a_panactin	B cells	B cells	NA	NA	T	NA	495	Excluded Leukocytes
+CD20_CD45_CD73_CD79a_CLEC9a_panactin_PD1	B cells	B cells	NA	NA	T	NA	162	Excluded Leukocytes
+CD20_CD45_CD79a	B cells	B cells	NA	NA	T	NA	103	Excluded Leukocytes
+CD20_CD45_CD79a_CD8a_panactin	B cells	B cells	Ambiguous	Ambiguous	F	NA	231	Excluded Leukocytes
+CD20_CD45_CD79a_MHCII_panactin	B cells	B cells	NA	NA	T	NA	12777	B cells
+CD20_CD45_CD79a_panactin	B cells	B cells	NA	NA	T	NA	16	Excluded B cells
+CD20_CD45_CD79a_PDL1_VISTA	B cells	B cells	NA	NA	T	NA	27	Excluded B cells
+CD20_CD68_CD79a	B cells	B cells	NA	NA	T	?	18033	B cells
+CD20_CD68_CD79a_VISTA	B cells	B cells	NA	NA	T	NA	6772	B cells
+CD20_CD79a	B cells	B cells	NA	NA	T	NA	63614	B cells
+CD20_CD79a_CLEC9a_KIR2DL3_LAG3_panactin_panCK_TIM3_VISTA	B cells	B cells	Epithelial cells	Epithelial cells	F	NA	2764	Epithelial cells
+CD20_CD79a_CLEC9a_LAG3_panactin_panCK_TIM3_VISTA	B cells	B cells	NA	NA	T	NA	2764	Epithelial cells
+CD20_CD79a_IDO	B cells	B cells	NA	NA	T	NA	5493	B cells
+CD20_CD79a_IDO_panCK_PDL1	B cells	B cells	NA	NA	T	NA	6770	B cells
+CD20_CD79a_MHCII	B cells	B cells	NA	NA	T	NA	10654	B cells
+CD20_CD79a_MHCII_panactin	B cells	B cells	NA	NA	T	NA	6777	B cells
+CD20_CD79a_TIM3	B cells	B cells	NA	NA	T	NA	150	B cells
+CD31_CD38_CD45_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_VISTA	B cells	NK cells	B cells	B cells	F	NA	854	B cells
+CD31_CD38_CD45_CD56_CD79a_CLEC9a_LAG3_VISTA	B cells	Endothelial cells	B cells	B cell lineage	F	NA	854	B cells
+CD31_CD38_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_PD1_VISTA	B cells	Endothelial cells	B cells	Plasma cells	F	NA	32	B cells
+CD31_CD38_CD79a_KIR2DL3_LAG3_VISTA	B cells	Endothelial cells	B cells	Plasma cells	F	NA	10950	B cells
+CD31_CD38_CD79a_VISTA	B cells	Endothelial cells	B cells	B cell lineage	F	NA	26865	B cells
+CD56_MHCII_panactin_CD79a_CD20_CD11c_CD66b	B cells	B cells	NA	NA	TRUE		7797	B cells
+CD79a	B cells	B cell lineage	NA	NA	TRUE		61459	B cells_Leukocytes
+CD79a	B cells	B cell lineage	NA	NA	TRUE		96242	B cells
+CD79a_CD14	B cells	B cells	B cells	B cell lineage	FALSE		3363	B cells
+CD79a_CD20	B cells	B cells	NA	NA	TRUE		35293	B cells
+CD79a_CD38	B cells	Plasma cells	NA	NA	TRUE		13414	B cells
+CD79a_GZMB_MPO	B cells	B cells	NA	NA	T	NA	2550	B cells
+CD79a_VISTA	B cells	B cell lineage	NA	NA	T	NA	8345	B cells
+CLEC9a_CD11c_CD66b_TCRd	B cells	B cells	NA	NA	TRUE	Based on the clusterr	363	B cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD79a_CD14_CD20_CD73_CAIX_CD11c_LAG3	B cells	Lymphocytes	B cells	B cells	FALSE		495	Excluded Leukocytes
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD79a_CD14_IDO_CD73_CD16_CD38_LAG3_MCT4	B cells	NK cells	B cells	B cells	FALSE		21398	B cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD79a_CD20_CD73_CAIX_CD11c_LAG3	B cells	Lymphocytes	B cells	B cells	FALSE	CD56 is noisy	561	B cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_panactin_CD79a_CD14_CD20_CD4_IDO_CD73_CAIX_CD11c_CD11b_LAG3_PDL1	B cells	Lymphocytes	Ambiguous	Ambiguous	FALSE		301	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_TIM3_CD45_MHCII_panactin_CD79a_CD20_CD4_CD8a_PD1_CD73_CAIX_LAG3_CD103	B cells	Lymphocytes	Ambiguous	Ambiguous	FALSE		231	Excluded Leukocytes
+CLEC9a_VISTA_CD56_TIM3_CD45_CD79a_CD38_LAG3	B cells	Plasma cells	NA	NA	TRUE	T	854	B cells
+CLEC9a_VISTA_CD56_TIM3_CD79a_PD1_CD73_CD11c_CD38_LAG3_MCT4	B cells	mDC	B cells	Plasma cells	FALSE		32	B cells
+KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD79a_CD14_IDO_CD16_CAIX_CD66b_CD38_LAG3_CD103_MCT4_PDL1	B cells	NK cells	B cells	B cells	FALSE		27	Excluded B cells
+MHCII_CD79a_CD11c_CD38	B cells	mDC	B cells	B cell lineage	FALSE	CD11c is noisy	3062	B cells
+MHCII_CD79a_CD20	B cells	B cells	NA	NA	TRUE		10654	B cells
+MHCII_CD79a_CD20_CD11c	B cells	B cells	NA	NA	TRUE		6777	B cells
+MHCII_panactin_CD79a_CD20	B cells	B cells	NA	NA	TRUE		12777	B cells
+TIM3	B cells	B cells	NA	NA	TRUE		150	B cells
+VISTA_CD56_CD79a_CD38_LAG3	B cells	Plasma cells	NA	NA	TRUE		10950	B cells
+VISTA_CD56_TIM3_MHCII_CD79a_CD14_CD20_IDO_CD73_CD11c	B cells	B cells	NA	NA	TRUE		7036	B cells
+VISTA_CD79a	B cells	B cell lineage	NA	NA	TRUE		8345	B cells
+VISTA_CD79a_CD38	B cells	Plasma cells	NA	NA	TRUE		26865	B cells
+VISTA_TIM3_CD45_CD79a_CD73	B cells	B cell lineage	NA	NA	TRUE		103	Excluded Leukocytes
+	B cells	B cells	NA	NA	TRUE		16016	B cells
+CAIX_CD3_CD4_MCT4	CD4	CD4	NA	NA	T	NA	466	CD4
+CD103_CD3_CD4	CD4	CD4 Trm	NA	NA	T	NA	1484	CD4
+CD11c_CD14_CD20_CD3_CD4_CD45_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	CD4	mDC	Ambiguous	Ambiguous	F	NA	296	CD4
+CD11c_CD3_CD4_CD45_CD8a_IDO_MHCII_panactin	CD4	mDC	CD4	CD4	F	?	7321	CD4
+CD16_CD3_CD4	CD4	CD4	NA	NA	T	NA	5131	CD4
+CD20_CD3_CD4_CD45_panactin	CD4	B cells	CD4	CD4	F	?	3441	CD4
+CD3_CD31_CD4	CD4	Endothelial cells	CD4	CD4	F	NA	2737	CD4
+CD3_CD38_CD4	CD4	CD4	NA	NA	T	NA	6767	CD4
+CD3_CD4	CD4	CD4	NA	NA	TRUE		60900	CD4
+CD3_CD4	CD4	CD4	NA	NA	TRUE		13885	CD4
+CD3_CD4_CD103	CD4	CD4 Trm	NA	NA	TRUE		1484	CD4
+CD3_CD4_CD45	CD4	CD4	NA	NA	T	NA	6387	CD4
+CD3_CD4_CD45_CLEC9a_LAG3_panactin_TIM3_VISTA	CD4	CD4	NA	NA	T	NA	489	Excluded CD4
+CD3_CD4_CD45_IDO_MHCII_panactin	CD4	CD4	NA	NA	T	NA	7622	CD4_Excluded CD4
+CD3_CD4_CD45_panactin	CD4	CD4	NA	NA	T	NA	193	Excluded CD4
+CD3_CD4_CD45_panactin_PD1	CD4	PD1+CD27+ CD4 T cells	CD4	CD4	F	NA	13664	CD4
+CD3_CD4_CD45_panactin_TIM3	CD4	CD4	NA	NA	T	NA	13664	CD4
+CD3_CD4_CD45_panactin_VISTA	CD4	CD4	NA	NA	T	NA	193	Excluded CD4
+CD3_CD4_CD68	CD4	Macrophages	CD4	CD4	F	NA	15527	CD4
+CD3_CD4_GZMB	CD4	GZMB+ CD4 T cells	NA	NA	T	NA	2252	CD4
+CD3_CD4_GZMB_MPO	CD4	GZMB+ CD4 T cells	NA	NA	T	NA	2252	CD4
+CD3_CD4_panactin	CD4	CD4	NA	NA	T	NA	13480	CD4
+CD3_CD4_panCK	CD4	CD4	NA	NA	T	NA	1402	CD4
+CD4	CD4	CD4+ Myeloid cells	CD4	CD4	FALSE	P2	590	CD4
+CD4	CD4	CD4+ Myeloid cells	CD4	CD4	F	P2	59930	CD4
+CD4_CD16	CD4	CD4	NA	NA	TRUE		5131	CD4
+CD4_CD38	CD4	CD4	NA	NA	TRUE		6767	CD4
+CD4_CD45	CD4	CD4+ Myeloid cells	CD4	CD4	F	NA	6825	CD4
+CD4_CD45_CLEC9a_LAG3_panactin	CD4	CD4+ Myeloid cells	CD4	CD4	F	NA	50	Excluded CD4
+CD4_CD45_panactin	CD4	CD4+ Myeloid cells	CD4	CD4	F	P2	489	Excluded CD4
+CD4_CD45_panactin_VISTA	CD4	CD4+ Myeloid cells	CD4	CD4	F	NA	490	Excluded CD4
+CD4_IDO_KIR2DL3_TCRd	CD4	Tgd	Ambiguous	Ambiguous	F	NA	159	Excluded CD4
+CD45_CLEC9a_KIR2DL3_panCK	CD4	CD4	Epithelial cells	Epithelial cells	F	NA	1961	CD4
+CD56_CD4_IDO	CD4	Lymphocytes	CD4	CD4	FALSE		218	Excluded CD4
+CLEC9a_CD56_CD4_IDO_TCRd	CD4	Cytotoxic lymphocytes	CD4	CD4	FALSE		72	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD4_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103	CD4	Lymphocytes	CD4	CD4 Trm	FALSE		287	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD3_CD4_PD1_IDO_CD73_CAIX_CD11c_CD38_LAG3_CD103_PDL1	CD4	mDC	CD4	CD4 Trm	FALSE		489	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD3_CD4_PD1_IDO_CD73_CD11c_LAG3_CD103	CD4	mDC	CD4	CD4 Trm	FALSE		296	CD4
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD4_PD1_IDO_CD73_CAIX_CD11c_CD66b_CD38_LAG3_CD103_MCT4	CD4	mDC	CD4	CD4 Trm	FALSE		50	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_TIM3_CD45_panactin_CD14_CD3_CD4_CD73_CAIX_LAG3	CD4	Tgd	CD4	CD4	FALSE		593	Excluded Leukocytes
+CLEC9a_KIR2DL3_VISTA_TIM3_CD45_panactin_CD14_CD3_CD4_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103	CD4	mDC	CD4	CD4 Trm	FALSE		490	Excluded CD4
+CLEC9a_VISTA_CD56_TIM3_CD45_panactin_CD14_CD3_CD4_PD1_IDO_CD11c	CD4	mDC	CD4	CD4	FALSE		193	Excluded CD4
+CLEC9a_VISTA_TIM3_CD45_panactin_CD20_CD3_CD4_PD1_IDO_CD73_CAIX_CD11c_LAG3	CD4	mDC	Ambiguous	Ambiguous	FALSE		162	Excluded Leukocytes
+CLEC9a_VISTA_TIM3_CD45_panactin_CD4_PD1_CD73_LAG3	CD4	CD4 Tdys	CD4	CD4	FALSE		440	Excluded Leukocytes
+MHCII_CD4	CD4	CD4+ Myeloid cells	CD4	CD4	T	NA	9665	CD4
+MHCII_panactin_CD4	CD4	CD4+ Myeloid cells	CD4	CD4	T	NA	3441	CD4
+panactin_CD3_CD4	CD4	CD4	NA	NA	TRUE		13480	CD4
+TIM3_MHCII_CD4_CD11c	CD4	CD4	NA	NA	TRUE		7321	CD4
+TIM3_panactin_CD4	CD4	CD4+ Myeloid cells	CD4	CD4	F	NA	13664	CD4
+VISTA_CD56_TIM3_MHCII_panactin_CD3_CD4_PD1_IDO_CD11c_CD66b	CD4	mDC	CD4	CD4	FALSE		301	Excluded CD4
+	CD4	CD4	NA	NA	TRUE		4989	CD4
+CLEC9a_VISTA_TIM3_CD45_panactin_CD3_CD4_PD1_IDO_CD73_LAG3	CD4 T cells	PD1+CD27+ CD4 T cells	CD4	CD4	F	NA	440	Excluded Leukocytes
+KIR2DL3_CD56_CD4_IDO_TCRd_MCT4	CD4 T cells	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	212	Excluded CD4
+CAIX_CD103_CD11c_CD163_CD20_CD3_CD38_CD56_CD66b_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_PD1_PDL1_TCRd	CD8	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	51	CD8
+CAIX_CD103_CD163_CD20_CD3_CD56_CD66b_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_PD1_PDL1_TCRd	CD8	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	51	CD8
+CD103	CD8	CD8	CD8	CD8 Trm	TRUE	???	12323	CD8
+CD103_CD11b_CD3_CD8a_GZMB_MPO	CD8	Neutrophils	CD8	CD8 Trm	F	NA	3442	CD8
+CD103_CD11c_CD20_CD3_CD4_CD45_CD66b_CD8a_IDO_MHCII_panactin_PDL1_TIM3	CD8	mDC	Ambiguous	Ambiguous	F	NA	2845	CD8
+CD103_CD11c_CD20_CD3_CD4_CD45_CD66b_CD8a_IDO_MHCII_panactin_PDL1_TIM3_VISTA	CD8	mDC	CD8	CD8	F	NA	2869	CD8
+CD103_CD16_CD163_CD206_CD3_CD8a	CD8	M2	CD8	CD8 Trm	F	NA	14347	CD8
+CD103_CD20_CD3_CD45_CD8a	CD8	B cells	CD8	CD8	F	?	11110	CD8
+CD103_CD20_CD3_CD45_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_PDL1_TCRd_TIM3	CD8	Tgd	Ambiguous	Ambiguous	F	NA	131	Excluded CD8
+CD103_CD20_CD3_CD45_CD8a_MHCII_panactin_TIM3	CD8	B cells	CD8	CD8 Trm	F	NA	130	Excluded CD8
+CD103_CD20_CD3_CD45_CD8a_PD1	CD8	CD8	CD8	CD8 Trm	F	NA	500	Excluded CD8
+CD103_CD20_CD3_CD8a	CD8	Lymphocytes	CD8	CD8 Trm	F	NA	11110	CD8
+CD103_CD3_CD45_CD8a_CLEC9a	CD8	CD8 Trm	NA	NA	T	NA	275	CD8
+CD103_CD3_CD45_CD8a_IDO_panactin_PD1	CD8	CD8	CD8	CD8 Trm	F	NA	19338	CD8
+CD103_CD3_CD45_CD8a_panactin	CD8	CD8 Trm	NA	NA	T	NA	19684	CD8_Excluded CD8
+CD103_CD3_CD56_CD66b_CD8a_KIR2DL3_LAG3_panactin_PD1_PDL1_TCRd	CD8	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	?	8	CD8
+CD103_CD3_CD66b_CD8a_KIR2DL3_LAG3_panactin_PD1_PDL1_TCRd	CD8	Tgd	Ambiguous	Ambiguous	F	NA	8	CD8
+CD103_CD3_CD68_CD8a	CD8	CD8 Trm	NA	NA	T	NA	9208	CD8
+CD103_CD3_CD8a	CD8	CD8 Trm	NA	NA	T	NA	20021	CD8
+CD103_CD3_CD8a_GZMB	CD8	GZMB+ CD8 T cells	NA	NA	T	NA	7562	CD8
+CD103_CD3_CD8a_GZMB_panCK_PD1	CD8	GZMB+ CD8 T cells	NA	NA	T	NA	8291	CD8
+CD103_CD3_CD8a_KIR2DL3_PD1_PDL1_TCRd	CD8	Tgd	Ambiguous	Ambiguous	F	NA	8	CD8
+CD103_CD3_CD8a_panCK	CD8	CD8	CD8	CD8 Trm	F	NA	8291	CD8
+CD103_CD45_CD8a	CD8	CD8 Trm	NA	NA	T	NA	131	Excluded CD8
+CD103_CD8a_GZMB	CD8	GZMB+ CD8 T cells	NA	NA	T	NA	7562	CD8
+CD11c_CD20_CD3_CD4_CD45_CD66b_CD8a_IDO_MHCII_panactin_PDL1_TIM3	CD8	mDC	Ambiguous	Ambiguous	F	NA	2869	CD8
+CD11c_CD3_CD8a_TCRd	CD8	mDC	Ambiguous	Ambiguous	F	NA	551	CD8
+CD11c_CD8a_TCRd	CD8	CD8	NA	NA	T	?	551	CD8
+CD163_CD206_CD3_CD38_CD66b_CD79a_CD8a_GZMB_IDO_KIR2DL3_VISTA	CD8	M2	Ambiguous	Ambiguous	F	NA	42	Macrophages
+CD20_CD3_CD45_CD8a_MHCII_panactin	CD8	B cells	CD8	CD8 Trm	F	NA	2519	CD8
+CD20_CD45_CD8a	CD8	B cells	CD8	CD8	F	?	6084	CD8
+CD206_CD8a	CD8	CD8	NA	NA	T	?	12326	CD8
+CD3_CD31_CD8a	CD8	Endothelial cells	CD8	CD8	T	NA	11630	CD8
+CD3_CD38_CD8a	CD8	CD8	NA	NA	T	NA	8822	CD8
+CD3_CD8a	CD8	CD8	NA	NA	T	NA	47893	CD8
+CD3_CD8a_MHCII	CD8	CD8	NA	NA	T	NA	9285	CD8
+CD31_CD8a	CD8	CD8	NA	NA	T	?	11630	CD8
+CD38	CD8	Plasma cells	CD8 T cells	CD8 T cells	FALSE	CD38+ CD8 T cells	8822	CD8
+CD45_CD8a	CD8	CD8	NA	NA	TRUE		275	CD8
+CD56_TIM3_MHCII_CD8a_IDO_CD11c_CD66b	CD8	mDC	CD8	CD8	FALSE		2869	CD8
+CD56_TIM3_MHCII_panactin_CD3_CD8a_CD11c_CD103	CD8	mDC	CD8	CD8 Trm	FALSE		130	Excluded CD8
+CD68_CD8a	CD8	CD8	NA	NA	T	?	11295	CD8
+CD8a	CD8	CD8	NA	NA	TRUE		34758	CD8
+CD8a	CD8	CD8	NA	NA	TRUE		47252	CD8
+CD8a_CD103	CD8	CD8 Trm	NA	NA	TRUE		11610	CD8_Excluded CD8
+CD8a_CD16	CD8	CD8	NA	NA	TRUE		14347	CD8
+CLEC9a_KIR2DL3_CD56_TIM3_CD45_CD8a_IDO_CD103_PDL1	CD8	NK cells	CD8	CD8 Trm	FALSE		131	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD8a_PD1_CD73_CAIX_CD11c_LAG3_CD103	CD8	Lymphocytes	CD8	CD8 Trm	FALSE		330	Excluded CD8
+CLEC9a_VISTA_TIM3_panactin_CD20_CD3_CD8a_CD73_LAG3_CD103	CD8	Lymphocytes	CD8	CD8 Trm	FALSE		4086	CD8
+GZMB	CD8	Cytotoxic cells	CD8	Cytotoxic CD8 T cells	FALSE		7562	CD8
+KIR2DL3_CD56_CD20_CD3_IDO_CAIX_CD11c_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	CD8	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE		51	CD8
+KIR2DL3_CD56_CD3_CD8a_PD1_CD103_MCT4_PDL1	CD8	Lymphocytes	CD8	CD8 Trm	FALSE		8	CD8
+MHCII	CD8	CD8	NA	NA	TRUE	???	9285	CD8
+MHCII_panactin_CD3_CD8a	CD8	CD8	NA	NA	TRUE		2519	CD8
+TIM3_CD45_MHCII_panactin_CD3_CD8a_PD1_CD103	CD8	CD8	CD8	CD8 Trm	FALSE		346	Excluded CD8
+TIM3_panactin_CD3_CD8a_CD103	CD8	CD8 Trm	NA	NA	TRUE		19338	CD8
+VISTA_TIM3_panactin_CD20_CD3_CD8a_PD1_CD73_CD103	CD8	CD8	CD8	CD8 Trm	FALSE		230	Excluded CD8
+	CD8	CD8	NA	NA	TRUE		105924	CD8
+KIR2DL3_CD56_CD20_CD3_CD8a_IDO_CAIX_CD11c_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	CD8 T cells	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	47	CD8
+CAIX	Endothelial cells	Endothelial cells	NA	NA	TRUE		196	Endothelial cells
+CAIX_CD11b_CD31_CD73_GZMB_LAG3_MPO_VISTA	Endothelial cells	Neutrophils	Endothelial cells	Endothelial cells	F	NA	1350	Excluded Endothelial cells
+CAIX_CD14_CD31_CD73	Endothelial cells	Endothelial cells	NA	NA	T	NA	1800	Endothelial cells
+CAIX_CD14_CD31_CD73_LAG3_TIM3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	807	Excluded Endothelial cells
+CAIX_CD16_CD31_CD73_LAG3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	495	Excluded Endothelial cells
+CAIX_CD31	Endothelial cells	Endothelial cells	NA	NA	T	NA	16517	Endothelial cells
+CAIX_CD31_CD38_LAG3	Endothelial cells	Endothelial cells	NA	NA	T	NA	904	Excluded Endothelial cells
+CAIX_CD31_CD45_CD73_CLEC9a_LAG3_TIM3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	96	Excluded Leukocytes
+CAIX_CD31_CD68	Endothelial cells	Endothelial cells	NA	NA	T	NA	1473	Excluded Endothelial cells
+CAIX_CD31_CD68_CD73_LAG3	Endothelial cells	Endothelial cells	NA	NA	T	NA	1157	Excluded Endothelial cells
+CAIX_CD31_CD68_CD73_LAG3_TIM3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	1473	Excluded Endothelial cells
+CAIX_CD31_CD68_CD73_LAG3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	499	Excluded Endothelial cells
+CAIX_CD31_CD73	Endothelial cells	Endothelial cells	NA	NA	T	NA	1497	Excluded Endothelial cells
+CAIX_CD31_CD73_LAG3	Endothelial cells	Endothelial cells	NA	NA	T	NA	5683	Excluded Endothelial cells
+CAIX_CD31_CD73_LAG3_MHCII_panactin_TIM3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	1953	Excluded Endothelial cells
+CAIX_CD31_CD73_LAG3_MHCII_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	1492	Excluded Endothelial cells
+CAIX_CD31_CD73_LAG3_panactin_TIM3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	1232	Excluded Endothelial cells
+CAIX_CD31_CD73_LAG3_panactin_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	1213	Excluded Endothelial cells
+CAIX_CD31_IDO	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	F	NA	471	Endothelial cells
+CAIX_CD31_IDO_LAG3	Endothelial cells	Endothelial cells	NA	NA	T	NA	471	Endothelial cells
+CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		5481	Excluded Endothelial cells
+CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		4867	Excluded Endothelial cells
+CAIX_CD31_panactin	Endothelial cells	Endothelial cells	NA	NA	T	NA	5159	Endothelial cells
+CD11b_CD14_CD31_GZMB_MCT4_MPO_PDL1_TCRd_VISTA	Endothelial cells	Neutrophils	Ambiguous	Ambiguous	F	NA	103	Excluded Monocytes
+CD11b_CD16_CD31_GZMB_KIR2DL3	Endothelial cells	Endothelial cells	Ambiguous	Ambiguous	F	NA	996	Excluded Myeloid cells
+CD11b_CD31_GZMB_MPO	Endothelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	16783	Excluded Myeloid cells_Endothelial cells
+CD11b_CD31_GZMB_MPO_VISTA	Endothelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	7364	Excluded Myeloid cells
+CD11c	Endothelial cells	Endothelial cells	NA	NA	TRUE		834	Endothelial cells
+CD11c_CD31	Endothelial cells	Endothelial cells	NA	NA	T	NA	834	Endothelial cells
+CD14_CD31_CD73	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	F	NA	1800	Endothelial cells
+CD14_CD73_CAIX_CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		1800	Endothelial cells
+CD16	Endothelial cells	Endothelial cells	NA	NA	TRUE		9629	Endothelial cells
+CD16_CD31	Endothelial cells	Endothelial cells	NA	NA	T	NA	9629	Endothelial cells
+CD206_CD31	Endothelial cells	Endothelial cells	NA	NA	T	NA	7489	Endothelial cells
+CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		136957	Endothelial cells
+CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		61283	Endothelial cells_Excluded Endothelial cells
+CD31_CD38	Endothelial cells	Endothelial cells	NA	NA	T	NA	14486	Endothelial cells
+CD31_CD38_CD79a	Endothelial cells	Endothelial cells	NA	NA	T	NA	12426	Endothelial cells
+CD31_CD38_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		904	Excluded Endothelial cells
+CD31_CD45	Endothelial cells	Endothelial cells	Leukocytes	Leukocytes	F	NA	96	Excluded Leukocytes
+CD31_CD68	Endothelial cells	Endothelial cells	NA	NA	F	NA	32481	Endothelial cells
+CD31_CD68_CD73	Endothelial cells	Endothelial cells	NA	NA	T	NA	499	Excluded Endothelial cells
+CD31_CD73	Endothelial cells	Endothelial cells	NA	NA	T	NA	1391	Excluded Endothelial cells
+CD31_CD79a_LAG3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	890	Excluded Endothelial cells
+CD31_GZMB_MPO	Endothelial cells	Endothelial cells	NA	NA	T	NA	9419	Endothelial cells
+CD31_IDO	Endothelial cells	Endothelial cells	NA	NA	T	NA	464	Excluded Endothelial cells
+CD31_IDO_LAG3_VISTA	Endothelial cells	Endothelial cells	NA	NA	T	NA	464	Excluded Endothelial cells
+CD31_IDO_PDL1	Endothelial cells	Endothelial cells	NA	NA	T	NA	4487	Endothelial cells
+CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	T	NA	1172	Excluded Endothelial cells
+CD31_MPO	Endothelial cells	Endothelial cells	NA	NA	T	NA	1350	Excluded Endothelial cells
+CD31_panactin	Endothelial cells	Endothelial cells	NA	NA	T	NA	4537	Endothelial cells
+CD38	Endothelial cells	Plasma cells	Endothelial cells	Endothelial cells	FALSE		14486	Endothelial cells
+CD68_CD73_CAIX_CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		1157	Excluded Endothelial cells
+CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		5683	Excluded Endothelial cells
+CLEC9a_VISTA_CD56_TIM3_CD79a_CD73_CD31_CD38	Endothelial cells	Endothelial cells	NA	NA	TRUE		398	Endothelial cells
+IDO	Endothelial cells	Endothelial cells	NA	NA	TRUE		4487	Endothelial cells
+IDO_CAIX_CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		471	Endothelial cells
+MHCII	Endothelial cells	Endothelial cells	NA	NA	TRUE		23714	Endothelial cells
+panactin	Endothelial cells	Endothelial cells	NA	NA	TRUE		11764	Endothelial cells
+panactin_CAIX_CD31	Endothelial cells	Endothelial cells	NA	NA	TRUE		5159	Endothelial cells
+TIM3_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		2601	Excluded Endothelial cells
+VISTA_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		890	Excluded Endothelial cells
+VISTA_CD56_TIM3_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		1473	Excluded Endothelial cells
+VISTA_CD56_TIM3_MHCII_panactin_CD14_CD73_CAIX_CD11c_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		1953	Excluded Endothelial cells
+VISTA_CD56_TIM3_panactin_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		1232	Excluded Endothelial cells
+VISTA_CD68_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		499	Excluded Endothelial cells
+VISTA_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		1350	Excluded Endothelial cells
+VISTA_IDO_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		464	Excluded Endothelial cells
+VISTA_TIM3_CD14_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		807	Excluded Endothelial cells
+VISTA_TIM3_CD73_CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	NA	NA	TRUE		1213	Excluded Endothelial cells
+	Endothelial cells	Endothelial cells	NA	NA	TRUE		124041	Endothelial cells
+CAIX	Epithelial cells	Epithelial cells	NA	NA	TRUE		32433	Epithelial cells
+CAIX	Epithelial cells	Epithelial cells	NA	NA	TRUE		32433	Epithelial cells
+CAIX_CD103_CD11b_CD11c_CD66b_CD73_CLEC9a_GZMB_MPO_panCK_PD1_TCRd	Epithelial cells	Neutrophils	Epithelial cells	Epithelial cells	F	NA	1333	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD3_CD56_CD66b_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_panCK_TCRd_TIM3	Epithelial cells	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	51	Excluded T cells
+CAIX_CD103_CD11c_CD45_CD56_CD66b_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MHCII_panCK_PDL1_TCRd_TIM3	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	F	NA	188	Excluded CD4
+CAIX_CD103_CD11c_CD45_CD56_CD66b_CLEC9a_KIR2DL3_LAG3_MHCII_panCK_PDL1_TCRd_TIM3	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	F	NA	341	Excluded Leukocytes
+CAIX_CD103_CD11c_CD56_CD66b_CD73_CD79a_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MHCII_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	3137	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD56_CD66b_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_MCT4_MHCII_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	2548	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD56_CD66b_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MHCII_MPO_panCK_TIM3	Epithelial cells	Neutrophils	Epithelial cells	Epithelial cells	F	NA	3153	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD56_CD66b_CLEC9a_KIR2DL3_MCT4_MHCII_panCK_PD1_TCRd	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	F	NA	139	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD56_CD73_CLEC9a_KIR2DL3_LAG3_MCT4_MHCII_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	2587	Excluded Epithelial cells
+CAIX_CD103_CD11c_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_MHCII_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	40395	Epithelial cells
+CAIX_CD103_CD11c_CD56_CLEC9a_KIR2DL3_LAG3_MHCII_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	3911	Excluded Epithelial cells
+CAIX_CD103_CD11c_CLEC9a_KIR2DL3_MCT4_MHCII_panactin_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	5243	Excluded Epithelial cells
+CAIX_CD103_CD11c_CLEC9a_MHCII_panCK_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	5685	Excluded Epithelial cells
+CAIX_CD103_CLEC9a_LAG3_panCK_PDL1	Epithelial cells	Epithelial cells	NA	NA	T	NA	36028	Epithelial cells
+CAIX_CD103_CLEC9a_MHCII_panCK_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	2587	Excluded Epithelial cells
+CAIX_CD11b_CD11c_CD14_CD66b_CD73_GZMB_MCT4_MHCII_MPO_panactin_panCK_PDL1_VISTA	Epithelial cells	Neutrophils	Ambiguous	Ambiguous	F	NA	71	Excluded Monocytes
+CAIX_CD11b_CD68_CD73_CLEC9a_MCT4_MPO_panactin_panCK_PDL1	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	3653	Excluded Myeloid cells
+CAIX_CD11b_CLEC9a_GZMB_LAG3_MCT4_MPO_panCK_PDL1_VISTA	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	3755	Excluded Myeloid cells
+CAIX_CD11c_CD56_CD66b_MHCII_panCK_PD1_TCRd	Epithelial cells	Epithelial cells	NA	NA	T	NA	2779	Excluded Epithelial cells
+CAIX_CD11c_CD56_CD66b_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	494	Excluded Epithelial cells
+CAIX_CD45_CLEC9a_IDO_LAG3_MCT4_MPO_panCK_TIM3	Epithelial cells	Neutrophils	Ambiguous	Ambiguous	F	NA	90	Excluded Leukocytes
+CAIX_CD45_CLEC9a_LAG3_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	373	Excluded Leukocytes
+CAIX_CD56_CD66b_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	22038	Epithelial cells
+CAIX_CD56_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	3724	Epithelial cells
+CAIX_CLEC9a_KIR2DL3_LAG3_MCT4_MPO_panCK_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	15572	Epithelial cells
+CAIX_CLEC9a_KIR2DL3_LAG3_panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	F	NA	153	Epithelial cells
+CAIX_CLEC9a_KIR2DL3_LAG3_panCK_PD1_TCRd	Epithelial cells	Tgd	Epithelial cells	Epithelial cells	F	NA	153	Epithelial cells
+CAIX_CLEC9a_KIR2DL3_LAG3_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	F	NA	36028	Epithelial cells
+CAIX_CLEC9a_MCT4_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	3153	Excluded Epithelial cells
+CAIX_IDO_LAG3_MCT4_MPO_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	18156	Epithelial cells
+CAIX_IDO_LAG3_MCT4_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	F	NA	18156	Epithelial cells
+CAIX_KIR2DL3_LAG3_MCT4_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	F	NA	37008	Epithelial cells
+CAIX_LAG3_MCT4_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	37008	Epithelial cells
+CAIX_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		19190	Epithelial cells
+CAIX_MCT4_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	19190	Epithelial cells
+CAIX_panCK	Epithelial cells	Epithelial cells	NA	NA	F	NA	32927	Epithelial cells_Excluded Epithelial cells
+CD103_CD11c_CD3_CD4_CD45_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MHCII_panactin_PDL1_TIM3_VISTA	Epithelial cells	mDC	Ambiguous	Ambiguous	F	NA	1	Excluded CD8
+CD103_CD11c_CD56_CD66b_CD73_CLEC9a_KIR2DL3_MHCII_panactin_panCK_PD1_TCRd	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	F	NA	1077	Excluded Epithelial cells
+CD103_CD11c_CD66b_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	3656	Excluded Epithelial cells
+CD103_CD11c_CD66b_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	139	Excluded Epithelial cells
+CD103_CD11c_CLEC9a_MHCII_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	749	Excluded Epithelial cells
+CD103_CD11c_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	138	Excluded Epithelial cells
+CD103_CD20_CD3_CD4_CD45_CD8a_IDO_MHCII_panactin_PD1_TIM3	Epithelial cells	Lymphocytes	Ambiguous	Ambiguous	F	?	14	Excluded CD8
+CD103_CD20_CD4_CD45_CD8a_panactin	Epithelial cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	3	Excluded CD8
+CD103_CD20_CD45_CD8a_KIR2DL3_LAG3_panactin_PD1_TIM3	Epithelial cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	8	Excluded CD8
+CD103_CD20_CD45_CD8a_KIR2DL3_LAG3_panactin_TIM3	Epithelial cells	Lymphocytes	Ambiguous	Ambiguous	F	NA	8	Excluded CD8
+CD103_CD20_CD45_CD8a_LAG3_panactin_TIM3	Epithelial cells	B cells	Ambiguous	Ambiguous	F	NA	6	Excluded CD8
+CD103_CD20_CD45_CD8a_panactin	Epithelial cells	B cells	Ambiguous	Ambiguous	F	NA	5	Excluded CD8
+CD11b_CD68_CLEC9a_GZMB_MCT4_MPO_panCK_PDL1_TCRd_VISTA	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	2699	Excluded Myeloid cells
+CD11b_CD68_CLEC9a_GZMB_MCT4_MPO_panCK_PDL1_VISTA	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	F	8980	Excluded Myeloid cells
+CD11b_CD68_GZMB_MPO_panCK	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	8501	Excluded Myeloid cells
+CD11b_CD73_GZMB_MPO_panCK	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	4570	Excluded Epithelial cells
+CD11b_CLEC9a_GZMB_MCT4_MPO_panCK_PDL1	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	1956	Excluded Myeloid cells
+CD11b_GZMB_MPO_panCK	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	F	NA	4583	Excluded Myeloid cells
+CD11b_MPO_panCK	Epithelial cells	Neutrophils	Epithelial cells	Epithelial cells	F	NA	36053	Epithelial cells
+CD11c	Epithelial cells	mDC	Epithelial cells	Epithelial cells	FALSE		7904	Epithelial cells
+CD11c	Epithelial cells	mDC	Epithelial cells	Epithelial cells	FALSE		7904	Epithelial cells
+CD11c_CD38_CD66b_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	5345	Excluded Epithelial cells
+CD11c_CD66b_CD68_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	1211	Excluded Epithelial cells
+CD11c_CD66b_CD73_MCT4_MHCII_panCK_PD1_PDL1	Epithelial cells	Epithelial cells	NA	NA	T	NA	2245	Excluded Epithelial cells
+CD11c_CD66b_MHCII_panactin_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	1077	Excluded Epithelial cells
+CD11c_CD66b_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	15336	Excluded Epithelial cells_Epithelial cells
+CD11c_CD66b_TCRd	Epithelial cells	Epithelial cells	NA	NA	T	NA	755	Excluded Myeloid cells
+CD11c_MHCII_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	50442	Epithelial cells
+CD11c_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	2225	Excluded Epithelial cells
+CD11c_TCRd	Epithelial cells	Epithelial cells	NA	NA	T	NA	755	Excluded Myeloid cells
+CD14_CD73_MCT4_MHCII_panCK_PD1_TIM3	Epithelial cells	Epithelial cells	NA	NA	T	NA	170	Excluded Epithelial cells
+CD14_IDO_panCK_CD11c_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		2276	Excluded Epithelial cells
+CD16	Epithelial cells	Epithelial cells	NA	NA	TRUE		6550	Epithelial cells
+CD16_CD163_CD38_CD4_CD56_CD66b_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Epithelial cells	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	52	Excluded CD4
+CD16_CD66b_MHCII_panCK_PD1_TCRd	Epithelial cells	Epithelial cells	NA	NA	T	NA	770	Excluded Epithelial cells
+CD16_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	6550	Epithelial cells
+CD20_CD4_CD45_panactin	Epithelial cells	B cells	Ambiguous	Ambiguous	F	NA	5	Excluded Leukocytes
+CD31_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	26004	Epithelial cells
+CD38	Epithelial cells	Plasma cells	Epithelial cells	Epithelial cells	FALSE		21223	Epithelial cells
+CD38	Epithelial cells	Plasma cells	Epithelial cells	Epithelial cells	FALSE		77542	Epithelial cells
+CD38_CD4_CD79a_CLEC9a_IDO_KIR2DL3_TCRd	Epithelial cells	Tgd	Ambiguous	Ambiguous	F	NA	33	Excluded CD4
+CD38_CD66b_MHCII_panCK_PD1_TCRd	Epithelial cells	Epithelial cells	NA	NA	T	NA	119	Excluded Epithelial cells
+CD38_CD66b_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	119	Excluded Epithelial cells
+CD38_CD66b_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	2698	Excluded Epithelial cells
+CD38_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	56319	Epithelial cells
+CD4_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_TCRd	Epithelial cells	Tgd	Ambiguous	Ambiguous	F	NA	85	Excluded CD4
+CD45_CLEC9a_KIR2DL3_panCK_TCRd	Epithelial cells	Tgd	Epithelial cells	Epithelial cells	F	NA	241	Excluded CD4
+CD45_CLEC9a_panCK	Epithelial cells	Epithelial cells	Leukocytes	Leukocytes	F	NA	529	Excluded Leukocytes_Excluded CD4
+CD56_CAIX	Epithelial cells	NK cells	Epithelial cells	Epithelial cells	FALSE		3724	Epithelial cells
+CD56_CAIX_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		22038	Epithelial cells
+CD56_MHCII_PD1_CD11c_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		3517	Epithelial cells
+CD56_MHCII_PD1_panCK_CAIX_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		494	Excluded Epithelial cells
+CD56_MHCII_PD1_panCK_CD11c_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		9326	Excluded Epithelial cells
+CD56_MHCII_PD1_panCK_CD11c_CD66b_CD103	Epithelial cells	Epithelial cells	NA	NA	TRUE		2493	Excluded Epithelial cells
+CD56_MHCII_PD1_panCK_CD16_CD11c_CD66b_CD38	Epithelial cells	Epithelial cells	NA	NA	TRUE		5345	Excluded Epithelial cells
+CD56_MHCII_PD1_panCK_CD73_CAIX_CD11c_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		2779	Excluded Epithelial cells
+CD56_panCK_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		749	Excluded Epithelial cells
+CD56_TIM3_CD20_CD8a_PD1_CD103	Epithelial cells	Lymphocytes	Leukocytes	Leukocytes	FALSE		24	Excluded CD8
+CD56_TIM3_CD68_PD1_panCK_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		1211	Excluded Epithelial cells
+CD56_TIM3_MHCII_CD14_PD1_panCK_CD73_CD11c_CD66b_MCT4_PDL1	Epithelial cells	Epithelial cells	NA	NA	TRUE		2245	Excluded Epithelial cells
+CD68_MHCII_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	23416	Epithelial cells
+CD68_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	35619	Epithelial cells
+CD68_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	3680	Excluded Epithelial cells
+CD73	Epithelial cells	Epithelial cells	NA	NA	TRUE		29465	Epithelial cells
+CD73_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		17764	Epithelial cells
+CD73_MCT4_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	2245	Excluded Epithelial cells
+CD73_MCT4_panCK_PDL1	Epithelial cells	Epithelial cells	NA	NA	T	NA	17764	Epithelial cells
+CD73_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	63570	Epithelial cells
+CLEC9a	Epithelial cells	Epithelial cells	NA	NA	TRUE		2764	Epithelial cells
+CLEC9a_CD56_PD1_panCK_CD73_CD103	Epithelial cells	Epithelial cells	NA	NA	TRUE		1333	Excluded Epithelial cells
+CLEC9a_CD56_TIM3_IDO_CAIX_LAG3_MCT4	Epithelial cells	NK cells	Epithelial cells	Epithelial cells	FALSE		18156	Epithelial cells
+CLEC9a_CD56_TIM3_LAG3	Epithelial cells	NK cells	Epithelial cells	Epithelial cells	FALSE		36028	Epithelial cells
+CLEC9a_KIR2DL3_CD56_CD79a_CD4_IDO_CD16_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	FALSE		57	Excluded CD4
+CLEC9a_KIR2DL3_CD56_TIM3_CD14_PD1_panCK_CD73_CAIX_CD11c_CD66b_CD103_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		139	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_IDO_CAIX_LAG3_MCT4	Epithelial cells	NK cells	Epithelial cells	Epithelial cells	FALSE		15572	Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_CD14_IDO_panCK_CD73_CAIX_CD11c_CD66b_LAG3_CD103_MCT4_PDL1	Epithelial cells	Epithelial cells	NA	NA	TRUE		5724	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_CD14_panCK_CD73_CAIX_CD11c_CD66b_LAG3_CD103_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		3153	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_IDO_CD73_CAIX_CD11c_CD66b_LAG3_CD103_MCT4_PDL1	Epithelial cells	mDC	Epithelial cells	Epithelial cells	FALSE		40395	Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_IDO_panCK_CAIX_CD11c_CD66b_LAG3_CD103_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		3911	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_panactin_CD14_IDO_panCK_CD73_CAIX_CD11c_CD66b_LAG3_CD103_MCT4_PDL1	Epithelial cells	Epithelial cells	NA	NA	TRUE		2548	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_panactin_CD14_PD1_panCK_CD11c_CD66b_CD103_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		5243	Excluded Epithelial cells
+CLEC9a_KIR2DL3_CD56_TIM3_MHCII_panactin_CD14_PD1_panCK_CD73_CAIX_CD11c_CD66b_CD103_TCRd_MCT4	Epithelial cells	Cytotoxic lymphocytes	Epithelial cells	Epithelial cells	FALSE	Epithelial cells/TILs	1077	Excluded Epithelial cells
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD14_CD20_CD8a_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103_MCT4	Epithelial cells	Lymphocytes	Leukocytes	Leukocytes	FALSE		10	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD14_CD20_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_CD66b_CD38_LAG3_CD103_MCT4_PDL1	Epithelial cells	Lymphocytes	Leukocytes	Leukocytes	FALSE		1	Excluded CD8
+CLEC9a_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD14_CD3_CD4_CD8a_PD1_IDO_CD73_CAIX_CD11c_LAG3_CD103	Epithelial cells	Lymphocytes	Leukocytes	Leukocytes	FALSE		3	Excluded CD8
+CLEC9a_PD1_LAG3	Epithelial cells	Epithelial cells	NA	NA	TRUE		153	Epithelial cells
+GZMB_IDO_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	15212	Epithelial cells
+GZMB_MPO_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	36053	Epithelial cells
+IDO_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	15844	Excluded Epithelial cells_Epithelial cells
+KIR2DL3_VISTA_CD56_TIM3_panactin_CD14_CD20_CD4_PD1_IDO_CD16_CAIX_CD11c_CD66b_CD38_LAG3_CD103_MCT4	Epithelial cells	Lymphocytes	Leukocytes	Leukocytes	FALSE		5	Excluded B cells
+MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		23447	Epithelial cells
+MCT4_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	23447	Epithelial cells
+MHCII	Epithelial cells	Epithelial cells	NA	NA	TRUE		140460	Epithelial cells
+MHCII_CD11c	Epithelial cells	mDC	Epithelial cells	Epithelial cells	FALSE		105789	Epithelial cells
+MHCII_CD14_PD1_panCK_CD73_CD11c_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		170	Excluded Epithelial cells
+MHCII_IDO_MCT4	Epithelial cells	Epithelial cells	NA	NA	TRUE		4689	Epithelial cells
+MHCII_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	79728	Epithelial cells
+MHCII_panCK_CD66b_CD38	Epithelial cells	Epithelial cells	NA	NA	TRUE		119	Excluded Epithelial cells
+MHCII_panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	5752	Excluded Epithelial cells
+MHCII_PD1_panCK_CD11c	Epithelial cells	Epithelial cells	NA	NA	TRUE		2654	Excluded Epithelial cells
+MHCII_PD1_panCK_CD11c_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		2225	Excluded Epithelial cells
+MPO_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	12283	Epithelial cells
+panCK	Epithelial cells	Epithelial cells	NA	NA	TRUE		305245	Epithelial cells
+panCK	Epithelial cells	Epithelial cells	NA	NA	TRUE		7569	Excluded Epithelial cells
+panCK_CD16_CD66b	Epithelial cells	Epithelial cells	NA	NA	TRUE		770	Excluded Epithelial cells
+panCK_CD66b_CD38	Epithelial cells	Epithelial cells	NA	NA	TRUE		2698	Excluded Epithelial cells
+panCK_CD73	Epithelial cells	Epithelial cells	NA	NA	TRUE		4570	Excluded Epithelial cells
+panCK_PD1	Epithelial cells	Epithelial cells	NA	NA	T	NA	13901	Excluded Epithelial cells
+PD1_panCK	Epithelial cells	Epithelial cells	NA	NA	TRUE		7358	Excluded Epithelial cells
+PD1_panCK_CD11c_CD66b_CD103	Epithelial cells	Epithelial cells	NA	NA	TRUE		3656	Excluded Epithelial cells
+TIM3_IDO_CD66b	Epithelial cells	Granulocytes	Epithelial cells	Epithelial cells	FALSE	Epithelial cells/TILs	15212	Epithelial cells
+TIM3_PD1	Epithelial cells	Epithelial cells	NA	NA	TRUE		39	Excluded CD4
+	Epithelial cells	Epithelial cells	NA	NA	TRUE		144637	Epithelial cells_Excluded Excluded
+	Epithelial cells	Epithelial cells	NA	NA	TRUE		483518	Epithelial cells_Excluded Excluded
+GZMB	Leukocyte	GZMB+ cells	Unassigned	Unassigned	F	NA	9621	Leukocytes
+CAIX	Leukocytes	Leukocytes	NA	NA	TRUE		29123	Leukocytes
+CAIX	Leukocytes	Leukocytes	NA	NA	TRUE		29123	Leukocytes
+CAIX_CD45_MCT4	Leukocytes	Leukocytes	NA	NA	T	NA	90	Excluded Leukocytes
+CD11c	Leukocytes	mDC	Myeloid cells	mDC	FALSE		15718	Leukocytes
+CD11c	Leukocytes	mDC	Myeloid cells	mDC	FALSE		15718	Leukocytes
+CD11c_CD66b	Leukocytes	Leukocytes	Myeloid cells	Myeloid cells	FALSE		496	Leukocytes
+CD16	Leukocytes	Leukocytes	NA	NA	TRUE		47764	Leukocytes
+CD16	Leukocytes	Leukocytes	NA	NA	TRUE		47764	Leukocytes
+CD38	Leukocytes	Plasma cells	Leukocytes	Leukocytes	FALSE		56361	Leukocytes
+CD38	Leukocytes	Plasma cells	Leukocytes	Leukocytes	FALSE		56361	Leukocytes
+CD38_CD45_CD66b_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_PDL1_TCRd	Leukocytes	Tgd	Leukocytes	Leukocytes	F	NA	86	Excluded CD4
+CD38_CD45_CLEC9a	Leukocytes	Plasma cells	Leukocytes	Leukocytes	F	NA	52	Excluded Leukocytes
+CD38_CD45_CLEC9a_IDO_KIR2DL3_LAG3_PDL1_TCRd	Leukocytes	Tgd	Leukocytes	Leukocytes	F	NA	133	Excluded CD4
+CD38_CD45_CLEC9a_KIR2DL3_PDL1_TCRd	Leukocytes	Tgd	Leukocytes	Leukocytes	F	NA	357	Excluded CD4
+CD45	Leukocytes	Leukocytes	NA	NA	TRUE		170	Excluded Leukocytes
+CD45	Leukocytes	Leukocytes	NA	NA	TRUE		2428	CD4_Excluded CD4_Excluded Leukocytes
+CD45_CD66b_IDO_KIR2DL3_PDL1_TCRd	Leukocytes	Tgd	Leukocytes	Leukocytes	F	NA	151	Excluded CD4
+CD45_CLEC9a	Leukocytes	Leukocytes	NA	NA	T	NA	2338	CD4_Excluded Leukocytes
+CD45_CLEC9a_panCK	Leukocytes	Leukocytes	NA	NA	T	NA	7236	Leukocytes
+CD45_CLEC9a_PDL1_TCRd	Leukocytes	Tgd	Leukocytes	Leukocytes	F	NA	297	Excluded CD4
+CD45_PDL1	Leukocytes	Leukocytes	NA	NA	T	NA	219	Excluded CD4
+CD56	Leukocytes	NK cells	NA	NA	T	NA	30587	Leukocytes
+CD56_CD45_IDO_CD38_MCT4_PDL1	Leukocytes	NK cells	NA	NA	TRUE		133	Excluded CD4
+CD56_CLEC9a_KIR2DL3_panactin_TIM3	Leukocytes	NK cells	NA	NA	T	NA	8914	Leukocytes
+CD56_CLEC9a_panactin_TIM3	Leukocytes	NK cells	NA	NA	T	NA	8914	Leukocytes
+CD73	Leukocytes	Leukocytes	Unassigned	Unassigned	F	NA	14710	Leukocytes
+CD73_MCT4	Leukocytes	Leukocytes	NA	NA	TRUE		1362	Leukocytes
+CLEC9a	Leukocytes	Leukocytes	NA	NA	TRUE		3274	Leukocytes
+CLEC9a	Leukocytes	Leukocytes	NA	NA	TRUE		3274	Leukocytes
+CLEC9a_CD45	Leukocytes	Leukocytes	NA	NA	TRUE		373	Excluded Leukocytes
+CLEC9a_CD56_panactin	Leukocytes	NK cells	NA	NA	TRUE		8914	Leukocytes
+CLEC9a_GZMB	Leukocytes	GZMB+ cells	Leukocytes	NA	F	NA	1190	Leukocytes
+CLEC9a_GZMB_CD73	Leukocytes	Cytotoxic cells	Leukocytes	Leukocytes	FALSE		1190	Leukocytes
+CLEC9a_GZMB_CD73	Leukocytes	GZMB+ cells	Unassigned	Unassigned	F	NA	1097	Leukocytes
+CLEC9a_KIR2DL3_CD56_TIM3_CD45	Leukocytes	NK cells	NA	NA	TRUE		241	Excluded CD4
+CLEC9a_KIR2DL3_CD56_TIM3_CD45_IDO_CAIX_CD11c_LAG3_MCT4	Leukocytes	mDC	Myeloid cells	mDC	FALSE		90	Excluded Leukocytes
+CLEC9a_KIR2DL3_CD56_TIM3_CD45_MHCII_CAIX_CD11c_CD66b_LAG3_CD103_MCT4	Leukocytes	mDC	Myeloid cells	mDC	FALSE		341	Excluded Leukocytes
+CLEC9a_PD1	Leukocytes	Leukocytes	Unassigned	Unassigned	F	NA	116	Leukocytes
+CLEC9a_TIM3_CD45	Leukocytes	Leukocytes	NA	NA	TRUE		377	Excluded Leukocytes
+CLEC9a_TIM3_CD45_CD38	Leukocytes	Plasma cells	Leukocytes	Leukocytes	FALSE		52	Excluded Leukocytes
+CLEC9a_VISTA_TIM3_CD45_CAIX	Leukocytes	Leukocytes	NA	NA	TRUE		96	Excluded Leukocytes
+CLEC9a_VISTA_TIM3_CD73	Leukocytes	Leukocytes	NA	NA	TRUE		17581	Leukocytes
+GZMB	Leukocytes	GZMB+ cells	Unassigned	Unassigned	F	NA	10309	Leukocytes
+GZMB	Leukocytes	Cytotoxic cells	Unassigned	Unassigned	F		10309	Leukocytes
+IDO	Leukocytes	Leukocytes	Unassigned	Unassigned	F		20054	Leukocytes
+IDO	Leukocytes	Leukocytes	Unassigned	Unassigned	F		10916	Leukocytes
+IDO_PDL1	Leukocytes	Leukocytes	Unassigned	Unassigned	F	NA	5964	Leukocytes
+KIR2DL3_CD45_IDO_CD38_TCRd_MCT4_PDL1	Leukocytes	Tgd	Leukocytes	Leukocytes	FALSE	"Note, No CD3"	86	Excluded CD4
+KIR2DL3_CD45_PDL1	Leukocytes	Leukocytes	NA	NA	TRUE		357	Excluded CD4
+KIR2DL3_CD56_CD45_IDO_CD16_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Leukocytes	Cytotoxic lymphocytes	Leukocytes	Leukocytes	TRUE		151	Excluded CD4
+MHCII	Leukocytes	Leukocytes	Unassigned	Unassigned	F	NA	27213	Leukocytes
+MPO	Leukocytes	Neutrophils	Unassigned	Unassigned	F	?	25311	Leukocytes
+PD1	Leukocytes	Leukocytes	NA	NA	TRUE		116	Leukocytes
+TCRd	Leukocytes	Tgd	Unassigned	Unassigned	FALSE	"Note, No CD3"	366	Leukocytes
+TCRd	Leukocytes	Tgd	Unassigned	Unassigned	FALSE	"Note, No CD3"	366	Leukocytes
+	Leukocytes	Leukocytes	Unassigned	Unassigned	TRUE	Most likely cell	650909	Leukocytes
+	Leukocytes	Leukocytes	Unassigned	Unassigned	TRUE	Most likely cell	854561	Leukocytes
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD3_CD31_CD38_CD4_CD45_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panactin_panCK_PD1_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	173	Excluded Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD3_CD31_CD4_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	1922	Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD3_CD38_CD4_CD45_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panactin_panCK_PD1_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	79	Excluded Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD31_CD38_CD4_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	1922	Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD31_CD56_CD66b_CD68_CD73_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panactin_panCK_PD1_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	94	Excluded Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD31_CD56_CD66b_CD68_CD73_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	Ambiguous	Ambiguous	F	NA	93	Excluded Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD31_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	258	Macrophages
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD31_CD38_CD4_CD45_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panactin_panCK_PD1_PDL1_TCRd_TIM3_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	65	Excluded Monocytes
+CAIX_CD103_CD11b_CD11c_CD14_CD16_CD38_CD45_CD56_CD66b_CD68_CD73_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	65	Excluded Monocytes
+CAIX_CD103_CD11b_CD11c_CD16_CD163_CD20_CD206_CD3_CD31_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	1117	Macrophages
+CAIX_CD103_CD11b_CD11c_CD16_CD163_CD20_CD206_CD31_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	1117	Macrophages
+CAIX_CD103_CD11b_CD11c_CD163_CD20_CD206_CD3_CD31_CD56_CD66b_CD68_CD73_CD8a_CLEC9a_GZMB_IDO_LAG3_panCK_TCRd_VISTA	Macrophages	M2	NA	NA	T	NA	582	Macrophages
+CAIX_CD103_CD11b_CD11c_CD163_CD20_CD206_CD31_CD56_CD66b_CD68_CD73_CD8a_CLEC9a_GZMB_IDO_LAG3_MPO_panCK_TCRd_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	582	Macrophages
+CAIX_CD103_CD11b_CD14_CD16_CD163_CD31_CD38_CD45_CD56_CD66b_CD68_CD73_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	65	Excluded Monocytes
+CAIX_CD103_CD11b_CD38_CD45_CD56_CD68_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	4179	Excluded Myeloid cells
+CAIX_CD103_CD14_CD16_CD163_CD38_CD56_CD66b_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_PD1_PDL1_TCRd_TIM3	Macrophages	Cytotoxic lymphocytes	Macrophages	Macrophages	F	NA	41	Excluded Macrophages
+CAIX_CD11b_CD68_CD73_MCT4_MPO_panactin	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	1362	Leukocytes
+CAIX_CD16_CD163_CD206_CD68_CD73_MCT4	Macrophages	M2	NA	NA	T	NA	1708	Macrophages
+CAIX_CD16_CD163_CD206_CD68_MCT4	Macrophages	M2	NA	NA	T	NA	1708	Macrophages
+CAIX_CD16_CD163_CD3_CD38_CD56_CD66b_CD73_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Macrophages	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	88	Excluded CD4
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panCK_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1272	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MHCII_MPO_panCK_PD1_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	204	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_CD8a_CLEC9a_IDO_KIR2DL3_MCT4_MHCII_MPO_panCK_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1157	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_CD8a_KIR2DL3_MCT4_MHCII_MPO_panCK_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1524	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_CD8a_KIR2DL3_MCT4_MHCII_MPO_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1637	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1221	Excluded Macrophages
+CD103_CD11b_CD11c_CD14_CD16_CD163_CD206_CD38_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_MPO_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1536	Excluded Macrophages
+CD103_CD11b_CD11c_CD16_CD163_CD206_CD31_CD38_CD4_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	959	Excluded Macrophages
+CD103_CD11b_CD11c_CD16_CD163_CD206_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	2148	Excluded Macrophages
+CD103_CD11b_CD14_CD16_CD163_CD206_CD31_CD4_CD56_CD68_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	868	Excluded Macrophages
+CD103_CD11b_CD14_CD16_CD163_CD206_CD38_CD56_CD66b_CD68_CD73_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panactin_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	NA	NA	T	NA	648	Excluded Macrophages
+CD103_CD11b_CD45_CD68_CLEC9a_GZMB_KIR2DL3_MCT4_MPO_panactin_panCK_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	3329	Excluded Myeloid cells
+CD103_CD11b_CD68_CD73_CLEC9a_GZMB_KIR2DL3_MCT4_MPO_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	3911	Excluded Myeloid cells
+CD103_CD11c_CD14_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1826	Excluded Macrophages
+CD103_CD14_CD16_CD163_CD20_CD206_CD3_CD45_CD66b_CD68_CD8a_LAG3_MHCII_panactin_PD1_TCRd_TIM3	Macrophages	M2	Ambiguous	Ambiguous	F	NA	124	Excluded CD8
+CD103_CD16_CD163_CD20_CD206_CD38_CD66b_CD68_KIR2DL3_MHCII_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	2746	Excluded Macrophages
+CD103_CD16_CD163_CD20_CD206_CD68_KIR2DL3_MHCII_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1902	Excluded Macrophages
+CD103_CD16_CD163_CD206_CD66b_CD68_KIR2DL3_PD1_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1272	Excluded Macrophages
+CD103_CD16_CD163_CD206_CD68_KIR2DL3_MHCII_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1937	Excluded Macrophages
+CD103_CD16_CD163_CD206_CD68_KIR2DL3_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	4374	Excluded Macrophages
+CD11b_CD11c_CD14_CD16_CD163_CD206_CD56_CD66b_CD68_KIR2DL3_MCT4_MHCII_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	2383	Excluded Macrophages
+CD11b_CD11c_CD14_CD16_CD163_CD206_CD66b_CD68_KIR2DL3_MHCII_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	1890	Macrophages
+CD11b_CD11c_CD14_CD16_CD163_CD206_CD68_MHCII_TIM3	Macrophages	M2	NA	NA	T	NA	16393	Macrophages
+CD11b_CD14_CD16_CD163_CD206_CD4_CD56_CD68_KIR2DL3_MCT4_MHCII_MPO_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	3139	Excluded Macrophages
+CD11b_CD14_CD16_CD163_CD206_CD4_CD66b_CD68_KIR2DL3_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	418	Excluded Macrophages
+CD11b_CD14_CD16_CD163_CD206_CD68_KIR2DL3_MCT4_MPO_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	648	Excluded Macrophages
+CD11b_CD14_CD16_CD163_CD68_MPO_VISTA	Macrophages	CD163+ Macrophages	NA	NA	T	NA	14800	Macrophages
+CD11b_CD14_CD16_CD68_GZMB_MCT4_MPO_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	70	Excluded Monocytes
+CD11b_CD14_CD163_CD206_CD68_CD73_MCT4_MPO_panCK_PDL1	Macrophages	M2	NA	NA	T	NA	2435	Macrophages
+CD11b_CD14_CD163_CD206_CD68_MCT4_MPO_panCK_PDL1	Macrophages	M2	NA	NA	T	NA	2435	Macrophages
+CD11b_CD16_CD163_CD206_CD68_GZMB_MPO	Macrophages	M2	NA	NA	T	NA	29369	Macrophages
+CD11b_CD16_CD163_CD206_CD73_MCT4_MHCII_panactin_panCK_PD1_PDL1	Macrophages	M2	NA	NA	T	NA	1662	Macrophages
+CD11b_CD16_CD163_CD206_CD73_MCT4_MHCII_panCK_PDL1	Macrophages	M2	NA	NA	T	NA	1662	Macrophages
+CD11b_CD16_CD163_CD38_CD56_CD66b_IDO_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	50	Excluded Monocytes
+CD11b_CD163_CD206_CD68_GZMB_MPO	Macrophages	M2	NA	NA	T	NA	29369	Macrophages
+CD11b_CD45_CD68_CLEC9a_GZMB_MCT4_MPO_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	295	Excluded Myeloid cells
+CD11b_CD68_CD73_CLEC9a_GZMB_KIR2DL3_MCT4_MPO_PDL1_TCRd_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	1696	Excluded Myeloid cells
+CD11b_CD68_CD73_CLEC9a_MPO_PDL1	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	291	Myeloid cells
+CD11b_CD68_GZMB_MPO	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	4789	Excluded Myeloid cells_Myeloid cells
+CD11b_CD68_MPO	Macrophages	Neutrophils	Myeloid cells	Neutrophils	F	NA	3679	Excluded Myeloid cells
+CD11c_CD14_CD16_CD163_CD206_CD66b_CD68_KIR2DL3_MHCII_TCRd	Macrophages	M2	NA	NA	T	NA	1890	Macrophages
+CD11c_CD14_CD16_CD163_CD206_CD68_MHCII	Macrophages	M2	NA	NA	T	NA	16393	Macrophages
+CD11c_CD66b_CD68_TCRd	Macrophages	Macrophages	NA	NA	T	NA	496	Leukocytes
+CD14_CD16_CD163_CD206_CD38_CD56_CD66b_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Macrophages	Cytotoxic lymphocytes	Macrophages	Macrophages	F	NA	66	Excluded Macrophages
+CD14_CD16_CD163_CD206_CD4_CD68_panactin	Macrophages	M2	NA	NA	T	NA	54252	Macrophages
+CD14_CD16_CD163_CD206_CD45_CD68_CLEC9a_KIR2DL3_PDL1_TCRd_TIM3	Macrophages	M2	NA	NA	T	NA	534	Macrophages
+CD14_CD16_CD163_CD206_CD68_KIR2DL3_PDL1	Macrophages	M2	NA	NA	T	NA	36783	Macrophages
+CD14_CD16_CD163_CD206_CD68_KIR2DL3_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	2893	Excluded Macrophages
+CD14_CD16_CD163_CD206_CD68_PDL1	Macrophages	M2	NA	NA	T	NA	36783	Macrophages
+CD14_CD16_CD163_CD206_KIR2DL3_panactin_TIM3	Macrophages	M2	NA	NA	T	NA	54252	Macrophages
+CD14_CD16_CD163_CD206_MCT4_PDL1	Macrophages	M2	NA	NA	T	NA	2750	Macrophages
+CD14_CD16_CD163_CD38_CD56_CD66b_IDO_KIR2DL3_LAG3_MCT4_MPO_PDL1_TCRd	Macrophages	Cytotoxic lymphocytes	Ambiguous	Ambiguous	F	NA	41	Excluded Macrophages
+CD14_CD16_CD163_CD38_CD66b_KIR2DL3_MPO_PDL1_TCRd	Macrophages	Neutrophils	Ambiguous	Ambiguous	F	NA	66	Excluded Macrophages
+CD16	Macrophages	Macrophages	Macrophages	Macrophages	FALSE		44231	Macrophages
+CD16_CAIX_MCT4	Macrophages	Macrophages	NA	NA	TRUE		1708	Macrophages
+CD16_CD163_CD206	Macrophages	M2	NA	NA	T	NA	44231	Macrophages
+CD16_CD163_CD206_CD31	Macrophages	Endothelial cells	Macrophages	M2	F	NA	8282	Macrophages
+CD16_CD163_CD206_CD31_CD68_CD79a_VISTA	Macrophages	M2	NA	NA	T	NA	8282	Macrophages
+CD16_CD163_CD206_CD38	Macrophages	M2	NA	NA	T	NA	14462	Macrophages
+CD16_CD163_CD206_CD4_CD68_KIR2DL3_MHCII_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	1956	Excluded Macrophages
+CD16_CD163_CD206_CD66b_CD68_TCRd	Macrophages	M2	NA	NA	T	NA	959	Excluded Macrophages
+CD16_CD163_CD206_CD68	Macrophages	M2	NA	NA	T	NA	189157	Macrophages_Excluded Macrophages
+CD16_CD163_CD206_CD68_KIR2DL3_PDL1	Macrophages	M2	NA	NA	T	NA	2811	Excluded Macrophages
+CD16_CD163_CD206_CD68_MHCII	Macrophages	M2	NA	NA	T	NA	2383	Excluded Macrophages
+CD16_CD163_CD206_CD68_PDL1_TCRd	Macrophages	M2	NA	NA	T	NA	2681	Excluded Macrophages
+CD16_CD163_CD206_CD68_TCRd	Macrophages	M2	NA	NA	T	NA	5349	Excluded Macrophages
+CD163	Macrophages	CD163+ Macrophages	NA	NA	TRUE	NA	632	Macrophages
+CD163	Macrophages	CD163+ Macrophages	NA	NA	T	NA	17356	Macrophages
+CD163_CD14_CD16_MCT4	Macrophages	CD163+ Macrophages	NA	NA	T	NA	2750	Macrophages
+CD163_CD16	Macrophages	Macrophages	Macrophages	CD163+ Macrophages	FALSE		55899	Macrophages
+CD163_CD206	Macrophages	M2	NA	NA	T	NA	83247	Macrophages
+CD163_CD206_CD3	Macrophages	M2	NA	NA	T	NA	16724	Macrophages
+CD163_CD206_CD38	Macrophages	M2	NA	NA	T	NA	14462	Macrophages
+CD163_CD206_CD38_CD56_CD66b_CD79a_CD8a_GZMB_IDO_KIR2DL3_LAG3_VISTA	Macrophages	Lymphocytes	Ambiguous	Ambiguous	F	NA	42	Macrophages
+CD163_CD206_CD38_CD56_CD66b_CD79a_CD8a_GZMB_IDO_KIR2DL3_VISTA	Macrophages	Lymphocytes	Ambiguous	Ambiguous	F	NA	42	Macrophages
+CD163_CD206_CD4	Macrophages	M2	NA	NA	T	NA	16724	Macrophages
+CD163_CD206_CD56	Macrophages	M2	NA	NA	T	NA	1855	Macrophages
+CD163_CD206_CD68	Macrophages	M2	NA	NA	T	NA	46375	Macrophages
+CD163_CD206_CD68_GZMB	Macrophages	M2	NA	NA	T	NA	2990	Macrophages
+CD163_CD38_CD45_CD56_CD66b_IDO_KIR2DL3_LAG3_MCT4_PDL1_TCRd	Macrophages	Cytotoxic lymphocytes	Leukocytes	NK cells	F	NA	151	Excluded CD4
+CD163_CD56_CD14_CD68_CD73_CD16_MCT4_PDL1	Macrophages	CD163+ Macrophages	NA	NA	T	NA	2435	Macrophages
+CD163_CD56_CD68_CD206_CD16	Macrophages	M2	NA	NA	TRUE		1902	Excluded Macrophages
+CD163_CD56_CD68_CD206_CD16_MCT4	Macrophages	M2	NA	NA	TRUE		1937	Excluded Macrophages
+CD163_CD56_CD68_PD1_CD16	Macrophages	CD163+ Macrophages	NA	NA	T	NA	2746	Excluded Macrophages
+CD163_CD56_TIM3_CD14_CD206	Macrophages	M2	NA	NA	TRUE		1855	Macrophages
+CD163_CD56_TIM3_MHCII_CD14_CD68_CD16_CD11c_CD66b	Macrophages	CD163+ Macrophages	NA	NA	T	NA	1890	Macrophages
+CD163_CD56_TIM3_MHCII_CD14_CD68_CD206_CD16_CD11c_CD66b_MCT4	Macrophages	M2	NA	NA	TRUE		2383	Excluded Macrophages
+CD163_CD68_CD16	Macrophages	CD163+ Macrophages	NA	NA	T	NA	11898	Excluded Macrophages
+CD163_CD68_CD206_CD16	Macrophages	M2	NA	NA	TRUE		10049	Excluded Macrophages_Macrophages
+CD163_CLEC9a_KIR2DL3_CD56_TIM3_CD14_CD68_CD20_CD206_PD1_IDO_CD16_CD11c_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		1272	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_CD56_TIM3_CD45_CD14_CD206_CD16_MCT4	Macrophages	M2	NA	NA	TRUE		534	Macrophages
+CD163_CLEC9a_KIR2DL3_CD56_TIM3_MHCII_CD14_CD68_CD20_CD206_PD1_IDO_CD73_CD16_CAIX_CD11c_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		204	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_CD56_TIM3_panactin_CD14_PD1_IDO_CD16_CAIX_CD66b_CD38_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		41	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_CD14_CD73_CD16_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		648	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD14_IDO_CD73_CD16_CAIX_CD11c_CD66b_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		1922	Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_MHCII_panactin_CD79a_CD14_MPO_CD68_CD20_CD3_CD206_CD4_CD8a_PD1_IDO_GZMB_CD73_CD16_CAIX_CD11c_CD11b_CD66b_CD38_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	M2	Ambiguous	Ambiguous	FALSE		79	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_CD45_panactin_CD14_MPO_CD68_CD4_IDO_GZMB_CD73_CD16_CAIX_CD11c_CD11b_CD66b_CD38_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	Neutrophils	Ambiguous	Ambiguous	FALSE		65	Excluded Monocytes
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD14_CD73_CAIX_LAG3	Macrophages	Macrophages	Macrophages	CD163+ Macrophages	F	NA	1913	Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD14_MPO_CD68_CD20_CD206_PD1_IDO_GZMB_panCK_CD73_CD16_CAIX_CD11c_CD31_CD66b_CD38_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	M2	Ambiguous	Ambiguous	FALSE		94	Excluded Macrophages
+CD163_CLEC9a_KIR2DL3_VISTA_CD56_TIM3_panactin_CD14_CD4_GZMB_CD73_CD16_CD11c_CD66b_LAG3_CD103_TCRd_MCT4	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		258	Macrophages
+CD163_CLEC9a_VISTA_CD56_TIM3_CD206_IDO_CD73_CD16_CAIX_CD11c_CD66b_LAG3_CD103_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	M2	F	NA	1117	Macrophages
+CD163_KIR2DL3_CD56_CD14_CD16_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		66	Excluded Macrophages
+CD163_KIR2DL3_CD56_CD14_CD68_CD20_CD206_PD1_IDO_CD16_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		1524	Excluded Macrophages
+CD163_KIR2DL3_CD56_CD14_CD68_CD20_PD1_CD16_CD11c_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE		1157	Excluded Macrophages
+CD163_KIR2DL3_CD56_CD14_CD68_CD206_PD1_CD16_CD11c_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		1637	Excluded Macrophages
+CD163_KIR2DL3_CD56_CD14_IDO_CD16_CD11b_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	CD163+ Macrophages	FALSE		50	Excluded Monocytes
+CD163_KIR2DL3_CD56_CD68_CD206_PD1_CD16_CD11c_CD66b_CD38_CD103_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	M2	F	NA	1221	Excluded Macrophages
+CD163_KIR2DL3_CD56_CD68_CD206_PD1_CD16_CD66b_CD38_CD103_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		1826	Excluded Macrophages
+CD163_KIR2DL3_CD56_TIM3_CD14_CD206_CD4_CD16_TCRd_MCT4_PDL1	Macrophages	Cytotoxic lymphocytes	Macrophages	M2	F	NA	3139	Excluded Macrophages
+CD163_KIR2DL3_CD56_TIM3_CD14_CD68_CD206_CD16_CD11c_CD66b_CD103_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		3684	Excluded Macrophages
+CD163_KIR2DL3_CD56_TIM3_CD14_CD68_CD206_CD16_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		868	Excluded Macrophages
+CD163_KIR2DL3_CD56_TIM3_CD68_CD206_CD16	Macrophages	M2	NA	NA	TRUE		1956	Excluded Macrophages
+CD163_KIR2DL3_CD56_TIM3_MHCII_CD14_CD68_CD206_CD4_CD16_CD11c_CD66b_CD103_TCRd_MCT4_PDL1	Macrophages	M2	NA	NA	TRUE		959	Excluded Macrophages
+CD163_KIR2DL3_VISTA_CD56_TIM3_MHCII_panactin_CD79a_CD206_IDO_CD16_CD66b_CD38_LAG3	Macrophages	NK cells	Ambiguous	Ambiguous	FALSE		42	Macrophages
+CD163_TIM3_CD14_CD16	Macrophages	CD163+ Macrophages	NA	NA	T	NA	54252	Macrophages
+CD163_TIM3_CD16	Macrophages	Macrophages	Macrophages	CD163+ Macrophages	FALSE		36783	Macrophages
+CD163_TIM3_MHCII_CD14_CD206_CD73_CD16_CD11c_MCT4	Macrophages	M2	NA	NA	TRUE		1662	Macrophages
+CD206	Macrophages	CD206+ Macrophages	Unassigned	Unassigned	F	NA	15748	Leukocytes
+CD206	Macrophages	TAM	NA	NA	TRUE		43093	Macrophages
+CD206_CD16	Macrophages	Macrophages	Macrophages	TAM	FALSE		34996	Macrophages
+CD206_CD68	Macrophages	CD206+ Macrophages	NA	NA	T	NA	9129	Macrophages
+CD206_CD73	Macrophages	CD206+ Macrophages	NA	NA	T	NA	2453	Macrophages
+CD206_CD73	Macrophages	TAM	NA	NA	TRUE		2453	Macrophages
+CD38	Macrophages	Plasma cells	Macrophages	Macrophages	FALSE		14462	Macrophages
+CD56_TIM3_MHCII_CD16_CD11c	Macrophages	mDC	Macrophages	Macrophages	FALSE	CD11c and CD56 alone are noisy	16393	Macrophages
+CD68	Macrophages	Macrophages	NA	NA	TRUE		65994	Leukocytes
+CD68	Macrophages	Macrophages	NA	NA	TRUE		57133	Macrophages_Epithelial cells
+CD68_CD16	Macrophages	Macrophages	NA	NA	TRUE		78947	Macrophages_Excluded Macrophages
+CLEC9a_VISTA_CD56_TIM3_CD68_IDO_CD73_CAIX_CD11c_CD31_CD66b_LAG3_CD103_TCRd	Macrophages	Endothelial cells	Macrophages	Macrophages	FALSE		582	Macrophages
+GZMB	Macrophages	Cytotoxic cells	Macrophages	Macrophages	FALSE		2990	Macrophages
+KIR2DL3_TIM3_CD14_CD206_CD4_CD16	Macrophages	TAM	NA	NA	TRUE		418	Excluded Macrophages
+	Macrophages	Macrophages	NA	NA	TRUE		88683	Macrophages
+CD11b_CD14	Monocytes	Monocytes	NA	NA	T	NA	27	Monocytes
+CD11b_CD14_GZMB_MCT4_MPO_PDL1_TCRd_VISTA	Monocytes	Neutrophils	Myeloid cells	Neutrophils	F	F	65	Excluded Monocytes
+CD11b_CD14_GZMB_MPO	Monocytes	Neutrophils	Myeloid cells	Neutrophils	F	NA	26	Monocytes
+CD11b_CD14_GZMB_MPO_VISTA	Monocytes	Neutrophils	Myeloid cells	Neutrophils	F	NA	26	Monocytes
+CD11b_CD14_MPO	Monocytes	Neutrophils	Myeloid cells	Neutrophils	F	NA	119	Excluded Monocytes
+CD11b_CD14_MPO_VISTA	Monocytes	Neutrophils	Myeloid cells	Neutrophils	F	NA	119	Excluded Monocytes
+CD14	Monocytes	Monocytes	NA	NA	TRUE		124	Excluded Monocytes
+CD14	Monocytes	Monocytes	NA	NA	TRUE		36568	Macrophages_Epithelial cells_Leukocytes_Excluded Monocytes_Monocytes
+CD14_CD16_CD38_CD66b_KIR2DL3_MCT4_MPO_PDL1_TCRd	Monocytes	Neutrophils	Ambiguous	Ambiguous	F	NA	64	Excluded Monocytes
+CD14_MPO	Monocytes	Monocytes	NA	NA	T	NA	3731	Leukocytes
+CD14_TCRd	Monocytes	Monocytes	NA	NA	T	NA	83	Excluded Monocytes
+CD56_TIM3_panactin_CD14_CD3_CD73_CAIX_CD66b_LAG3_TCRd_MCT4	Monocytes	Cytotoxic lymphocytes	T cells	T cells	FALSE	Based on cluster	32	Excluded T cells
+CLEC9a_KIR2DL3_CD56_TIM3_CD14_CD3_IDO_CD73_CD16_CAIX_CD66b_CD38_LAG3_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE		88	Excluded CD4
+CLEC9a_KIR2DL3_CD56_TIM3_CD45_CD14_IDO_CD73_CAIX_CD11c_CD66b_LAG3_CD103_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE		188	Excluded CD4
+CLEC9a_KIR2DL3_VISTA_CD56_CD14_MPO_GZMB_CD11b_CD103_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Myeloid cells	Neutrophils	FALSE		3329	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_CD56_CD14_MPO_GZMB_CD73_CD16_CD11b_CD38_LAG3_CD103_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Myeloid cells	Neutrophils	FALSE		4179	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_CD56_CD14_MPO_GZMB_CD73_CD16_CD38_LAG3_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Myeloid cells	Neutrophils	FALSE		65	Excluded Monocytes
+KIR2DL3_CD14_CD16_CD66b_CD38_TCRd_MCT4_PDL1	Monocytes	Cytotoxic lymphocytes	Myeloid cells	Neutrophils	FALSE		64	Excluded Monocytes
+TIM3_CD14_CD73_CAIX_MCT4	Monocytes	Monocytes	NA	NA	TRUE		37008	Epithelial cells
+VISTA_CD14_CD11b	Monocytes	Monocytes	NA	NA	TRUE		145	Monocytes_Excluded Monocytes
+VISTA_CD14_CD11b_MCT4	Monocytes	Monocytes	NA	NA	TRUE		103	Excluded Monocytes
+VISTA_TIM3_CD14_MPO_CD16_CD11b_MCT4_PDL1	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE		70	Excluded Monocytes
+VISTA_TIM3_MHCII_panactin_CD14_CD73_CD11c_CD66b_MCT4	Monocytes	Monocytes	NA	NA	TRUE		71	Excluded Monocytes
+CAIX_CD11b_GZMB_MCT4_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	176	Myeloid cells
+CAIX_CD11b_MCT4	Myeloid cells	Myeloid cells	NA	NA	TRUE		176	Myeloid cells
+CD103_CD11b_CD11c_CD56_CD66b_CLEC9a_GZMB_MPO_TCRd	Myeloid cells	Neutrophils	NA	NA	T	NA	1354	Excluded Myeloid cells_Myeloid cells
+CD11b	Myeloid cells	Myeloid cells	NA	NA	TRUE		6635	Excluded Myeloid cells_Myeloid cells
+CD11b	Myeloid cells	Myeloid cells	NA	NA	TRUE		62044	Excluded Myeloid cells_Myeloid cells
+CD11b_CD11c_CD56_CD66b_GZMB_MPO_TCRd	Myeloid cells	Neutrophils	NA	NA	T	NA	113	Myeloid cells
+CD11b_CD16_GZMB	Myeloid cells	Myeloid cells	NA	NA	T	NA	1565	Excluded Myeloid cells_Myeloid cells
+CD11b_CD16_GZMB_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	569	Myeloid cells
+CD11b_CD31_GZMB_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	1668	Myeloid cells
+CD11b_CD38	Myeloid cells	Myeloid cells	NA	NA	TRUE		1781	Excluded Myeloid cells_Myeloid cells
+CD11b_CD38_CD66b_KIR2DL3_LAG3_MCT4_PDL1_TCRd	Myeloid cells	Tgd	Ambiguous	Ambiguous	F	NA	50	Excluded Monocytes
+CD11b_CD38_GZMB_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	1781	Excluded Myeloid cells_Myeloid cells
+CD11b_CD38_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	1270	Excluded Myeloid cells
+CD11b_CD45_GZMB_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	295	Excluded Myeloid cells
+CD11b_CLEC9a_GZMB_KIR2DL3_MCT4_MPO_PDL1_TCRd_VISTA	Myeloid cells	Neutrophils	NA	NA	T	NA	4179	Excluded Myeloid cells
+CD11b_CLEC9a_GZMB_MCT4_MPO_PDL1	Myeloid cells	Neutrophils	NA	NA	T	NA	3329	Excluded Myeloid cells
+CD11b_GZMB_IDO_MPO_PDL1	Myeloid cells	Neutrophils	NA	NA	T	NA	283	Myeloid cells
+CD11b_GZMB_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	46691	Myeloid cells_Excluded Myeloid cells
+CD11b_GZMB_MPO_PDL1	Myeloid cells	Neutrophils	NA	NA	T	NA	5384	Excluded Myeloid cells
+CD11b_GZMB_MPO_PDL1_VISTA	Myeloid cells	Neutrophils	NA	NA	T	NA	4463	Excluded Myeloid cells
+CD11b_GZMB_MPO_TCRd	Myeloid cells	Neutrophils	NA	NA	T	NA	275	Myeloid cells
+CD11b_GZMB_MPO_VISTA	Myeloid cells	Neutrophils	NA	NA	T	NA	6534	Excluded Myeloid cells
+CD11b_IDO_MPO_PDL1	Myeloid cells	Neutrophils	NA	NA	T	NA	382	Excluded Myeloid cells
+CD11b_IDO_PDL1	Myeloid cells	Myeloid cells	NA	NA	T	NA	382	Excluded Myeloid cells
+CD11b_MCT4_PDL1	Myeloid cells	Myeloid cells	NA	NA	TRUE		1956	Excluded Myeloid cells
+CD11b_MPO	Myeloid cells	Neutrophils	NA	NA	T	NA	10069	Excluded Myeloid cells_Myeloid cells
+CD11b_MPO_panactin	Myeloid cells	Neutrophils	NA	NA	T	NA	3653	Excluded Myeloid cells
+CD16_CD11b	Myeloid cells	Myeloid cells	NA	NA	TRUE		1565	Excluded Myeloid cells_Myeloid cells
+CD56_CD11b_CD66b	Myeloid cells	Granulocytes	Myeloid cells	Myeloid cells	FALSE		113	Myeloid cells
+CLEC9a_CD56_CD11c_CD11b_CD66b	Myeloid cells	mDC	NA	NA	TRUE		1241	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_GZMB_CD73_CD11b_MCT4_PDL1	Myeloid cells	Myeloid cells	NA	NA	TRUE		1696	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_MPO_GZMB_CD11b_TCRd_MCT4_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		2699	Excluded Myeloid cells
+CLEC9a_KIR2DL3_VISTA_MPO_GZMB_CD73_CD11b_MCT4_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		3911	Excluded Myeloid cells
+CLEC9a_panactin_CD73_CD11b_MCT4	Myeloid cells	Myeloid cells	NA	NA	TRUE		3653	Excluded Myeloid cells
+CLEC9a_VISTA_CAIX_CD11b_LAG3_MCT4_PDL1	Myeloid cells	Myeloid cells	NA	NA	TRUE		3755	Excluded Myeloid cells
+CLEC9a_VISTA_CD45_MPO_CD11b_MCT4_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		295	Excluded Myeloid cells
+CLEC9a_VISTA_MPO_CD11b_MCT4_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		8980	Excluded Myeloid cells
+GZMB_CD11b	Myeloid cells	Myeloid cells	NA	NA	TRUE		6740	Myeloid cells_Excluded Myeloid cells
+IDO_CD11b_MCT4_PDL1	Myeloid cells	Myeloid cells	NA	NA	TRUE		382	Excluded Myeloid cells
+IDO_CD11b_PDL1	Myeloid cells	Myeloid cells	NA	NA	TRUE		283	Myeloid cells
+MPO_CD11b	Myeloid cells	Neutrophils	NA	NA	TRUE		3587	Myeloid cells_Excluded Myeloid cells
+MPO_CD11b_MCT4	Myeloid cells	Neutrophils	NA	NA	TRUE		8501	Excluded Myeloid cells
+MPO_CD73_CD11b_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		291	Myeloid cells
+MPO_GZMB_CD11b	Myeloid cells	Neutrophils	NA	NA	TRUE		19641	Myeloid cells_Excluded Myeloid cells
+MPO_GZMB_CD11b_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		5384	Excluded Myeloid cells
+MPO_GZMB_CD11b_TCRd_MCT4	Myeloid cells	Neutrophils	NA	NA	TRUE		275	Myeloid cells
+VISTA_MPO_GZMB_CD11b_MCT4_PDL1	Myeloid cells	Neutrophils	NA	NA	TRUE		4463	Excluded Myeloid cells
+CAIX_CD3_CLEC9a_KIR2DL3_LAG3_TCRd	T cells	Tgd	NA	NA	T	NA	73	Excluded T cells
+CD103_CD3_GZMB	T cells	T cells	NA	NA	T	NA	164	T cells
+CD103_CD3_GZMB_KIR2DL3_LAG3_TCRd	T cells	Tgd	NA	NA	T	NA	252	T cells
+CD103_CD3_GZMB_LAG3_TCRd	T cells	Tgd	NA	NA	T	NA	252	T cells
+CD103_CD3_TCRd	T cells	Tgd	NA	NA	T	NA	51	Excluded T cells
+CD3	T cells	T cells - Other	NA	NA	T	NA	3549	T cells
+CD3	T cells	T cells	NA	NA	TRUE		3998	T cells_Excluded T cells
+CD3_CD31	T cells	T cells	NA	NA	TRUE		31	T cells
+CD3_CD31	T cells	T cells	NA	NA	TRUE		31	T cells
+CD3_CD38	T cells	T cells	NA	NA	TRUE		266	T cells
+CD3_CD38	T cells	T cells	NA	NA	TRUE		266	T cells
+CD3_CD38_CD56_CD66b_CD73_CLEC9a_KIR2DL3_LAG3_MCT4_PDL1_TCRd	T cells	Cytotoxic lymphocytes	T cells	Tgd	F	NA	109	Excluded CD4
+CD3_CD56_CLEC9a_LAG3_panactin_TCRd_TIM3	T cells	Cytotoxic lymphocytes	T cells	Tgd	F	NA	354	T cells
+CD3_CD66b_CLEC9a_KIR2DL3_MCT4_PDL1_TCRd	T cells	Tgd	NA	NA	T	NA	88	Excluded CD4
+CD3_CD68	T cells	T cells	NA	NA	T	NA	332	T cells
+CD3_CLEC9a	T cells	T cells - Other	NA	NA	T	NA	51	Excluded T cells
+CD3_CLEC9a_KIR2DL3_LAG3_panactin_TIM3	T cells	Tgd	NA	NA	T	NA	354	T cells
+CD3_CLEC9a_TCRd	T cells	Tgd	NA	NA	T	NA	96	Excluded T cells
+CD3_LAG3_panactin_TCRd	T cells	Tgd	NA	NA	T	NA	32	Excluded T cells
+CD3_MHCII	T cells	T cells - Other	NA	NA	T	NA	279	T cells
+CD3_TCRd	T cells	Tgd	NA	NA	T	NA	211	Excluded CD4_Excluded T cells
+CD56_CD3	T cells	Cytotoxic lymphocytes	T cells	T cells	FALSE		96	Excluded T cells
+CLEC9a_CD56_TIM3_panactin_CD3_LAG3	T cells	Cytotoxic lymphocytes	T cells	T cells	FALSE		354	T cells
+CLEC9a_KIR2DL3_CD56_TIM3_CD3_CD73_CD11c_CD66b_TCRd_MCT4	T cells	Cytotoxic lymphocytes	T cells	T cells	FALSE		73	Excluded T cells
+CLEC9a_KIR2DL3_CD56_TIM3_CD3_IDO_CD73_CD66b_LAG3_MCT4	T cells	Cytotoxic lymphocytes	T cells	T cells	FALSE		109	Excluded CD4
+CLEC9a_KIR2DL3_TIM3_MHCII_panactin_CD3_CD11c_CD103_TCRd_MCT4	T cells	Tgd	NA	NA	TRUE		51	Excluded T cells
+MHCII_CD3	T cells	T cells	NA	NA	TRUE		279	T cells
+panactin_CD3	T cells	T cells	NA	NA	TRUE		9018	CD4_T cells
+VISTA_TIM3_CD3_PD1_CD73_CD103	T cells	T cells	NA	NA	TRUE		225	Excluded CD8
+CD11c_CD66b_TCRd	Unassigned	Unassigned	NA	NA	T	NA	486	Excluded Myeloid cells
+CD11c_TCRd	Unassigned	Unassigned	NA	NA	T	NA	467	Excluded Myeloid cells
+TIM3_PD1	Unassigned	Leukocytes	Unassigned	Unassigned	FALSE		469	Excluded CD4
+	Unassigned	Unassigned	NA	NA	TRUE		95	Excluded_Excluded Excluded
+	Unassigned	Unassigned	NA	NA	TRUE		95	Excluded_Excluded Excluded
+CD103_CD3_CD8a_GZMB_panCK_PD1	CD8	CD8	CD8	Cytotoxic CD8 T cells	F	NA	8291	CD8
+CD103_CD8a_GZMB	CD8	Cytotoxic CD8 T cells	NA	NA	T	NA	7562	CD8
+CD3_CD4_GZMB_MPO	CD4	Cytotoxic CD4 T cells	NA	NA	T	NA	2252	CD4
+CLEC9a_GZMB	Leukocytes	Cytotoxic cells	Leukocytes	Leukocytes	F	NA	1190	Leukocytes

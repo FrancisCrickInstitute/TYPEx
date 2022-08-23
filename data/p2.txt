@@ -1,0 +1,356 @@
+positive	OldMajorType	OldCellType	majorType	cellType	Review	Comment	mostLikelyCelltype	cellCount	clusters	cellType_markers	V1	V2	V3	V4	V5	V6	V7	V8	V9	V10	V11
+1	CD11b_CD14_CD20_CD3_CD31_CD45_CD79a_panCK	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	F	NA	36	149	36	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+2	CD11b_CD14_CD20_CD3_CD31_CD45_CD79a_panCK	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	36	812	36	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+3	CD20_CD3_CD4_CD45_CD79a_panCK	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	10	1824	10	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+4	CD20_CD3_CD4_CD45_CD79a_panCK	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	F	NA	10	3046	10	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+5	CD14_CD163_CD3_CD45_CD79a_CD8a	Epithelial cells Region	CD8 T cells	Ambiguous	Ambiguous	F	NA	28	26	28	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+6	CD3_CD45_CD79a_CD8a	Epithelial cells Region	CD8 T cells	Ambiguous	Ambiguous	F	NA	4	13831	4	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+7	CD31_CD79a	Epithelial cells Region	Epithelial cells Region	Ambiguous	Ambiguous	F	NA	11	4716	11	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+8	CD11b_CD163_CD206_CD31_CD4_CD68	Epithelial cells Region	Macrophages	Macrophages	M2	F	NA	39	27	39	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+9	CD11b_CD14_CD163_CD20_CD206_CD3_CD68_CD79a_CD8a	Epithelial cells Region	Macrophages	Ambiguous	Ambiguous	F	NA	41|44	306	41_44	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+10	CD11b_CD14_CD163_CD20_CD206_CD68_CD8a	Epithelial cells Region	Macrophages	Ambiguous	Ambiguous	F	NA	42|43	711	42_43	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+11	CD14_CD163_CD20_CD206_CD68_CD8a	Epithelial cells Region	Macrophages	Ambiguous	Ambiguous	F	NA	40	828	40	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+12	CD163_CD20_CD206_CD4_CD68	Epithelial cells Region	Macrophages	Ambiguous	Ambiguous	F	NA	38	1579	38	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+13	CD163_CD206_CD4	Epithelial cells Region	Macrophages	Macrophages	M2	F	NA	6	5326	6	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+14	CD163_CD206_CD4_CD68	Epithelial cells Region	Macrophages	Macrophages	M2	F	NA	32|37	8442	32_37	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+15	CD14_CD163_CD206_CD4_CD68	Epithelial cells Region	Macrophages	Macrophages	M2	F	NA	19	15805	19	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+16	CD4_panCK	Ambiguous	Ambiguous	NA	NA	T	NA	9	4489	9		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+17	CD31_CD79a_panCK	Ambiguous	Ambiguous	NA	NA	T	NA	8	49452	8		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+18	CD20_CD3_CD4_CD45_CD8a	Ambiguous	Ambiguous	NA	NA	T	NA	3	75081	3		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+19	CD11b_CD31	Endothelial cells	Endothelial cells	NA	NA	T	NA	16	14383	16	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+20	CD20_CD3_CD4_CD45_CD8a	Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	3	5091	3	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+21	CD4_panCK	Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	9	6291	9	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+22	CD11b_panCK	Epithelial cells	Epithelial cells	NA	NA	T	NA	33	18596	33	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+23	CD31_CD79a_panCK	Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	8	61762	8	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+24		Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	34|26|31|29|0|18|22|12|27|LowerConf	258156	34_26_31_29_0_18_22_12_27_Excluded	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+25	CD11b_CD45	Myeloid cells	Myeloid cells	NA	NA	T	NA	23	73473	23	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+26	CD20_CD3_CD79a_CD8a	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	3	1	3	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+27	CD20_CD3_CD79a_CD8a	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	F	NA	3	1	3	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+28		Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	T	NA	LowerConf	1	Excluded	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+29	CD11b_CD14_CD163_CD20_CD206_CD3_CD31_CD4_CD68_CD79a_CD8a_panCK	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	5	1	5	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+30	CD14_CD163_CD206_CD3_CD31_CD4_CD68_CD8a_panCK	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	8	1	8	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+31	CD14_CD163_CD20_CD206_CD3_CD31_CD4_CD68_CD8a	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	2	1	2	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+32	CD11b_CD45	Myeloid cells	Myeloid cells	Myeloid cells	Myeloid cells	T	NA	7	3	7	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+33	CD20_CD79a_panCK	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	43	2396	43	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+34	CD20_CD3_CD4_CD45_CD79a_CD8a	Ambiguous	B cells	Ambiguous	Ambiguous	F	NA	42	6996	42	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+35	CD11b_CD14_CD163_CD20_CD206_CD3_CD31_CD4_CD45_CD68_CD79a_CD8a	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	45	285	45	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+36	CD163_CD20_CD206_CD68_CD8a	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	44	5551	44	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+37	CD163_CD20_CD206_CD68	Ambiguous	Macrophages	Ambiguous	Ambiguous	F	NA	41	8272	41	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+38	CD79a	B cells	B cells	B cells	B cell lineage	F	NA	24	194918	24	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+39	CD20_CD3_CD4_CD45_CD79a_CD8a	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	F	NA	42	34	42	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+40	CD20_CD79a_panCK	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	F	NA	43	3329	43	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+41	CD11b_CD14_CD163_CD20_CD206_CD3_CD31_CD4_CD45_CD68_CD79a_CD8a	Epithelial cells Region	Macrophages	Epithelial cells	Epithelial cells	F	NA	45	19	45	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+42	CD163_CD20_CD206_CD68_CD8a	Epithelial cells Region	Macrophages	Epithelial cells	Epithelial cells	F	NA	44	1734	44	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+43	CD163_CD20_CD206_CD68	Epithelial cells Region	Macrophages	Epithelial cells	Epithelial cells	F	NA	41	2614	41	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+44	CD163_CD206_CD4_CD68	Epithelial cells Region	Macrophages	Epithelial cells	Epithelial cells	F	NA	29	5701	29	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+45	CD163_CD206_CD4	Epithelial cells Region	Macrophages	Epithelial cells	Epithelial cells	F	NA	18	14585	18	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+46	CD206	Macrophages	Macrophages	Macrophages	CD206+ Macrophages	F	NA	36	10367	36	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+47	CD163_CD206_CD68	Macrophages	Macrophages	Macrophages	M2	F	NA	26|27|40	231522	26_27_40	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+48	CD79a_panCK	Ambiguous	Ambiguous	NA	NA	T	NA	21	3114	21		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+49	CD4_CD79a	Ambiguous	Ambiguous	NA	NA	T	NA	11	3938	11		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+50	CD4_CD79a	Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	11	721	11	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+51	CD79a_panCK	Epithelial cells Region	Epithelial cells Region	NA	NA	T	NA	21	36891	21	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+52	CD163	Macrophages	Macrophages	NA	NA	T	NA	1	4645	1	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+53	CD11b_CD14_CD163	Macrophages	Macrophages	NA	NA	T	NA	19	6849	19	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+54	CD20_CD3_CD4_CD45_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3	Epithelial cells Region	Lymphocytes	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD4 T cells	7	Excluded CD4 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+55	CD103_CD20_CD45_CD8a_LAG3_PD1	Epithelial cells Region	B cells	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD8 T cells	12	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+56	CD103_CD20_CD3_CD45_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3	Epithelial cells Region	Lymphocytes	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD8 T cells	21	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+57	CD20_CD3_CD45_CD8a_panactin	Epithelial cells Region	B cells	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD8 T cells	23	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+58	CD20_CD3_CD4_CD45_CD8a_IDO_MHCII	Epithelial cells Region	Lymphocytes	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD8 T cells	41	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+59	CAIX_CD103_CD11b_CD11c_CD14_CD16_CD163_CD20_CD206_CD31_CD38_CD4_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Epithelial cells Region	M2	Ambiguous	Ambiguous	FALSE	NA	LowerConf Macrophages	45	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+60	CD3_CD4_panCK_PD1	Ambiguous	Ambiguous	Ambiguous	Ambiguous	TRUE		LowerConf CD4 T cells	56	Excluded CD4 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+61	CD11b_CD11c_CD20_CD45_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_panactin_PD1	Ambiguous	mDC	Ambiguous	Ambiguous	FALSE	NA	LowerConf Myeloid cells	84	Excluded Myeloid cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+62	CAIX_CD103_CD11c_CD163_CD20_CD206_CD31_CD56_CD66b_CD68_CD73_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_panCK_PDL1_TCRd_TIM3_VISTA	Epithelial cells Region	M2	Ambiguous	Ambiguous	FALSE	NA	LowerConf Macrophages	89	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+63	CAIX_CD103_CD11b_CD11c_CD14_CD163_CD20_CD206_CD3_CD31_CD38_CD4_CD56_CD66b_CD68_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_panCK_PDL1_TCRd_TIM3_VISTA	Macrophages	M2	Ambiguous	Ambiguous	FALSE		Macrophages	206	Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+64	CAIX_CD103_CD11b_CD11c_CD14_CD163_CD20_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_GZMB_IDO_KIR2DL3_LAG3_MCT4_MPO_panCK_PDL1_TCRd_TIM3_VISTA	B cells	Neutrophils	Ambiguous	Ambiguous	FALSE	NA	Monocytes	209	Monocytes		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+65	CAIX_CD11b_CD14_CD16_CD31_CD45_CD73_GZMB_KIR2DL3_panCK	Monocytes	Endothelial cells	Ambiguous	Ambiguous	FALSE		Monocytes	220	Monocytes		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+66	CD206_panCK	Ambiguous	Ambiguous	Ambiguous	Ambiguous	TRUE		LowerConf Epithelial cells	258	Excluded Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+67	CD31_CD38_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_VISTA	Ambiguous	Endothelial cells	Ambiguous	Ambiguous	FALSE		LowerConf B cells	343	Excluded B cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+68	CD103_CD11c_CD16_CD163_CD20_CD206_CD38_CD56_CD66b_CD68_KIR2DL3_MCT4_PD1_PDL1_TCRd	Epithelial cells Region	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE	NA	LowerConf Macrophages	351	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+69	CD11c_CD20_CD79a_CLEC9a_KIR2DL3_LAG3_panCK_TIM3_VISTA	Ambiguous	B cells	Ambiguous	Ambiguous	FALSE	NA	LowerConf Epithelial cells	626	Excluded Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+70	CD103_CD16_CD163_CD20_CD206_CD66b_CD68_KIR2DL3_PD1_PDL1_TCRd	Epithelial cells Region	M2	Ambiguous	Ambiguous	FALSE	NA	LowerConf Macrophages	659	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+71	CAIX_CD11c_CD45_CLEC9a_KIR2DL3_LAG3_panCK_TCRd	CD4 T cells	mDC	Ambiguous	Ambiguous	FALSE		CD4 T cells	720	CD4 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+72	CD103_CD3_CD8a_panCK_PD1	Ambiguous	Ambiguous	Ambiguous	Ambiguous	FALSE		LowerConf CD8 T cells	821	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+73	CAIX_CD103_CD11c_CD163_CD20_CD206_CD38_CD4_CD45_CD56_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	FALSE		Macrophages	859	Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+74	CAIX_CD31_CD68_LAG3_TIM3	Epithelial cells Region	Epithelial cells Region	Ambiguous	Ambiguous	FALSE	NA	LowerConf Endothelial cells	1034	Excluded Endothelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+75	CD103_CD3_CD8a_panCK_PD1	Epithelial cells Region	Epithelial cells Region	Ambiguous	Ambiguous	FALSE	NA	LowerConf CD8 T cells	1046	Excluded CD8 T cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+76	CD31_CD68_CD73	Ambiguous	Ambiguous	Ambiguous	Ambiguous	TRUE		LowerConf Endothelial cells	1138	Excluded Endothelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+77	CD11c_CD20_CD38_CD45_CD66b_CD73_CD79a_CD8a_IDO_MHCII_panactin_PD1	Ambiguous	mDC	Ambiguous	Ambiguous	FALSE	NA	LowerConf B cells	1352	Excluded B cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+78	CD20_CD45_CD79a_CD8a_PD1	Ambiguous	B cells	Ambiguous	Ambiguous	FALSE		LowerConf B cells	1745	Excluded B cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+79	CAIX_CD31_CD68_LAG3_TIM3	Ambiguous	Ambiguous	Ambiguous	Ambiguous	TRUE		LowerConf Endothelial cells	1918	Excluded Endothelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+80	CD163_CD206_CD31	Macrophages	Endothelial cells	Ambiguous	Ambiguous	FALSE	NA	Macrophages	2670	Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+81	CD11c_CD20_CD3_CD38_CD4_CD45_CD56_CD66b_CD79a_CD8a_IDO_MHCII_panactin_VISTA	B cells	Lymphocytes	Ambiguous	Ambiguous	FALSE		B cells	3925	B cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+82	CD20_CD3_CD4_CD45_CD79a_CD8a	B cells	Lymphocytes	Ambiguous	Ambiguous	FALSE		B cells	6045	B cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+83	CAIX_CD103_CD11c_CD20_CD45_CD73_CD79a_CD8a_CLEC9a_KIR2DL3_LAG3_panactin_PD1_TIM3_VISTA	B cells	mDC	Ambiguous	Ambiguous	FALSE		Epithelial cells	6427	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+84	CD14_CD16_CD163_CD206_CD38_CD56_CD73_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PDL1_TCRd_TIM3_VISTA	Macrophages	Cytotoxic lymphocytes	Ambiguous	Ambiguous	FALSE	check	Macrophages	11903	Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+85	CD31_panCK	Epithelial cells	Epithelial cells	Ambiguous	Ambiguous	FALSE	NA	Epithelial cells	25079	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+86	CD79a	B cells	B cell lineage	B cells	B cell lineage	TRUE		B cells	37423	B cells	Vimentin,CD45,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+87	CD20_CD45_CD79a_CD8a_PD1	Epithelial cells Region	B cells	B cells	B cells	FALSE	NA	LowerConf B cells	15	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+88	CD11c_CD20_CD66b_CD79a_MHCII_VISTA	B cells	B cells	B cells	B cells	NA	NA	LowerConf B cells	221	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+89	CD20_CD45_CD79a_panactin	B cells	B cells	B cells	B cells	TRUE	NA	LowerConf B cells	417	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+90	CD20_CD38_CD45_CD56_CD79a_CLEC9a_KIR2DL3_LAG3_TIM3	B cells	Lymphocytes	B cells	B cells	FALSE	NA	B cells	534	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+91	CD11c_CD20_CD79a_MHCII_panactin	B cells	B cells	B cells	B cells	TRUE	NA	LowerConf B cells	664	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+92	CD20_CD79a_MHCII	B cells	B cells	B cells	B cells	TRUE	NA	LowerConf B cells	1074	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+93	CD16_CD20_CD38_CD79a	B cells	B cells	B cells	B cells	TRUE		B cells	1080	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+94	CD20_CD79a_GZMB	B cells	B cells	B cells	B cells	TRUE		B cells	1193	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+95	CD11c_CD20_CD45_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_panactin	B cells	mDC	B cells	B cells	FALSE		LowerConf B cells	1278	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+96	CD11c_CD20_CD45_CD66b_CD79a_MHCII_panactin	B cells	mDC	B cells	B cells	FALSE	NA	LowerConf B cells	2629	Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+97	CD20_CD45_CD79a_CD8a	B cells	B cells	B cells	B cells	TRUE		CD8 T cells	3731	CD8 T cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+98	CD20_CD79a_CD8a_IDO	B cells	B cells	B cells	B cells	TRUE		B cells	5443	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+99	CD20_CD79a_IDO	B cells	B cells	B cells	B cells	TRUE	NA	B cells	6050	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+100	CD11c_CD20_CD45_CD79a_MHCII_panactin	B cells	mDC	B cells	B cells	FALSE	NA	B cells	6445	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+101	CD20_CD45_CD79a	B cells	B cells	B cells	B cells	TRUE	NA	B cells	6716	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+102	CD20_CD38_CD79a_MHCII	B cells	B cells	B cells	B cells	TRUE	?	B cells	7072	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+103	CD20_CD45_CD79a_MHCII_panactin	B cells	B cells	B cells	B cells	TRUE	NA	B cells|LowerConf B cells	7269	B cells_Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+104	CD11c_CD20_CD79a_MHCII	B cells	B cells	B cells	B cells	TRUE		B cells	9428	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+105	CD20_CD68_CD79a	B cells	B cells	B cells	B cells	TRUE	?	B cells	11982	B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+106	CD20_CD79a	B cells	B cells	B cells	B cells	TRUE	NA	B cells|LowerConf B cells	57961	B cells_Excluded B cells	Vimentin,CD45,CD20,CD79a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+107	CD14_CD206_CD4_CD68_IDO_PDL1	Epithelial cells Region	CD206+ Macrophages	Macrophages	CD206+ Macrophages	FALSE	NA	LowerConf Macrophages	189	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+108	CD20_CD4_CD45_PD1	Epithelial cells Region	B cells	CD4 T cells	CD4 T cells	FALSE	NA	LowerConf CD4 T cells	1	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+109	CD20_CD3_CD4_CD45_panactin	Epithelial cells Region	B cells	CD4 T cells	CD4 T cells	FALSE	NA	LowerConf CD4 T cells	17	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+110	CD3_CD31_CD4_CD45	Epithelial cells Region	Endothelial cells	CD4 T cells	CD4 T cells	FALSE	NA	LowerConf CD4 T cells	39	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+111	CD3_CD4_CLEC9a	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	141	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+112	CD3_CD4_CD45_CD68	Epithelial cells Region	Macrophages	CD4 T cells	CD4 T cells	FALSE	NA	LowerConf CD4 T cells	179	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+113	CAIX_CD3_CD4	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	639	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+114	CD4	CD4 T cells	CD4+ Myeloid cells	CD4 T cells	CD4 T cells	FALSE	P2	LowerConf CD4 T cells	738	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+115	CD3_CD4_CD45_panactin	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		LowerConf CD4 T cells	756	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+116	CD3_CD38_CD4_CD45	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		LowerConf CD4 T cells	1105	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+117	CD3_CD4_TIM3	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE	NA	CD4 T cells	1406	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+118	CD3_CD4_CD45_IDO_MHCII	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		LowerConf CD4 T cells	1999	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+119	CD11c_CD3_CD4_CD45_CD56_CD66b_IDO_KIR2DL3_MHCII_panactin_PD1_TCRd_TIM3	CD4 T cells	Cytotoxic lymphocytes	CD4 T cells	CD4 T cells	FALSE	NA	CD4 T cells	2105	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+120	CD3_CD31_CD4	CD4 T cells	Endothelial cells	CD4 T cells	CD4 T cells	FALSE	NA	CD4 T cells	2330	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+121	CD3_CD4_CD45_panactin_PD1	CD4 T cells	PD1+CD27+ CD4 T cells	CD4 T cells	CD4 T cells	FALSE	NA	LowerConf CD4 T cells	3395	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+122	CD16_CD3_CD4	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	3872	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+123	CD16_CD3_CD4_CD45	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	5945	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+124	CD3_CD4_CD68	CD4 T cells	Macrophages	CD4 T cells	CD4 T cells	FALSE	NA	CD4 T cells	6444	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+125	CD3_CD38_CD4	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	6462	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+126	CD3_CD4_MHCII	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	6670	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+127	CD163_CD206_CD3_CD4	CD4 T cells	M2	CD4 T cells	CD4 T cells	FALSE		CD4 T cells	7004	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+128	CD3_CD4_CD45_CD56_CLEC9a_IDO_LAG3_panactin_PD1_TIM3	CD4 T cells	Lymphocytes	CD4 T cells	CD4 T cells	FALSE		CD4 T cells	7327	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+129	CD3_CD4_panactin	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells	7779	CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+130	CD16_CD163_CD206_CD3_CD4	CD4 T cells	M2	CD4 T cells	CD4 T cells	FALSE	Check	Macrophages	12083	Macrophages	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+131	CD3_CD4_CD45	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells|LowerConf CD4 T cells	24025	CD4 T cells_Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+132	CD3_CD4	CD4 T cells	CD4 T cells	CD4 T cells	CD4 T cells	TRUE		CD4 T cells|LowerConf CD4 T cells	42897	CD4 T cells_Excluded CD4 T cells	Vimentin,CD45,CD3,CD4	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+133	CD103_CD3_CD4_CD45	CD4 T cells	CD4 Trm	CD4 T cells	CD4 Trm	TRUE		CD4 T cells	877	CD4 T cells	Vimentin,CD45,CD3,CD4,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+134	CD3_CD31_CD8a	Epithelial cells Region	Endothelial cells	CD8 T cells	CD8 T cells	FALSE	NA	LowerConf CD8 T cells	150	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+135	CD3_CD8a_TIM3	CD8 T cells	CD8 T cells	CD8 T cells	CD8 T cells	TRUE		CD8 T cells	237	CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+136	CD45_CD8a	CD8 T cells	CD8 T cells	CD8 T cells	CD8 T cells	TRUE		LowerConf CD8 T cells	773	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+137	CD11c_CD3_CD8a_MHCII	CD8 T cells	mDC	CD8 T cells	CD8 T cells	FALSE		CD8 T cells	5548	CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+138	CD3_CD38_CD8a	CD8 T cells	CD8 T cells	CD8 T cells	CD8 T cells	TRUE		CD8 T cells|LowerConf CD8 T cells	9384	CD8 T cells_Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+139	CD8a	CD8 T cells	CD8 T cells	CD8 T cells	CD8 T cells	TRUE		CD8 T cells	16318	CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+140	CD3_CD8a	CD8 T cells	CD8 T cells	CD8 T cells	CD8 T cells	TRUE		CD8 T cells|LowerConf CD8 T cells	53615	CD8 T cells_Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+141	CD103_CD3_CD4_CD45_CD8a	Epithelial cells Region	CD8 Trm	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	3	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+142	CD103_CD163_CD206_CD3_CD8a_PD1	Epithelial cells Region	M2	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	70	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+143	CD103_CD20_CD3_CD45_CD8a_IDO_LAG3_panactin_PD1_PDL1	Epithelial cells Region	Epithelial cells Region	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	110	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+144	CD103_CD3_CD68_CD8a	Epithelial cells Region	CD8 Trm	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	362	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+145	CD103_CD20_CD3_CD8a	Epithelial cells Region	Lymphocytes	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	547	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+146	CD103_CD45_CD8a	CD8 T cells	CD8 Trm	CD8 T cells	CD8 Trm	TRUE	NA	LowerConf CD8 T cells	1232	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+147	CD103_CD20_CD3_CD45_CD8a_IDO_LAG3_panactin_PD1_PDL1	Ambiguous	Ambiguous	CD8 T cells	CD8 Trm	FALSE	NA	LowerConf CD8 T cells	2415	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+148	CD163_CD206_CD3_CD68_CD8a	Macrophages	M2	CD8 T cells	CD8 Trm	FALSE		CD8 T cells	2415	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+149	CD103_CD3_CD8a_panactin_PD1	CD8 T cells	CD8 T cells	CD8 T cells	CD8 Trm	FALSE		LowerConf CD8 T cells	2891	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+150	CD103_CD3_CD8a_panCK_PD1	CD8 T cells	CD8 T cells	CD8 T cells	CD8 Trm	FALSE		CD8 T cells	2955	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+151	CD103_CD45_CD68_CD8a	CD8 T cells	Macrophages	CD8 T cells	CD8 Trm	FALSE	NA	CD8 T cells	5156	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+152	CD103_CD16_CD163_CD206_CD3_CD8a	CD8 T cells	M2	CD8 T cells	CD8 Trm	FALSE	NA	CD8 T cells	6262	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+153	CD103_CD206_CD3_CD68_CD8a	CD8 T cells	CD206+ Macrophages	CD8 T cells	CD8 Trm	FALSE		CD8 T cells	6308	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+154	CD103_CD206_CD8a	CD8 T cells	CD206+ Macrophages	CD8 T cells	CD8 Trm	FALSE	NA	CD8 T cells	11254	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+155	CD103_CD11c_CD163_CD20_CD3_CD38_CD45_CD56_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_panactin_PD1_TIM3	B cells	Lymphocytes	CD8 T cells	CD8 Trm	FALSE	NA	CD8 T cells	11480	CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+156	CD103_CD3_CD8a	CD8 T cells	CD8 Trm	CD8 T cells	CD8 Trm	TRUE	NA	LowerConf CD8 T cells|CD8 T cells	32663	Excluded CD8 T cells_CD8 T cells	Vimentin,CD45,CD3,CD8a,CD103	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+157	CD3_CD4_GZMB	CD4 T cells	Cytotoxic CD4 T cells	CD4 T cells	Cytotoxic CD4 T cells	TRUE		CD4 T cells	1923	CD4 T cells	Vimentin,CD45,CD3,CD4,GZMB	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+158	CD3_CD73_CD8a_CLEC9a_GZMB	CD8 T cells	Cytotoxic CD8 T cells	CD8 T cells	Cytotoxic CD8 T cells	TRUE		CD8 T cells	184	CD8 T cells	Vimentin,CD45,CD3,CD8a,GZMB	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+159	CAIX_CD103_CD3_CD8a_GZMB_IDO_LAG3_MCT4_panCK_PD1	CD8 T cells	Cytotoxic CD8 T cells	CD8 T cells	Cytotoxic CD8 T cells	TRUE		CD8 T cells	1380	CD8 T cells	Vimentin,CD45,CD3,CD8a,GZMB	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+160	CD103_CD3_CD8a_GZMB	CD8 T cells	Cytotoxic CD8 T cells	CD8 T cells	Cytotoxic CD8 T cells	TRUE		LowerConf CD8 T cells	2080	Excluded CD8 T cells	Vimentin,CD45,CD3,CD8a,GZMB	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+161	CD103_CD3_CD8a_GZMB_LAG3_PD1	CD8 T cells	Cytotoxic CD8 T cells	CD8 T cells	Cytotoxic CD8 T cells	TRUE		CD8 T cells	7702	CD8 T cells	Vimentin,CD45,CD3,CD8a,GZMB	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+162	CD31_CD38_CD79a	Epithelial cells Region	Endothelial cells	Endothelial cells	Endothelial cells	FALSE	NA	LowerConf Endothelial cells	65	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+163	CD31_IDO_LAG3	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		LowerConf Endothelial cells	108	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+164	CD31_VISTA	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		LowerConf Endothelial cells	111	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+165	CD31_CD38_CD56_CD79a_CLEC9a_LAG3_VISTA	Ambiguous	Endothelial cells	Ambiguous	Endothelial cells	NA	NA	LowerConf Endothelial cells	191	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+166	CAIX_CD31	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	Endothelial cells	259	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+167	CD31_CD68_CD73	Epithelial cells Region	Epithelial cells Region	Endothelial cells	Endothelial cells	FALSE	NA	LowerConf Endothelial cells	1053	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+168	CD11c_CD31_MHCII	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	1513	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+169	CD206_CD31_CD73	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	2240	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+170	CD31_CD68	Epithelial cells Region	Epithelial cells Region	Endothelial cells	Endothelial cells	FALSE	NA	LowerConf Endothelial cells	2356	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+171	CD31_CD56	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	3053	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+172	CAIX_CD31_panactin	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	Endothelial cells	3651	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+173	CD31_MHCII	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		LowerConf Endothelial cells	3912	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+174	CD31_CD68	Ambiguous	Ambiguous	Endothelial cells	Endothelial cells	FALSE		LowerConf Endothelial cells	4030	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+175	CD31_CD56_CLEC9a_LAG3_panactin_TIM3	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	4368	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+176	CD31_IDO_PDL1	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	LowerConf Endothelial cells|Endothelial cells	4540	Excluded Endothelial cells_Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+177	CD206_CD31	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	Endothelial cells	4839	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+178	CD31_GZMB_MPO	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	Endothelial cells	5260	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+179	CD31_CD73	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	LowerConf Endothelial cells	5339	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+180	CD31_CD38_CD79a	Ambiguous	Endothelial cells	Ambiguous	Endothelial cells	TRUE		LowerConf Endothelial cells	5705	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+181	CD31_panactin	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	Endothelial cells|LowerConf Endothelial cells	6165	Endothelial cells_Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+182	CD16_CD31	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	LowerConf Endothelial cells|Endothelial cells	6897	Excluded Endothelial cells_Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+183	CD31_MPO	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	LowerConf Endothelial cells	7221	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+184	CAIX_CD31_LAG3	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		LowerConf Endothelial cells	7665	Excluded Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+185	CD31_CD79a	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	8866	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+186	CD31_CD68	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	FALSE	NA	Endothelial cells	9401	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+187	CD31_CD38	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE	NA	LowerConf Endothelial cells|Endothelial cells	19771	Excluded Endothelial cells_Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+188		Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		Endothelial cells	31576	Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+189	CD31	Endothelial cells	Endothelial cells	Endothelial cells	Endothelial cells	TRUE		LowerConf Endothelial cells|Endothelial cells	146603	Excluded Endothelial cells_Endothelial cells	Vimentin,CD31	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+190	CD11b_CD11c_CD20_CD45_CD73_CD79a_CLEC9a_KIR2DL3_LAG3_panactin_PD1	Epithelial cells Region	mDC	Epithelial cells	Epithelial cells	FALSE	NA	LowerConf Myeloid cells	3	Excluded Myeloid cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+191	CD11c_CD20_CD38_CD45_CD66b_CD73_CD79a_CD8a_IDO_MHCII_panactin_PD1	Epithelial cells Region	mDC	Epithelial cells	Epithelial cells	FALSE	NA	LowerConf B cells	8	Excluded B cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+192	CD11c_CD3_CD4_CD45_CD66b_CD8a_IDO_MHCII_panactin_PDL1_TIM3	Epithelial cells Region	mDC	Epithelial cells	Epithelial cells	FALSE	NA	LowerConf CD4 T cells	19	Excluded CD4 T cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+193	CLEC9a	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	90	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+194	CD3_CD4_panCK_PD1	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	FALSE	NA	LowerConf CD4 T cells	111	Excluded CD4 T cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+195	CD11c_CD20_CD79a_CLEC9a_KIR2DL3_LAG3_panCK_TIM3_VISTA	Epithelial cells Region	B cells	Epithelial cells	Epithelial cells	FALSE	NA	LowerConf Epithelial cells	425	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+196	CD163_KIR2DL3_panCK	Macrophages	Macrophages	Epithelial cells	Epithelial cells	FALSE	NA	Macrophages	474	Macrophages	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+197	CD11c	Epithelial cells Region	mDC	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	713	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+198	CD68_panCK_PD1	Ambiguous	Ambiguous	Epithelial cells	Epithelial cells	FALSE		LowerConf Epithelial cells	1326	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+199	CD56_CLEC9a_LAG3_panactin_TIM3	Epithelial cells Region	NK cells	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	1426	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+200	GZMB	Epithelial cells Region	Cytotoxic cells	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	1431	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+201	CD206_panCK	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	LowerConf Epithelial cells	1570	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+202	CD56	Epithelial cells Region	NK cells	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	2008	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+203	CAIX_CD103_CD56_CD66b_CLEC9a_KIR2DL3_LAG3_panCK_PDL1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	4357	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+204	CAIX_IDO_MCT4_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	4576	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+205	CAIX_CD14_CD73_CLEC9a_LAG3_MCT4_MPO_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	4666	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+206	CD16	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	4968	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+207	CD68_panCK_PD1	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	LowerConf Epithelial cells	5099	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+208	CD11c_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	5346	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+209	CD11c_MHCII_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	5708	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+210	MCT4_panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	6066	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+211	CAIX_CD103_CD11c_CD56_CLEC9a_KIR2DL3_LAG3_MHCII_panCK_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	6311	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+212	CAIX_CD103_CD11c_CD56_CD66b_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_panCK_PDL1_TIM3	Epithelial cells	Neutrophils	Epithelial cells	Epithelial cells	FALSE		Epithelial cells	6767	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+213	IDO_panCK_PDL1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	6858	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+214	CD73_MCT4_panCK_PD1_PDL1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	6890	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+215	CAIX_CLEC9a_LAG3_MCT4_panCK_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	6905	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+216	CLEC9a_panactin_panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	8842	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+217	CAIX	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	8986	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+218	CAIX_CLEC9a_LAG3_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	9002	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+219	CD79a	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	9193	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+220	CD66b_GZMB_IDO_LAG3_panCK_PDL1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	FALSE		Epithelial cells	10129	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+221	CD38_CD66b_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	10526	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+222	IDO_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	Epithelial cells|LowerConf Epithelial cells	10568	Epithelial cells_Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+223	CAIX_MCT4_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	Epithelial cells	10935	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+224	MHCII	Epithelial cells Region	Epithelial cells Region	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	11358	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+225	CAIX_CD103_CD11c_CD56_CLEC9a_KIR2DL3_LAG3_MHCII_panCK_PDL1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	11747	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+226	CAIX_CLEC9a_IDO_LAG3_MCT4_MPO_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	12880	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+227	CD11c_CD66b_MHCII_panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	12973	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+228	CAIX_CD103_CD56_CD73_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	13918	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+229	CAIX_CD11c_CLEC9a_LAG3_panCK_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		LowerConf Epithelial cells	14567	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+230	MPO_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	15361	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+231	CD38	Epithelial cells Region	Plasma cells	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	15602	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+232	CAIX_CD56_CD66b_KIR2DL3_LAG3_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	15716	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+233	MPO	Epithelial cells Region	Neutrophils	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells	15949	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+234	MHCII_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	19479	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+235	CAIX_CD103_CD11c_CD56_CD66b_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_panCK_PDL1_TIM3	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	Assigned based on region	Epithelial cells	19801	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+236	panCK_PD1	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells	20979	Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+237	CD73_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	Epithelial cells|LowerConf Epithelial cells	31054	Epithelial cells_Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+238	CD68	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	NA	NA	Epithelial cells	36504	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+239	MCT4_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	Epithelial cells|LowerConf Epithelial cells	36938	Epithelial cells_Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+240	CD11c_CD66b_MHCII_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells	38111	Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+241	CAIX_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	FALSE	NA	Epithelial cells|LowerConf Epithelial cells	38769	Epithelial cells_Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+242	CD38_panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE	NA	LowerConf Epithelial cells|Epithelial cells	39341	Excluded Epithelial cells_Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+243	panCK	Epithelial cells	Epithelial cells	Epithelial cells	Epithelial cells	TRUE		Epithelial cells|LowerConf Epithelial cells	301066	Epithelial cells_Excluded Epithelial cells	panCK,CAM52	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+244	CD11b_CD16_CD163_CD206	Macrophages	M2	Macrophages	M2	TRUE		Macrophages	611	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+245	CD11c_CD16_CD163_CD206_CD66b_CD68_KIR2DL3_PDL1_TCRd	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	912	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+246	CAIX_CD16_CD163_CD206_CD73_MCT4_panCK	Macrophages	M2	Macrophages	M2	TRUE		Macrophages	1889	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+247	CD163_CD206_CD56_TIM3	Macrophages	M2	Macrophages	M2	TRUE		Macrophages	2442	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+248	CD11b_CD163_CD206_CD68	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	2547	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+249	CD163_CD206_CD68_GZMB	Macrophages	M2	Macrophages	M2	TRUE	NA	Macrophages|LowerConf Macrophages	2615	Macrophages_Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+250	CD163_CD206_CD38_CD68	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	3130	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+251	CD163_CD206_MHCII	Macrophages	M2	Macrophages	M2	TRUE		Macrophages	3733	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+252	CD14_CD16_CD163_CD206_CD68_PDL1_TCRd	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	4646	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+253	CD11c_CD163_CD206_CD66b_CD68_MHCII_TCRd	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	5511	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+254	CD16_CD163_CD206_CD68_TCRd	Macrophages	M2	Macrophages	M2	TRUE	NA	LowerConf Macrophages	9721	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+255	CD163_CD206_CD38	Macrophages	M2	Macrophages	M2	TRUE	NA	Macrophages	9822	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+256	CD14_CD16_CD163_CD206_CD68	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages	10371	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+257	CD11c_CD16_CD163_CD206_MHCII_TIM3	Macrophages	M2	Macrophages	M2	TRUE	check	Macrophages	13302	Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+258	CD14_CD163_CD206_CD68	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages|Macrophages	19314	Excluded Macrophages_Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+259	CD11b_CD163_CD206_CD68_GZMB_MPO	Macrophages	M2	Macrophages	M2	TRUE	NA	Macrophages|LowerConf Macrophages	22582	Macrophages_Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+260	CD16_CD163_CD206	Macrophages	M2	Macrophages	M2	TRUE	NA	LowerConf Macrophages|Macrophages	28672	Excluded Macrophages_Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+261	CD14_CD16_CD163_CD206	Macrophages	M2	Macrophages	M2	TRUE		LowerConf Macrophages|Macrophages	48836	Excluded Macrophages_Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+262	CD163_CD206	Macrophages	M2	Macrophages	M2	TRUE	NA	Macrophages|LowerConf Macrophages	67768	Macrophages_Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+263	CD16_CD163_CD206_CD68	Macrophages	M2	Macrophages	M2	TRUE	NA	LowerConf Macrophages|Macrophages	77526	Excluded Macrophages_Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+264	CD163_CD206_CD68	Macrophages	M2	Macrophages	M2	TRUE	NA	LowerConf Macrophages	83247	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68,CD163,CD206	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+265	CD14_CD4_CD68	Macrophages	Macrophages	Macrophages	Macrophages	TRUE		Monocytes	508	Monocytes	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+266	CD11b_CD14_CD16_CD68	Macrophages	Macrophages	Macrophages	Macrophages	TRUE		Monocytes	524	Monocytes	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+267	CD16_CD163_CD206_CD68_MHCII	Macrophages	Macrophages	Macrophages	Macrophages	NA	NA	Macrophages	8289	Macrophages	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+268	CD206_CD68	Macrophages	Macrophages	Macrophages	Macrophages	NA	NA	LowerConf Macrophages	10698	Excluded Macrophages	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+269	CD163_CD206_CD68	Macrophages	Macrophages	Macrophages	Macrophages	NA	NA	LowerConf Macrophages|Macrophages	22299	Excluded Macrophages_Macrophages	Vimentin,CD45,CD11b,CD14,CD68	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+270	CD11b_CD11c_CD14_CD16_CD56_CD66b_KIR2DL3_MCT4_MHCII_panactin_PDL1_TCRd_TIM3	Monocytes	Cytotoxic lymphocytes	Myeloid cells	mDC	FALSE		Monocytes	276	Monocytes	Vimentin,CD45,CD11b,CD11c	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+271	CD11b_CD11c_CD14_CD16_MHCII_TCRd	Monocytes	mDC	Myeloid cells	mDC	FALSE		Monocytes	628	Monocytes	Vimentin,CD45,CD11b,CD11c	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+272	CD45_CLEC9a	Leukocytes	Leukocytes	Myeloid cells	mDC	FALSE		LowerConf CD4 T cells	2056	Excluded CD4 T cells	Vimentin,CD45,CD11b,CD11c	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+273	CD11b_CD14_CD16_MCT4	Monocytes	Monocytes	Monocytes	Monocytes	TRUE	NA	Monocytes	498	Monocytes	Vimentin,CD45,CD11b,CD14	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+274	CD14_CD16	Monocytes	Monocytes	Monocytes	Monocytes	TRUE		Monocytes	1071	Monocytes	Vimentin,CD45,CD11b,CD14	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+275	CD11b_CD14_CD16	Monocytes	Monocytes	Monocytes	Monocytes	TRUE		Monocytes	1244	Monocytes	Vimentin,CD45,CD11b,CD14	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+276	CD14	Monocytes	Monocytes	Monocytes	Monocytes	TRUE		LowerConf Monocytes	3388	Excluded Monocytes	Vimentin,CD45,CD11b,CD14	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+277	CD163_CD38_CD66b_KIR2DL3_LAG3_TCRd	Macrophages	Tgd	Myeloid cells	Myeloid cells	FALSE	NA	LowerConf Macrophages	82	Excluded Macrophages	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+278	CD11b_CD38_CD66b_KIR2DL3_PDL1_TCRd	Myeloid cells	Tgd	Myeloid cells	Myeloid cells	FALSE	check	LowerConf Myeloid cells	87	Excluded Myeloid cells	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+279	CD11b_CD16_GZMB	Myeloid cells	Myeloid cells	Myeloid cells	Myeloid cells	TRUE	NA	LowerConf Myeloid cells	193	Excluded Myeloid cells	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+280	CD11b_CD14_CD20_CD73_CD79a	B cells	B cells	Myeloid cells	Myeloid cells	FALSE		Monocytes	264	Monocytes	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+281	CD11b_CD16_GZMB_KIR2DL3	Myeloid cells	NK cells	Myeloid cells	Myeloid cells	FALSE		Myeloid cells	1446	Myeloid cells	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+282	CD11b	Myeloid cells	Myeloid cells	Myeloid cells	Myeloid cells	TRUE		Myeloid cells|LowerConf Myeloid cells	9026	Myeloid cells_Excluded Myeloid cells	Vimentin,CD45,CD11b	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+283	CAIX_CD11b_CD14_CD16_IDO_KIR2DL3_LAG3_MCT4_MPO_TCRd_TIM3_VISTA	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE	check	Monocytes	116	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+284	CD11b_CD14_CD16_CD38_MPO	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE	check	Monocytes	261	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+285	CD11b_CD14_CD16_CD68_MPO	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	336	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+286	CD11b_CD68_CD73_CD79a_CLEC9a_MPO_panCK_PDL1	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Myeloid cells	364	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+287	CD11b_CD14_MPO_VISTA	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	518	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+288	CD11b_CD45_CLEC9a_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		LowerConf Myeloid cells	522	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+289	CD11b_GZMB_IDO_MCT4_MPO_PDL1	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		Myeloid cells	613	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+290	CD11b_CD14_GZMB_MPO	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	646	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+291	CD11b_CD14_CD16_CD163_CD56_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MPO_panactin_PDL1_TCRd_TIM3_VISTA	Macrophages	Cytotoxic lymphocytes	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	761	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+292	CAIX_CD103_CD11b_CD73_CLEC9a_GZMB_IDO_LAG3_MCT4_MPO_panCK_PDL1	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		Myeloid cells	789	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+293	CD11b_CD14_CD31_CD68_MPO_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	808	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+294	CAIX_CD11b_CD73_CLEC9a_GZMB_LAG3_MCT4_MPO_panactin_panCK	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		Myeloid cells	1208	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+295	CD11b_CD73_CLEC9a_MCT4_MPO_panactin	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	LowerConf Myeloid cells	1225	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+296	CD11b_CD68_GZMB_MCT4_MPO	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	LowerConf Myeloid cells	1235	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+297	CD11b_CD14_MPO	Monocytes	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Monocytes	1260	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+298	CD11b_CD38_GZMB_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	Myeloid cells|LowerConf Myeloid cells	1383	Myeloid cells_Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+299	CD11b_CD14_CD68_MPO_VISTA	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE		Monocytes	1481	Monocytes	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+300	CD11b_CLEC9a_GZMB_MPO_TCRd	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		Myeloid cells	1546	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+301	CD11b_GZMB_MPO_VISTA	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	LowerConf Myeloid cells	1546	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+302	CD11b_CLEC9a_GZMB_MCT4_MPO_PDL1_TCRd	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		LowerConf Myeloid cells	1749	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+303	CAIX_CD11b_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panCK_PDL1_VISTA	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	LowerConf Myeloid cells	1838	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+304	CD11b_CD68_CLEC9a_GZMB_MCT4_MPO_PDL1	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE		LowerConf Myeloid cells	1838	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+305	CD11b_GZMB_MPO_PDL1	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	LowerConf Myeloid cells	2066	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+306	CD11b_CD31_GZMB_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	Myeloid cells	2334	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+307	CD11b_CLEC9a_GZMB_MCT4_MPO_PDL1_VISTA	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	LowerConf Myeloid cells	2653	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+308	CD11b_GZMB_MPO_panCK	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	FALSE	check	LowerConf Myeloid cells	2660	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+309	CD103_CD11b_CLEC9a_GZMB_KIR2DL3_LAG3_MCT4_MPO_panCK_PDL1_TCRd_VISTA	Epithelial cells	Neutrophils	Myeloid cells	Neutrophils	FALSE	check	LowerConf Myeloid cells	2690	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+310	CD11b_CD68_GZMB_MPO	Macrophages	Neutrophils	Myeloid cells	Neutrophils	FALSE	NA	Myeloid cells	3109	Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+311	CD11b_GZMB_MCT4_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE		LowerConf Myeloid cells	3640	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+312	CD11b_CD14_CD163_CD68_MPO_VISTA	Macrophages	CD163+ Macrophages	Myeloid cells	Neutrophils	FALSE	NA	Macrophages	4270	Macrophages	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+313	CD11b_CLEC9a_GZMB_KIR2DL3_MCT4_MPO_PDL1_TCRd_VISTA	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	LowerConf Myeloid cells	4924	Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+314	CD11b_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	Myeloid cells|LowerConf Myeloid cells	5137	Myeloid cells_Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+315	CD11b_GZMB_MPO	Myeloid cells	Neutrophils	Myeloid cells	Neutrophils	TRUE	NA	Myeloid cells|LowerConf Myeloid cells	43195	Myeloid cells_Excluded Myeloid cells	Vimentin,CD45,CD11b,CD66b,MPO	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+316	CD31_CD38_CD56_CD79a_CLEC9a_LAG3_VISTA	Epithelial cells Region	Endothelial cells	B cells	Plasma cells	FALSE	NA	LowerConf Endothelial cells	3	Excluded Endothelial cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+317	CD38_CD56_CD68_CD79a_CLEC9a_LAG3_VISTA	Epithelial cells Region	Plasma cells	B cells	Plasma cells	FALSE	NA	LowerConf B cells	7	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+318	CD38_CD79a_GZMB_LAG3_VISTA	B cells	Plasma cells	B cells	Plasma cells	TRUE	NA	LowerConf B cells	57	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+319	CD20_CD38_CD45_CD56_CD79a_CLEC9a_LAG3_VISTA	B cells	B cells	B cells	Plasma cells	FALSE		LowerConf B cells	689	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+320	CD31_CD38_CD56_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_VISTA	B cells	Endothelial cells	B cells	Plasma cells	FALSE		B cells	1297	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+321	CD38_CD79a_LAG3_VISTA	B cells	Plasma cells	B cells	Plasma cells	TRUE		LowerConf B cells	1402	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+322	CD38_CD56_CD79a_KIR2DL3_LAG3_VISTA	B cells	Lymphocytes	B cells	Plasma cells	FALSE	NA	LowerConf B cells	1429	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+323	CD31_CD38_CD79a_VISTA	B cells	Endothelial cells	B cells	Plasma cells	FALSE	NA	B cells	1668	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+324	CD20_CD38_CD79a_GZMB_MPO	B cells	B cells	B cells	Plasma cells	FALSE		B cells	1856	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+325	CD11c_CD20_CD38_CD56_CD66b_CD79a_CLEC9a_KIR2DL3_LAG3_TCRd_VISTA	B cells	Cytotoxic lymphocytes	B cells	Plasma cells	FALSE	NA	LowerConf B cells	1992	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+326	CD38_CD56_CD79a_LAG3_VISTA	B cells	Plasma cells	B cells	Plasma cells	TRUE		LowerConf B cells	3490	Excluded B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+327	CD11c_CD20_CD79a_IDO_MHCII_panactin_panCK_PDL1	B cells	B cells	B cells	Plasma cells	FALSE	VISTA on B cells?	B cells	3520	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+328	CD20_CD206_CD38_CD56_CD68_CD79a_LAG3_VISTA	B cells	B cells	B cells	Plasma cells	FALSE	CD20 transitional expression?	B cells	4970	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+329	CD20_CD38_CD79a	B cells	B cells	B cells	Plasma cells	FALSE	NA	B cells	10655	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+330	CAIX_CD103_CD11c_CD14_CD163_CD20_CD3_CD31_CD38_CD56_CD66b_CD73_CD79a_CD8a_CLEC9a_IDO_KIR2DL3_LAG3_MCT4_MHCII_panactin_PD1_PDL1_TCRd_TIM3_VISTA	B cells	Lymphocytes	B cells	Plasma cells	FALSE	NA	B cells	11590	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+331	CD31_CD38_CD79a_LAG3_VISTA	B cells	Endothelial cells	B cells	Plasma cells	FALSE		B cells	17070	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+332	CD20_CD31_CD38_CD56_CD66b_CD79a_CLEC9a_IDO_KIR2DL3_LAG3_TIM3_VISTA	B cells	Lymphocytes	B cells	Plasma cells	FALSE		B cells	23573	B cells	Vimentin,CD45,CD79a,CD38	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+333	CD3	T cells	T cells - Other	T cells - Other	T cells - Other	TRUE	NA	T cells|CD4 T cells	12031	T cells_CD4 T cells	Vimentin,CD45,CD3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+334	CD3_CD4_CD45_CD8a_panactin_PD1	Epithelial cells Region	T cells DP	T cells - Other	T cells DP	FALSE	NA	LowerConf CD8 T cells	26	Excluded CD8 T cells	Vimentin,CD45,CD3,CD4,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+335	CD103_CD3_CD4_CD45_CD8a	Ambiguous	CD8 Trm	T cells - Other	T cells DP	FALSE		LowerConf CD8 T cells	550	Excluded CD8 T cells	Vimentin,CD45,CD3,CD4,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+336	CD11c_CD3_CD4_CD45_CD66b_CD8a_IDO_MHCII_panactin_PDL1_TIM3	Ambiguous	mDC	T cells - Other	T cells DP	FALSE	NA	LowerConf CD4 T cells	884	Excluded CD4 T cells	Vimentin,CD45,CD3,CD4,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+337	CD4_CD8a_IDO_PD1	CD4 T cells	PD1+CD27+ CD8 T cells	T cells - Other	T cells DP	FALSE		CD4 T cells	1904	CD4 T cells	Vimentin,CD45,CD3,CD4,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+338	CD3_CD4_CD45_CD8a	CD8 T cells	T cells DP	T cells - Other	T cells DP	FALSE	check	CD8 T cells	9697	CD8 T cells	Vimentin,CD45,CD3,CD4,CD8a	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+339	CD3_CD38_CD56_CD66b_CLEC9a_KIR2DL3_LAG3_MCT4_PDL1_TCRd	T cells	Cytotoxic lymphocytes	T cells - Other	Tgd	FALSE		LowerConf CD4 T cells	107	Excluded CD4 T cells	Vimentin,CD45,CD3,TCRd,KIR2DL3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+340	CD45_KIR2DL3_PDL1_TCRd	Leukocytes	Tgd	T cells - Other	Tgd	FALSE	NA	LowerConf CD4 T cells	812	Excluded CD4 T cells	Vimentin,CD45,CD3,TCRd,KIR2DL3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+341	CD3_TCRd	T cells	Tgd	T cells - Other	Tgd	TRUE	NA	LowerConf T cells	854	Excluded T cells	Vimentin,CD45,CD3,TCRd,KIR2DL3	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+342	CD163_CD206_CD45_CLEC9a_KIR2DL3_TCRd	Macrophages	Tgd	Unassigned	Unassigned	FALSE	check most likely	LowerConf Macrophages	767	Excluded Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+343	CLEC9a	Epithelial cells	Epithelial cells	Unassigned	Unassigned	FALSE		Epithelial cells	1008	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+344		Unassigned	Unassigned	Unassigned	Unassigned	TRUE		LowerConf Leukocytes|LowerConf LowerConf|LowerConf	2607	Excluded Leukocytes_Excluded Excluded_Excluded		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+345	CD206	Macrophages	CD206+ Macrophages	Unassigned	Unassigned	TRUE		Macrophages	3784	Macrophages		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+346	GZMB	Epithelial cells	Cytotoxic cells	Unassigned	Unassigned	FALSE		Epithelial cells	7915	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+347	CD56_CLEC9a_LAG3_panactin_TIM3	Epithelial cells	NK cells	Unassigned	Unassigned	FALSE		Epithelial cells	17405	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+348	CAIX	Epithelial cells	Epithelial cells	Unassigned	Unassigned	FALSE		Epithelial cells	18037	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+349	MPO	Epithelial cells	Neutrophils	Unassigned	Unassigned	FALSE	NA	Epithelial cells	20863	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+350	CD16	Epithelial cells	Epithelial cells	Unassigned	Unassigned	FALSE		Epithelial cells	29409	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+351	CD56	Epithelial cells	NK cells	Unassigned	Unassigned	FALSE		Epithelial cells	34760	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+352	CD38	Epithelial cells	Plasma cells	Unassigned	Unassigned	FALSE		Epithelial cells	38647	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+353	MHCII	Epithelial cells	Epithelial cells	Unassigned	Unassigned	FALSE		Epithelial cells	38719	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+354		Epithelial cells	Epithelial cells	Unassigned	Unassigned	FALSE		Epithelial cells	397721	Epithelial cells		NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+355	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	positivity	majorType	cellType	newMajor	newCellType	Review	Comment	count	clusters		

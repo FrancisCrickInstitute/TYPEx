@@ -1,0 +1,205 @@
+imagename	description	control
+P1_TMA001_L_20190508-roi_10	NuclearAggregates	aggregate
+P1_TMA005_R_20190619-roi_21	NuclearAggregates	aggregate
+P1_TMA001_R_20190508-roi_3	ambiguous	ambiguous
+P2_TMA005_R_20190619-roi_24	unassigned	Low identifiable cell count
+P2_TMA005_R_20190619-roi_1	unassigned	Low identifiable cell count
+P2_TMA005_L_20190619-roi_20	unassigned	Low identifiable cell count
+P1_TMA003_L_20190619_correct-roi_10	unassigned	Low identifiable cell count
+P2_TMA006_20190619_L-roi_22	ReviewSubset/DP	review
+P1_TMA005_R_20190619-roi_13	ReviewSubset	review
+P1_TMA005_R_20190619-roi_13	ReviewSubset	DP
+P1_TMA006_L_20190619-roi_6	ReviewSubset	DP
+P1_TMA005_R_20190619-roi_1	ReviewSubset	DP
+P1_TMA005_R_20190619-roi_16	ReviewSubset	DP
+P1_TMA006_L_20190619-roi_5	ReviewSubset	DP
+P1_TMA004_R_20190619-roi_8	ReviewSubset	DP
+P1_TMA006_L_20190619-roi_22	ReviewSubset	DP
+P1_TMA007_L_20190619-roi_3	ReviewSubset	DP
+P1_TMA007_L_20190619-roi_3	ReviewSubset	review
+P1_TMA002_R_20190619-roi_5	ReviewSubset	DP
+P1_TMA005_R_20190619-roi_2	ReviewSubset	DP
+P1_TMA005_R_20190619-roi_25	ReviewSubset	DP
+P1_TMA006_R_20190619-roi_16	WeakPanCK	exclude
+P1_TMA007_20190619-roi_5	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_8	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_20	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_5	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_14	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_7	WeakPanCK	exclude
+P2_TMA004_L_20190619-roi_26	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_20	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_5	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_6	WeakPanCK_Improved	exclude
+P2_TMA005_R_20190619-roi_14	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_10	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_4	WeakPanCK	exclude
+P2_TMA004_R_20190619-roi_13	WeakPanCK	exclude
+P2_TMA002_R_20190619-roi_2	WeakPanCK	exclude
+P2_TMA002_R_20190619-roi_15	WeakPanCK_Improved	exclude
+P2_TMA004_L_20190619-roi_6	WeakPanCK_Improved	exclude
+P2_TMA003_L_20190806-roi_10	WeakPanCK_Improved	exclude
+P2_TMA004_R_20190619-roi_19	WeakPanCK_Improved	exclude
+P2_TMA006_20190619_L-roi_15	WeakPanCK_Improved	exclude
+P2_TMA006_R_20190619-roi_14	WeakPanCK_Improved	exclude
+P2_TMA005_L_20190619-roi_7	WeakPanCK_Improved	exclude
+P1_TMA002_L_20190619-roi_5	WeakPanCK_Improved	exclude
+P1_TMA003_R_20190619-roi_9	WeakPanCK_Improved	exclude
+P1_TMA003_R_20190619-roi_12	WeakPanCK_Improved	exclude
+P1_TMA003_L_20190619_correct-roi_17	WeakPanCK_Improved	exclude
+P1_TMA003_L_20190619_correct-roi_15	WeakPanCK_Improved	exclude
+P1_TMA004_L_20190619-roi_13	WeakPanCK_Improved	exclude
+P1_TMA004_L_20190619-roi_15	WeakPanCK_Improved	exclude
+P2_TMA002_L_20190619-roi_5	WeakPanCK_Improved	exclude
+P1_TMA003_L_20190619_correct-roi_20	WeakPanCK_Improved	exclude
+P1_TMA001_L_20190508-roi_10	EdgeEffect	exclude
+P1_TMA001_R_20190508-roi_7	EdgeEffect	exclude
+P2_TMA001_R_20190508-roi_10	necrotic	excluded
+P1_TMA001_L_20190508-roi_11	necrotic	excluded
+P1_TMA001_R_20190508-roi_9	necrotic	excluded
+P1_TMA006_R_20190619-roi_18	necrotic	excluded
+P1_TMA001_R_20190508-roi_1	necrotic	excluded
+P2_TMA001_L_20190508-roi_14	necrotic	excluded
+P2_TMA004_L_20190619-roi_9	Artefacts	excluded
+P1_TMA004_L_20190619-roi_8	LN	review
+P1_TMA007_L_20190619-roi_12	Stromal_dispersed	review
+P1_TMA007_L_20190619-roi_6	Stromal_dispersed	review
+P1_TMA005_R_20190619-roi_24	Carcinosarcoma	review
+P1_TMA007_L_20190619-roi_9	Carcinosarcoma	review
+P2_TMA007_L_20190619-roi_12	Carcinosarcoma	review
+P2_TMA005_L_20190619-roi_2	Carcinosarcoma	review
+P2_TMA005_R_20190619-roi_20	Carcinosarcoma	review
+P2_TMA007_L_20190619-roi_6	Carcinosarcoma	review
+P1_TMA007_L_20190619-roi_9	Carcinosarcoma	review
+P1_TMA006_L_20190619-roi_15	NoStroma	review
+P1_TMA006_R_20190619-roi_4	Clear	review
+P1_TMA002_L_20190619-roi_18	LN	review
+P2_TMA001_R_20190508-roi_6	Myeloid	review
+P2_TMA001_L_20190508-roi_11	Myeloid	review
+P2_TMA007_R_20190619-roi_6	Myeloid	review
+P2_TMA003_R_20190619-roi_3	Myeloid	review
+P2_TMA007_L_20190619-roi_7	Myeloid	review
+P2_TMA006_R_20190619-roi_12	ReviewSubset	review
+P2_TMA007_L_20190619-roi_12	Carcinosarcoma	review
+P2_TMA005_L_20190619-roi_9	Carcinosarcoma	review
+P2_TMA005_L_20190619-roi_4	Carcinosarcoma	review
+P2_TMA006_20190619_L-roi_17	ReviewSubset	review
+P2_TMA002_L_20190619-roi_18	ReviewSubset	review
+P2_TMA005_L_20190619-roi_2	Carcinosarcoma	review
+P2_TMA005_R_20190619-roi_20	Carcinosarcoma	review
+P2_TMA007_L_20190619-roi_6	Carcinosarcoma	review
+P2_TMA007_L_20190619-roi_9	ReviewSubset	review
+P1_TMA001_L_20190508-roi_22	EdgeEffect	review
+P1_TMA006_L_20190619-roi_9	panCK_effect	review
+P1_TMA003_R_20190619-roi_7 cd4 review
+P1_TMA006_L_20190619-roi_22 cd4 review
+P1_TMA002_L_20190619-roi_14	panCK_Range	review
+P1_TMA002_L_20190619-roi_20	WeakPanCK	review
+P2_TMA002_L_20190619-roi_13	panCK_Range	review
+P2_TMA002_R_20190619-roi_7	WeakPanCK	save
+P1_TMA003_L_20190619_correct-roi_20	WeakPanCK	save
+P1_TMA006_L_20190619-roi_17	maxExp	stain
+P1_TMA005_R_20190619-roi_28	panCK_Range	stain
+P1_TMA002_L_20190619-roi_1	tonsil	tonsil
+P1_TMA002_R_20190619-roi_1	tonsil	tonsil
+P1_TMA003_L_20190619_correct-roi_1	tonsil	tonsil
+P1_TMA003_R_20190619-roi_1	tonsil	tonsil
+P1_TMA004_L_20190619-roi_1	tonsil	tonsil
+P1_TMA004_L_20190619-roi_1	tonsil	review
+P1_TMA004_R_20190619-roi_1	tonsil	tonsil
+P1_TMA005_R_20190619-roi_1	tonsil	tonsil
+P1_TMA006_L_20190619-roi_1	tonsil	tonsil
+P1_TMA006_R_20190619-roi_1	tonsil	tonsil
+P1_TMA007_20190619-roi_1	tonsil	tonsil
+P1_TMA007_L_20190619-roi_1	tonsil	tonsil
+P1_tonsil_end_20190508-roi_1	tonsil	tonsil
+P1_tonsil_end_L_20190508-roi_1	tonsil	tonsil
+P1_tonsil_end_R_20190508-roi_1	tonsil	tonsil
+P1_tonsil_restart_L_20190508-roi_1	tonsil	tonsil
+P1_tonsil_start_20190508-roi_1	tonsil	tonsil
+P1_tonsil_start_L_20190508-roi_1	tonsil	tonsil
+P1_tonsil_start_R_20190508-roi_1	tonsil	tonsil
+P2_TMA002_L_20190619-roi_1	tonsil	tonsil
+P2_TMA002_R_20190619-roi_1	tonsil	tonsil
+P2_TMA003_L_20190806-roi_1	tonsil	tonsil
+P2_TMA003_R_20190619-roi_1	tonsil	tonsil
+P2_TMA004_L_20190619-roi_1	tonsil	tonsil
+P2_TMA004_R_20190619-roi_1	tonsil	tonsil
+P2_TMA005_L_20190619-roi_1	tonsil	tonsil
+P2_TMA005_R_20190619-roi_1	tonsil	tonsil
+P2_TMA006_20190619_L-roi_1	tonsil	tonsil
+P2_TMA006_R_20190619-roi_1	tonsil	tonsil
+P2_TMA007_L_20190619-roi_1	tonsil	tonsil
+P2_TMA007_R_20190619-roi_1	tonsil	tonsil
+P2_tonsil_end_L_20190508-roi_1	tonsil	tonsil
+P2_tonsil_end_R_20190508-roi_1	tonsil	tonsil
+P2_tonsil_start_20190508-roi_1	tonsil	tonsil
+P2_tonsil_start_L_20190508-roi_1	tonsil	tonsil
+P1_TMA003_R_20190619-roi_11	tonsil	tonsil
+P1_TMA007_L_20190619-roi_15	tonsil	tonsil
+P2_TMA003_L_20190806-roi_15	tonsil	tonsil
+P2_TMA007_L_20190619-roi_15	tonsil	tonsil
+P2_TMA007_L_20190619-roi_15	tonsil	review
+P2_TMA002_R_20190619-roi_16	tonsil	tonsil
+P1_TMA002_R_20190619-roi_17	tonsil	tonsil
+P1_TMA004_R_20190619-roi_17	tonsil	tonsil
+P1_TMA004_L_20190619-roi_1	tonsil	tonsil
+P1_TMA003_L_20190619_correct-roi_18	tonsil	tonsil
+P2_TMA002_L_20190619-roi_19	tonsil	tonsil
+P2_tonsil_end_20190508-roi_2	tonsil	review
+P1_TMA002_L_20190619-roi_20	tonsil	tonsil
+P1_TMA002_L_20190619-roi_20	tonsil	review
+P1_TMA006_R_20190619-roi_20	tonsil	tonsil
+P2_TMA005_L_20190619-roi_20	tonsil	tonsil
+P2_TMA004_R_20190619-roi_21	tonsil	tonsil
+P2_TMA006_R_20190619-roi_21	tonsil	tonsil
+P2_TMA004_R_20190619-roi_22	tonsil	tonsil
+P2_TMA005_R_20190619-roi_22	tonsil	tonsil
+P2_TMA006_20190619_L-roi_23	tonsil	tonsil
+P2_TMA005_R_20190619-roi_24	tonsil	tonsil
+P1_TMA007_20190619-roi_7	tonsil	tonsil
+P2_TMA007_R_20190619-roi_7	tonsil	review
+P2_TMA003_R_20190619-roi_9	tonsil	tonsil
+P1_TMA006_L_20190619-roi_25	tonsil	tonsil
+P2_TMA006_20190619_L-roi_25	tonsil	review
+P1_TMA004_L_20190619-roi_26	tonsil	tonsil
+P2_TMA006_20190619_L-roi_26	tonsil	tonsil
+P2_TMA004_L_20190619-roi_27	tonsil	tonsil
+P1_TMA005_R_20190619-roi_35	tonsil	review
+P2_TMA004_20201217-roi_10	Adrenal - Metastasis	review
+P2_TMA017_20201217-roi_5	lowPanCK	review
+P2_TMA017_20201217-roi_2	lowPanCK	review
+P2_TMA017_20201217-roi_3	lowPanCK	review
+P2_TMA017_20201217-roi_4	lowPanCK	review
+P2_TMA004_20201217-roi_7	Brain  - Metastasis	review
+P2_TMA014_20201217-roi_5	Gastric - Metastasis	review
+P2_TMA016_20201217-roi_2	Kidney - Metastasis	review
+P2_TMA016_20201217-roi_4	Kidney - Metastasis	review
+P2_TMA001_2020716-roi_15	Large Bowel  - Metastasis	review
+P2_TX421_TMA001_20201217-roi_2	Liver  - Metastasis	review
+P2_TMA016_20201217-roi_7	Lung - Primary	review
+P2_TMA004_20201217-roi_4	Lymph Node  - Metastasis	review
+P2_TMA016_20201217-roi_1	Peritoneum - Metastasis	review
+P2_TMA015_20201217-roi_13	Peritoneum - Metastasis	review
+P1_TMA001_20200716-roi_1	Small Bowel  - Metastasis	review
+P1_TMA0001_20201217-roi_5	Small Bowel  - Metastasis	review
+P2_TMA002_20201217-roi_10	Subcutaneous - Metastasis	review
+P2_TMA015_20201217-roi_15	Subcutaneous - Metastasis	review
+P2_TMA017_20201217-roi_5	LowPanCK	review
+P2_tonsil_202009015_1_KE_HYPG-roi_1	tonsil	review
+P2_TMA001_2020716-roi_5	misc	review
+P2_TMA001_2020716-roi_9	misc	review
+P2_TMA001_2020716-roi_15	misc	review
+P2_Slide3_ASB_20200716_KE_HYPG-roi_1	misc	review
+P2_A_LTX0125-3E_F20_20200915-roi_5	misc	review
+P2_U_LTX0111-A1_F63_20200915-roi_1	misc	review
+P1_TMA0001_20201217-roi_1	misc	review
+P1_TMA001_20200716-roi_5	misc	review
+P1_TMA0001_20200716-roi_6	misc	review
+P1_TMA0001_20201217-roi_6	misc	review
+P1_TMA001_20200716-roi_8	misc	review
+P1_TMA0001_20201217-roi_8	misc	review
+P1_TMA001_20200716-roi_10	misc	review
+P1_TMA0001_20201217-roi_10	misc	review
+P1_TMA001_20200716-roi_11	LiverMeta	review
+P1_TMA0001_20201217-roi_11	LiverMeta	review

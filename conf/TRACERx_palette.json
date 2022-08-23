@@ -1,0 +1,124 @@
+{
+  "histology_subtypes":{
+    "LUAD":"#67001f",
+    "LUSC":"#053061",
+    "Other":"#bababa"
+  },
+  "tx_project_cohort":{
+    "Tx100":"#e08214",
+    "Tx421":"#8073ac"
+  },
+  "mutBurden_timing":{
+    "Subclonal_private":"#b2182b",
+    "Subclonal_shared":"#f4a582",
+    "Clonal_early":"#92c5de",
+    "Clonal_late":"#4393c3",
+    "Clonal_untimed":"#2166ac"
+  },
+  "tumour_mutsigs":{
+    "SBS1 (Aging)":"#A6CEE3",
+    "SBS2 (APOBEC)":"#FB9A99",
+    "SBS4 (Smoking)":"#B2DF8A",
+    "SBS5":"#33A02C",
+    "SBS6 (MSI)":"#1F78B4",
+    "SBS13 (APOBEC)":"#E31A1C",
+    "SBS17b":"#FDBF6F",
+    "unknown":"#bababa"	
+  },
+  "fusions":{	
+    "CD74-ROS1":"#A6CEE3",
+    "EML4-ALK":"#1F78B4",
+    "CCDC6-RET":"#B2DF8A",
+    "KIF5B-RET":"#33A02C",
+    "none":"#bababa"	
+  },	
+  "clinical_stage":{
+    "1a":"#EFF3FF",
+    "1b":"#BDD7E7",
+    "2a":"#6BAED6",
+    "2b":"#3182BD",
+    "3a":"#08519C"
+  },
+  "sample_type":{	
+    "progression":"#F4A460",
+    "primary":"#36648B",
+    "su_lymphnode":"#006400",
+    "relapse":"#F4A460"
+  },
+  "organ_site":{
+    "adrenal":"#EEB4B4",
+    "brain":"#BA55D3",
+    "bladder":"#FFD700",
+    "bone":"#CDC5BF",
+    "brain":"#BA55D3",
+    "cardiac":"#FF6347",
+    "gastric":"#A52A2A",
+    "kidney":"#8B475D",
+    "largebowel":"#8B7355",
+    "large bowel":"#8B7355",
+    "liver":"#8B4513",
+    "lymphnode":"#548B54",
+    "lymph node":"#548B54",
+    "lung":"#4682B4",
+    "oesophagus":"#8FBC8F",
+    "peritoneum":"#B03060",
+    "smallbowel":"#CDAA7D",
+    "small bowel":"#CDAA7D",
+    "softtissue":"#DB7093",
+    "soft tissue":"#DB7093",
+    "subcutaneous":"#FFF0F5",
+    "":"darkgrey", 
+    "N/A":"darkgrey"
+  },
+  "tissue_type":{
+    "Metastasis":"#D63515",
+    "Normal":"#1550D6",
+    "Primary":"darkgrey"
+  },
+  "clonal_simple":{
+    "Subclonal":"#D63515",
+    "Clonal":"#1550D6"
+  },
+  "smoking_status":{
+    "Never Smoked":"#187FC3",
+    "Ex-Smoker":"#878787",
+    "Smoker":"black"
+  },
+  "genome_doubling":{
+    "Subclonal":"#A6CEE3",
+    "Clonal":"#1F78B4",
+    "None":"#B2DF8A"
+  },
+  "evo_major_group":{
+    "No GD":"#40C659",
+    "Subclonal GD":"#BC5CEB",
+    "Second clonal GD":"#B15928",
+    "Clonal GD, high heterogeniety":"#E8504B",
+    "Clonal GD, low heterogeniety":"#1F78B4",
+    "Low smoking":"#EF8A34"
+  },
+  "evo_minor_group":{
+    "No GD, early stage":"#B2Df8A",
+    "No GD, hetergenous":"#33A02C",
+    "1st GD subclonal":"#CAB2DC",
+    "2nd GD Subclonal":"#6A3D9A",
+    "Second clonal GD":"#B15928",
+    "Clonal GD, ultra high heterogeniety":"#E31A1C",
+    "Clonal GD, high heterogeniety":"#FB9A99",
+    "Clonal GD, low heterogeniety":"#1F78B4",
+    "Low smoking high heterogeniety":"#FDBF6F",
+    "Low smoking EGFR MT":"#FF7F00"	
+  },
+  "General_RColourBrewer_palettes":{
+    "Ordered_or_categorical":"RdYlBu",
+    "Ordered_or_categorical_with_midpoint":"YlOrBr,Purples,Greens",
+    "Categorical":"Paired"
+  },
+  "Immune cluster":{
+    "High":"#eb8361ff",
+    "Stroma TIL enriched":"#e5e2c4ff",
+    "Myeloid enriched":"#987c6dff",
+    "Low":"#67a2caff"
+  },
+  "NA":"#bababa"
+}
