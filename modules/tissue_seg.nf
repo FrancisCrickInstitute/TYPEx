@@ -23,7 +23,7 @@ process create_composites {
 
     maxRetries 1
     tag "composites"
-//	label 'medium_mem'
+	//label 'medium_mem'
 
 	input:
 		path inDir
@@ -43,7 +43,7 @@ process run_classifier {
 
 	maxRetries 1
     tag "post-process"
-//	label 's'
+	// label 's'
 
 	input:
 		val files
@@ -52,7 +52,7 @@ process run_classifier {
 
 	script:
 	"""
-	   /ilastik-release/run_ilastik.sh --headless --project=$baseDir/model/Classifier_final_ts_simpler_3.ilp ${params.outDir}/composites/P1_TMA_REC*roi_5*tiff
+	   /ilastik-release/run_ilastik.sh --headless --project=$baseDir/model/Classifier_final_ts_simpler_3.ilp ${params.outDir}/composites/P2_TMA_REC*roi_5*tiff
 	"""
 }
 

@@ -2,7 +2,7 @@
 process compare_dp {
 
 	 tag "sub"
-        label 'xs'
+        label 'medium_mem'
         maxRetries 1
 
         input:

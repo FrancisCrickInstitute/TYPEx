@@ -16,15 +16,12 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 
 		print("Cell type assignment")
 		clusterNameFile=f("{runID}.clusterNames.txt")
-		clusterNames=assign_clusters(
-			dfExp = inData[, ..columnNames], 
-			clusters=runOutput,
-			run=pars$run,
-			runID=runID, 
-			panel=pars$panel,
-			magnitude=pars$magnitude,
-			fromList=ifelse(method=="cellassign", pars$markers, NA),
-			ilastik=pars$ilastik)
+		clusterNames=assign_clusters(dfExp = inData[, ..columnNames], 
+								clusters=runOutput,
+								run=pars$run, runID=runID, 
+								panel=pars$panel, magnitude=pars$magnitude,
+							   fromList=ifelse(method=="cellassign", pars$markers, NA),
+							   ilastik=pars$ilastik)
 		print(clusterNames)
 		print("Clusters assigned")
 		clusterNames$cluster = gsub('\\.', ' ', clusterNames$cluster)
@@ -37,30 +34,25 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		positive[is.na(positive)] = 'pos: neg:'
 		print("Getting tissue category")
 		print(pars$tissAreaDir)
-		tissue_categs=get_tissue_category(
-			cellIDs = gsub(".txt", "", ids),
-			run = pars$run, 
-			panel = pars$panel,
-			study=pars$study,
-			cohort=pars$cohort,
-			tissAreaDir=pars$tissAreaDir,
-			class="regional")
+		tissue_categs=get_tissue_category(cellIDs = gsub(".txt", "", ids), run = pars$run, 
+				panel = pars$panel, study=pars$study, cohort=pars$cohort, tissAreaDir=pars$tissAreaDir, class="regional")
 		print(head(tissue_categs))
+
+		#print("Getting vessel area")
+        #print(pars$vesselAreaDir)
+        #tissue_categs=get_tissue_category(cellIDs = gsub(".txt", "", ids), run = pars$run,
+        #        panel = pars$panel, study=pars$study, cohort=pars$cohort, 
+		#		tissAreaDir=pars$tissAreaDir, class="regional")
+
 		print('Major types')
-		majorTypes=assign_celltype(
-			names = positive, 
-			majorTypes=majorTypes,
-			markers = marker_gene_list[[pars$ref_markers]],
-			major = T, 
-			region=tissue_categs$Tumour)
+		majorTypes=assign_celltype(names = positive, majorTypes=majorTypes,
+							 markers = marker_gene_list[[pars$ref_markers]],
+							 major = T, region=tissue_categs$Tumour)
 		print(table(paste(positive, majorTypes)))
 		print("Getting marker expression")
-		meanFeature=get_markers_expression(
-			inData[, ..columnNames],
-			clusters=runOutput,
-            clusterNames = clusterNames, 
-			fun="mean", 
-            magnitude = pars$magnitude)
+		meanFeature=get_markers_expression(inData[, ..columnNames], clusters=runOutput,
+                                    clusterNames = clusterNames, fun="mean", 
+                                    magnitude = pars$magnitude)
 
 		print("Getting spatial coordinates")
 		spatData=load_files(file.path(nfDir, "LocationCenter"), run=pars$run)
@@ -92,15 +84,12 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 				clusterNames$major=NULL
 			}
 		}
-		clusterNames$majorType=assign_celltype(
-			names = clusterNames$positive,
-			majorTypes=clusterNames$major,
-			markers = marker_gene_list[[pars$ref_markers]],
-			major = T)
-		clusterNames$cellType=assign_celltype(
-			names = clusterNames$cellType, 
-			markers = markersList,
-			majorTypes = clusterNames$majorType)
+		clusterNames$majorType=assign_celltype(names = clusterNames$positive,
+										 majorTypes=clusterNames$major,
+										 markers = marker_gene_list[[pars$ref_markers]],
+										 major = T)
+		clusterNames$cellType=assign_celltype(names = clusterNames$cellType, markers = markersList,
+										majorTypes = clusterNames$majorType)
 		
 	  write.tab(clusterNames, file=clusterNameFile)
 	  print('Marker expression heatmap')

@@ -81,8 +81,10 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
       dir.create(dirname(runID), recursive=T)
      
     inMat=inData[rowsKeep, ..columnNames]
-	print(dim(inMat))
     colors=colors[rowsKeep] # toString
+	print(pars)
+	print(method)
+	print(pars[[method]])
     if(pars[[method]]$transformation != "none") {
       transformInput=match.fun(paste0("to_", pars[[method]]$transformation))
       inMat=transformInput(inMat)
@@ -211,10 +213,8 @@ run_FastPG<-function(inMat, p, colors) {
     if(nrClusters == 1) {
 	  print('Calling FastPG on all data')
 	  print(class(inMat))
-	  print(dim(inMat))
       Rout=FastPG::fastCluster(as.matrix(inMat), k=p[["k"]], num_threads=p[['num_threads']])
     } else {
-	   print(dim(inMat))
         Rout=tapply(1:nrow(inMat), colors, function(subset) {
           cluster=colors[subset[1]]
           outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
@@ -253,7 +253,6 @@ run_FastPG<-function(inMat, p, colors) {
     })
     summary=data.frame(do.call(rbind, summary), stringsAsFactors = F)
     clusters=as.character(summary$cluster[match(1:nrow(inMat), summary$row)])
-	cat('Number of clusters with na:', sum(is.na(clusters)), '\n')
     clusters[is.na(clusters)] = colors[is.na(clusters)]
   }
   
@@ -454,7 +453,7 @@ run_rtsne<-function(inMat, p, colors)  {
   outFile=paste0(p[["run_id"]], ".out.RData")
   inMatFile=paste0(p[["run_id"]], ".inMat.RData")
   if(!file.exists(outFile)) {
-    rtsne_out<-Rtsne(as.matrix(inMat),
+    rtsne_out<-Rtsne::Rtsne(as.matrix(inMat),
                        pca=as.logical(p[["pca"]]),
                        verbose=as.logical(p[["verbose"]]),
                        check_duplicates= p[["check_duplicates"]],
@@ -508,10 +507,11 @@ run_umap<-function(inMat, p, colors)  {
     out=umap::umap(data.table::setDF(inMat), random_state=555)
     save(out, colors, p, file = outFile)
   }
+  # plot only subsampled from each cluster
   umapPdf=paste0(p$run_id, ".umap.pdf")
   pdf(file=umapPdf, width=7, height = 7)
   names(clusterColors)=sort(unique(colors))
-  plotUmap(x=out, labels=colors, colors=clusterColors, legend=F, cex=0.2)
+  plotUmap(x=out, labels=colors, colors=palette$cellTypeColors, legend=T, cex=0.1)
   dev.off()
 }
 
@@ -538,7 +538,9 @@ get_probabilities <- function(cellIDs, clusters, probFile) {
 }
 
 get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL, fun="max") {
+
   if(!is.null(magnitude)) dfExp=to_magnitude(dfExp, magnitude)
+
   clusterNames$cluster=gsub('\\.', ' ', clusterNames$cluster)
   names=clusterNames$positive[match(clusters, clusterNames$cluster)]
   names=gsub("up:(.*) down:.*", "\\1", names)

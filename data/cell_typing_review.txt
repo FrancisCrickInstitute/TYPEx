@@ -91,8 +91,6 @@ P2_TMA007_L_20190619-roi_6	Carcinosarcoma	review
 P2_TMA007_L_20190619-roi_9	ReviewSubset	review
 P1_TMA001_L_20190508-roi_22	EdgeEffect	review
 P1_TMA006_L_20190619-roi_9	panCK_effect	review
-P1_TMA003_R_20190619-roi_7 cd4 review
-P1_TMA006_L_20190619-roi_22 cd4 review
 P1_TMA002_L_20190619-roi_14	panCK_Range	review
 P1_TMA002_L_20190619-roi_20	WeakPanCK	review
 P2_TMA002_L_20190619-roi_13	panCK_Range	review

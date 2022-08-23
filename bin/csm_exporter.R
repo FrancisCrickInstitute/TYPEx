@@ -17,13 +17,11 @@ arg_parser=add(arg_parser, arg="--subset", default="major",
 arg_parser=add(arg_parser, "--run", default="final", help="NextFlow run")
 arg_parser=add(arg_parser, "--panel", default="p2", help="Panel of markers")
 arg_parser=add(arg_parser, "--method", default="csm", help="Method")
-arg_parser=add(arg_parser, "--nndist", default=4, help="Distance from centroid")
+arg_parser=add(arg_parser, "--nndist", default=5, help="Distance from centroid")
 arg_parser=add(arg_parser, "--markers", default="mcsa", help="Subset of markers")
 arg_parser=add(arg_parser, "--cohort", default="peace", help="Subset of markers")
 arg_parser=add(arg_parser, "--study", default="tracerx", help="Subset of markers")
 arg_parser=add(arg_parser, "--tissAreaDir", default="tracerx", help="Subset of markers")
-
-
 
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 nndist=args$nndist

@@ -80,7 +80,7 @@ process plot_subsampled {
 	script:
     	"""
             export BASE_DIR=$baseDir
-			[[ ! -d "${params.outDir}/sampled/robustness/plots" ]] && mkdir "${params.outDir}/sampled/robustness/plots"
+			# [[ ! -d "${params.outDir}/sampled/robustness/plots" ]] && mkdir "${params.outDir}/sampled/robustness/plots"
 			matchedClusterStats.R --wDir "${params.outDir}/sampled/robustness" --outDir "${params.outDir}/sampled/robustness/plots"
 	    """
 }

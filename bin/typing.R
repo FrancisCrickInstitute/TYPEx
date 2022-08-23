@@ -76,7 +76,6 @@ for(feature in pars$features) {
   resample=F
   if('resample' %in% names(pars$method))
 		resample = pars[[pars$method]]$resample
-  print(f("{runID}.pars.yaml"))
   print((args$subset == sampledDir | resample) & !file.exists(f("{runID}.pars.yaml")))
   inData=load_files(inDir=inDir,
                     resample=(args$subset == sampledDir | resample) & !file.exists(f("{runID}.pars.yaml")),
@@ -96,9 +95,7 @@ for(feature in pars$features) {
   inData=inData[! imagenames %in% excludeIDs, ]
   cat("Excluded images", excludeIDs, '\n')
 	print(nrow(inData)) 
-
   if(pars$method %in% c("MC", 'umap', 'rtsne') |  pars$subset == subtypesDir) {
-
     refMethod=ifelse(pars$subset == subtypesDir & !pars$method %in% c('umap', 'rtsne'), "cellassign", pars[[pars$method]]$refMethod)
 	ref=args
 	ref$method=refMethod

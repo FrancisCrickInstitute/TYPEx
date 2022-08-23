@@ -6,8 +6,8 @@
 process format_input {
 
 	tag "Formating imctools output as input for typing"
+	executor = 'local'
 	label 'xs'
-	executor 'local'
 	
 	input:
 		tuple val(imageID), path(inFile)
