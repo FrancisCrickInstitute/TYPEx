@@ -245,7 +245,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
                 	                row_labels = markers,
             	                    column_labels = rowLabels,
         	                        heatmap_legend_param = list(title="Expressed marker", direction='horizontal', fontsize=8))
-	 			if(! grepl('mcsamy|mcsanov', runID)) {
+	 			if(! pars$stratify & ! pars$subset == majorDir) {
 	    			ht_list=heat %v%  bin
 			    	draw(ht_list, annotation_legend_side = "bottom", heatmap_legend_side = "bottom", merge_legend=T)
 				}
@@ -260,13 +260,22 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 		write.tab(stats, f('{runID}.major_stats.txt'))
 		
 		cellTypeColors=rep(unlist(palette$cellTypeColors), 2)
-		names(cellTypeColors) = c(names(palette$cellTypeColors), paste('Excluded', names(palette$cellTypeColors)))
-		cellTypeColors=palette$cellTypeColors[names(palette$cellTypeColors) %in% stats$cellType]
+		names(cellTypeColors) = c(names(palette$cellTypeColors), 
+			paste('Excluded', names(palette$cellTypeColors)))
+		cellTypeColors=cellTypeColors[names(cellTypeColors) %in% stats$cellType]
+		if(! length(cellTypeColors))	{
+			cellTypeColors=rainbow(length(stats$cellType))
+			names(cellTypeColors) = stats$cellType
+		}
+		
+		cellTypeColors[is.na(cellTypeColors)] = 'grey'
 		missing=unique(stats$cellType[! stats$cellType %in% names(cellTypeColors)])
-
+		cat("WARNING: No color annotation for the following celltypes: ", missing, 
+			". Amend in conf/celltype_colors.json\n", 
+			file = f("{runID}.log"), append = T)
+			print('CellType colors')
 		cellOrder = order(match(stats$cellType, names(cellTypeColors)))
 		stats$cellType = factor(stats$cellType, levels = unique(stats$cellType[cellOrder]))
-
 
 	    g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
     	plot = g + geom_bar(stat="identity", position =  'fill', color = 'grey40', alpha = 0.8) + 
@@ -346,23 +355,24 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
 	  dfExp = dfExp[clusters %in% clusterNames$cluster, ]
   	  clusters = clusters[clusters %in% clusterNames$cluster]
  }
-
+  clusterCount=length(unique(clusters))
   clusterNames$up = gsub("pos:(.*) neg:.*", "\\1", clusterNames$cellType_rev)
   positive=clusterNames$up[match(clusters, clusterNames$positive)]
   up=paste(clusters, positive)
-  dfExpMag=dfExp
+  dfExpMag=dfExp + .01
   medianVal=apply(dfExpMag, 2, median)
-  pdf(file=paste0(p$run_id, ".inMat.per_cluster.pdf"), width=7)
+  pdf(file=paste0(p$run_id, ".inMat.per_cluster.pdf"), width =  7 + round(clusterCount / 60),
+		height=5 + round(clusterCount / 60))
   par(mfrow=c(2, 2))
   for(.row in 1:nrow(clusterNames)) {
     cat(".")
     indices=which(clusters == clusterNames$cluster[.row])
     inFlt=dfExpMag[indices, ]
     boxplot(inFlt, outline=FALSE, 
-            main = with(clusterNames, paste("cluster:", cluster[.row], "\n", 
-                                            "positive:", gsub('pos:(.*)neg:', "\\1", positive[.row]), "\n")),
-              xlab=paste0("n=", length(indices), " cells"),  cex.main=0.7, las=1, 
-            ylim=c(min(dfExpMag), max(dfExpMag)), cex.lab=0.7, xaxt='n', log='y')
+            main = with(clusterNames, f("cluster:{cluster[.row]}\n",
+									gsub("_", "+", gsub('pos:(.*)neg:', "\\1", positive[.row])), "\n")),
+              ylab=paste0("n=", length(indices), " cells"),  cex.main=1, las=1, 
+            ylim=c(min(dfExpMag), max(dfExpMag)), cex.lab.x=1, xaxt='n', log='y')
     points(medianVal, pch = 23, col='red')
     axis(side=1, 1:ncol(inFlt), colnames(inFlt), las = 2, srt=90)
     # text(x=1:ncol(inFlt), y = par("usr")[3] - 0.45, labels=colnames(inFlt),
@@ -377,21 +387,21 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
   cat("\n")
   dev.off()
   
-  pdf(file=paste0(p$run_id, ".inMat.per_cell.pdf"), width=10)
+  pdf(file=paste0(p$run_id, ".inMat.per_cell.pdf"), width=7 + round(clusterCount / 60),
+		height=4 + round(clusterCount / 60))
   # par(mfrow=c(2, 2))
   for(cellMarker in colnames(dfExpMag)) {
     cat(".")
     values=dfExpMag[[cellMarker]]
     clNamesOrder=names(table(clusters))
-	print(clNamesOrder)
-    cols=get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
-	cols=cols[match(clusterNames$cluster, clNamesOrder)]
 
-    cols=sapply(cols, function(col) ifelse(length(grep('\\+', col)), 'red', 'transparent'))
-    # hist(values, breaks = 1000, main = cellMarker)
-    boxplot(values ~ clusters, col=cols,
-            las=1, xlab="", ylim=c(min(dfExpMag), max(dfExpMag)), cex.lab = 0.4, 
-            cex.main=.5, varwidth=F, outline=F,  log = "y", xaxt='n',
+    cols=get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
+		cols=cols[match(clusterNames$cluster, clNamesOrder)]
+
+    cols=sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
+    boxplot(values ~ clusters, col=cols, las=1, cex.lab = 0.4, 
+            cex.main=2, varwidth=F, outline=F,  log = "y", xaxt='n',
+						 xlab="", ylab = "", ylim=c(min(dfExpMag), max(dfExpMag)), 
             main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"), 
                         paste0("n=", length(indices), " cells")),)
     axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=90)

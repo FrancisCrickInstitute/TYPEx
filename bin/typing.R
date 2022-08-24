@@ -107,7 +107,7 @@ for(feature in pars$features) {
 	if('resample' %in% names(pars$method))
 		resample = pars[[pars$method]]$resample
 	toResample=(args$subset == sampledDir | resample) &
-		! file.exists(f("{runID}.pars.yaml"))
+		! file.exists(f("{runID}.clusters.RData"))
 	
 	inData=load_files(
 		inDir=inDir,
@@ -251,7 +251,7 @@ for(feature in pars$features) {
 				#	file           =f("${runID}.pars.yaml"))
 	}
 	cat(f("Analysis run {runID} finished in"),
-		end - start, "\n", file=f("{runID}."), append=T)
+		end - start, "\n", file=f("{runID}.pars.yaml"), append=T)
 	cat("Analysis for", runID, "finished in ", end - start, "\n")
 	cat(f("Settings and parameters are saved in the log file: {runID}.log"), "\n")
 }
