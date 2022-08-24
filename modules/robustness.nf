@@ -1,7 +1,7 @@
 
 process call_subsampled {
-        tag "rob"
-        label 'medium_mem'
+        
+		label 'medium_mem'
 
         input:
                 tuple val(iteration), val(method), val(markers)

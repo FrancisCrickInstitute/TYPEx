@@ -242,7 +242,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
  		 }
 		
  		minimise_combos = sapply(c('rare', 'low_frequency'),
-			function(x) pars$threshold[[x]])
+			function(x) pars$threshold[[x]]) %>% unlist
  		tcell_pct=sapply(1:nrow(mat), function(x)
 			sum(mat[x, minimise_combos]) / 
 						rowSums(mat[ x, ! colnames(mat) %in% c("V1", 'D')])
