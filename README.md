@@ -1,2 +1,2 @@
 # TYPEx
-Deep cell phenoTYPE characterisation using multipleX imaging 
+Deep cell phenoTYPe characterisation with multiplEX imaging
