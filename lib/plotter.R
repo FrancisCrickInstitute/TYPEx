@@ -129,12 +129,6 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
       tapply(t(dfExp[[x]]), as.factor(clusters), median)
     })
     
-   # clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
-	#clusterSummary=log2(clusterSummary)
-
-    # save(clusterSummary, labels, runID, clusterSize, file=f('{runID}.clusterSummary.RData'))
-    # load("/Users/angelom/Documents/presentations/20_12_09_TME_meeting/major_mcsa/30_0.67_none_FALSE.clusterSummary.RData")
-    
     clusterNorm=apply(clusterSummary, 2, to_zscore)
     density_scale=pretty(c(-4, 4))
 	labelsMatch=match(rownames(clusterNorm), labels$cluster)
@@ -167,8 +161,6 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
     	heat=ComplexHeatmap::Heatmap(t(clusterNormSub),
                                  na_col = "grey90",
 								 col = circlize::colorRamp2(density_scale, rev(brewer.pal(name = "RdBu", length(density_scale)))),
-                                 #col=colorRampPalette(colors = rev(brewer.pal(name = "RdBu", 3)))(255),
-                                 # col=colorRampPalette(colors = rev(brewer.pal(name = "Accent", 3)))(255),
                                  row_title_gp = gpar(fontsize=12),
                                  row_title_rot=0,
                                  border = "grey85",
@@ -189,7 +181,6 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
                                  show_heatmap_legend=T,
                                  # clustering_distance_rows='pearson',
                                  column_names_gp = gpar(fontsize = 8, angle=90))
-	   # print(heat)
 		print(unit(nrow(clusterSummary)/10, 'in'))
 		print(unit(ncol(clusterSummary)/5, "cm"))
     	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 

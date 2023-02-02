@@ -6,8 +6,3 @@
 | <img src="./doc/_static/typing3.png" width="30%" height="30%">  | ## Add description and quick start and
 ## Link to:
 http://tracerx-phlex.readthedocs.io/  |
-
-
- 
-
-

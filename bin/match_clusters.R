@@ -15,14 +15,14 @@ arg_parser=add(arg_parser, arg="--subset", default="sampled", help=paste0("The o
 arg_parser=add(arg_parser, arg="--method", default="Rphenograph", help=paste("Methods to be compared"))
 arg_parser=add(arg_parser, "--run", default="publication", help="NextFlow run")
 arg_parser=add(arg_parser, "--panel", default="p2", help="Panel of markers")
-arg_parser=add(arg_parser, "--markers", default="mcsa", help="Marker lists defined in TME_settings.R")
-arg_parser=add(arg_parser, "--subtype_markers", default="mcsa", help="Marker lists defined in TME_settings.R")
+arg_parser=add(arg_parser, "--markers", default="major_markers", help="Marker lists defined in TME_settings.R")
+arg_parser=add(arg_parser, "--subtype_markers", default="major_markers", help="Marker lists defined in TME_settings.R")
 arg_parser=add(arg_parser, arg="--ntasks", default=8, help="Number of threads")
 ## REFERENCE if sampled or full
 arg_parser=add(arg_parser, "--reference_subset", default="major",
                help=paste0("The output typing directory [", majorDir, sampledDir, "]"))
 arg_parser=add(arg_parser, "--reference_method", default="FastPG", help="Panel of markers")
-arg_parser=add(arg_parser, "--reference_markers", default="mcsa",
+arg_parser=add(arg_parser, "--reference_markers", default="major_markers",
                help="Marker lists defined in TME_settings.R")
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 
