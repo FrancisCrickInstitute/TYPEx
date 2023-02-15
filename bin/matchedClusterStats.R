@@ -12,9 +12,14 @@ source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/utilities.R'))
 arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
 
-arg_parser=add(arg_parser, arg="--wDir", default='output/sampled/robustness', help='Where typing results are')
-arg_parser=add(arg_parser, arg="--outDir", default='output/sampled/robustness/plots', help='Where typing results are')
-args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
+arg_parser=add(arg_parser, arg="--wDir", 
+	default='output/sampled/robustness',
+	help='Where typing results are')
+arg_parser=add(arg_parser, arg="--outDir",
+	default='output/sampled/robustness/plots',
+	help='Where typing results are')
+args=argparser::parse_args(arg_parser,
+	argv=commandArgs(trailingOnly=TRUE))
 
 inDir=args$wDir
 outDir=args$outDir
@@ -100,19 +105,6 @@ for(fileIn in inFiles) {
 		geom_text(aes(label=paste(round(pct, 1), '%' )), hjust=1.1)
 	print(plot)
 	dev.off()
-	#barplot(rev(overlap), main = '% Cells matching the reference', horiz = T, axisnames = F, col = 'aliceblue')
-	#text(x = 50, y =  1:length(overlap), labels = names(rev(overlap)))
-	#barplot(rev(clusterSizes), ylab = '% Rphenograph runs', horiz = T, axisnames = F, col = 'aliceblue')
-	#text(x = 20, y =  1:length(overlap), labels = names(rev(overlap)))
-	#plot(1:length(colorLabels), 1:length(colorLabels), type = "n", axes = F, xlab = "", ylab = "")
-	#legend("center", legend = names(colorLabels), cex = 0.3, bty = "n",
-	#	ncol = length(colorLabels)/4, horiz = F, pt.cex = 1.5, x.intersp = 1.2, y.intersp =1.2,
-	#	pch = 20, col = colorLabels, xpd = NA)
-	#print(labelNames)
-	#legend("bottom", legend = labelNames, cex = 0.3, bty = "n",
-#		ncol = length(colorLabels)/2, horiz = F, pt.cex = 1.5, x.intersp = 1.2, y.intersp = 1.2,
-#		pch = 20, col = colorLabels, xpd = NA)
-#	dev.off()
  
  # compare by cellType
 	cellTypes=lapply(1:length(results), function(x) gsub('Smooth muscle cells', 'Myofibroblasts', as.character(results[[x]]$cellType)))
@@ -221,38 +213,4 @@ for(fileIn in inFiles) {
         pch = 20, col = colorLabels, xpd = NA)
  
  dev.off()
- # browseURL(pdfOut)
-    # # Plot number of cells per cluster (using the same colors)
-    # pdf(paste0("Cluster_stats.", analysis_id, ".pdf"))
-    # colnames(clusters) = names(results)
-    # clusterStats = melt(clusters)
-    # # resultMrg = data.frame(do.call(rbind, lapply(results, function(x) cbind(cluster = x$cluster, uniqueID = x$uniqueID))))
-    # g <- ggplot(clusterStats, aes(as.factor(value), fill = as.factor(Var2)))
-    # # g <- ggplot(resultsMrg, aes(as.factor(cluster), fill = as.factor(uniqueID)))
-    # plot = g + geom_bar(position = "dodge", color = "darkgrey") + 
-    #   theme_classic() +
-    #   xlab("Cluster") + ylab("# Cells") +
-    #   theme(legend.position = "top", legend.title = element_blank()) +
-    #   scale_fill_manual(values = brewer.pal(length(results), "Set1"))
-    # print(plot)
-    # # using matched cluster names
-    # # calculate F1 score
-    # precision = data.frame(t(sapply(colnames(clusters)[-1], function(col) {
-    #   tp = sum(clusters[,col] == clusters[, 1], na.rm = T)
-    #   p = tp / sum(!is.na(clusters[,1]))
-    #   return(c(p = p, id = col))
-    # })), check.names = F)
-    # precision$p = as.numeric(as.character(precision$p))
-    # g <- ggplot(precision, aes( as.factor(id), y = p))
-    # plot = g + geom_bar(stat = "identity", 
-    #                     fill = "transparent", col = "black") +
-    #   theme_classic(base_size = 18) +
-    #   dththeme(axis.text = element_text(color = "black")) +:
-    #   xlab("") + ylab("Precision score")
-    # print(plot)
-    # dev.off() 
 }
-
-# Plot the content of the unassigned cells
-# Plot the content of the Immune clusters
-
