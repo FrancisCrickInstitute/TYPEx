@@ -1,0 +1,92 @@
+// Parameters for cell phenotyping
+{
+  // Channels that will be excluded from cell phenotype analysis
+  "channels_exclude":["Argon", "80ArAr", "131Xe", "134Xe", "DNA1",  "DNA2", "processed"],
+
+  // Exlude cells with an area smaller or eqiual to pars$area_exclude [area for raidus > 2 pixels]
+  "area_exclude":[12.5664],
+  
+  // Cells with zero expression for all markers will not be typed
+  "min_expresssion":[0],
+  
+  // 10 ** 6
+  "magnitude":[1000000],
+  
+  // Select a name/RegEx to match to the intensity column 
+  "features":["MeanIntensity"],
+  
+  // Markers used for detecting expression
+  "threshold":{
+      "markers":["CD3", "CD4", "CD8a"],
+	  "high_frequency":["CD3_CD4", "CD3_CD8a"],
+	  "variable":["CD4"],
+	  "low_frequency":["CD3"],
+	  "rare":["CD8a", "CD4_CD8a", "CD3_CD4_CD8a"]
+  },
+  
+  "dependentCell":[],
+
+  // Batch effects correction to be considered from the sample annotation table
+  "batch_effects":["TMA", "duplicate_core", "cohort"],
+  // CODEX "batch_effects":["TMA_12"],
+
+  // Method-specific parameters
+  "FastPG":{
+	  "k":[30],
+	  "resample_frac":[0.67],
+	  "num_threads":[2],	
+	  "transformation":["none"]
+  },
+  "Rphenograph":{
+	  "k":[30],
+	  "resample_frac":[0.67],
+	  "transformation":["none"]
+  },
+  "cellassign":{
+	  "transformation":["magnitude"],
+	  "learning_rate":[0.01],
+	  "shrinkage":[true],
+	  "resample_frac":[0.67],
+	  "verbose":[true]
+  },
+  "flowSOM":{
+	  "scale":[false],
+	  "rlen":[10000],
+	  "xdim":[10],
+	  "ydim":[10],
+	  "tSNE":[true],
+	  "maxClust":[80],
+	  "resample_frac":[0.67],
+	  "transformation":["none"]
+  },
+  "kmeans":{
+	  "centers":[30],
+	  "resample_frac":[0.67],
+	  "transformation":["none"]
+  },
+  "rtsne":{
+	  "pca":[false],
+	  "verbose":[true],
+	  "alpha":[0.5],
+	  "check_duplicates":[false],
+	  "nthread":[6],
+	  "resample_frac":[0.05],
+	  "transformation":["asinh"],
+	  "refMethod":["FastPG"],
+	  "resample":[true]
+  },
+  "umap":{"resample_frac":[0.2],
+	  "refMethod":["FastPG"],
+	  "resample":[true],
+	  "transformation":["asinh"]
+  }
+}
+
+
+// CODEX:
+// "threshold":{
+//      "markers":["CD3", "CD4", "CD8"],
+//      "high_frequency":["CD3_CD4", "CD3_CD8", "CD4"],
+//	"low_frequency":["CD3"],
+//     "rare":["CD8", "CD4_CD8", "CD3_CD4_CD8"]
+//}
