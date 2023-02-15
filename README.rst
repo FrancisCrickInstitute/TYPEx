@@ -2,7 +2,7 @@
 *No more hunt-and-pecking! Detecting single-cell protein expression and cell phenotyping with TYPEx*
 
 
-.. |workflow| image:: _files/images/typing4.png
+.. |workflow| image:: docs/source/_files/images/typing4.png
         :height: 200
         :alt: TYPEx workflow
 
