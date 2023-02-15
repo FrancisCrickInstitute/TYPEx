@@ -14,12 +14,16 @@ def helpMessage() {
     log.info(out)
 }
 
-def get_cell_files(imcyto) {
+def get_cell_files(imcyto, mccs) {
 
 	if(imcyto) {
 		println 'Processing files from deep-imcyto run'
 		// tuple (imageID, file)
-		cellFilePattern="${params.inDir}/${params.panel}/${params.run}/*/results/segmentation/**/Cells.csv"
+		if(mccs) {
+			cellFilePattern="${params.inDir}/deep-imcyto/${params.release}/consensus_cell_segmentation/**/cells.csv"
+		} else {
+			cellFilePattern="${params.inDir}/deep-imcyto/${params.release}/simple_segmentation/**/cells.csv"
+		}
 		samplePattern=cellFilePattern
 			.replaceAll('\\*', '.*')
 			.replaceAll('.\\*.\\*', '(.*)')
@@ -34,36 +38,33 @@ def get_cell_files(imcyto) {
 								.replaceAll('\\/', '-'),
 							file) }
 	} else {
-		// tuple ("-", file)
+		// tuple ("-", file) when sample pattern not provided
 		println 'Processing files independently from deep-imcyto'
-		println "${params.inDir}/**/${params.inputTable}"
 		cellFiles=Channel
-				.fromPath("${params.inDir}**/${params.inputTable}", relative:false)
+				.fromPath("${params.inputTable}", relative:false)
 				.map{ file -> tuple("-", file) }
 	}
 	cellFiles.view()
-	
 	return(cellFiles)
 }
 
 def get_imcyto_raw_masks() {
 
-
-	rawMasksPattern="${params.inDir}/${params.panel}/${params.run}/*/results/segmentation/**/raw*.tiff"
+	rawMasksPattern="${params.inDir}/deep-imcyto/PHLEX_test/imcyto/**/full_stack/*.tiff"
 	rawSamplePattern=rawMasksPattern.
 		replaceAll('\\*', '.*').
 		replaceAll('.\\*.\\*', '(.*)').
 		replaceAll('\\/+', '.')
+	println(rawSamplePattern)
 	rawMasks=Channel
         .fromPath("${rawMasksPattern}", relative:false)
     	.map{ file -> tuple(file.toString()
 							.replaceAll(rawSamplePattern, '$1')
-							.replaceAll('\\/', '-'), file) 
+							.replaceAll('\\/', '-'), file)
 		}
-		
+	rawMasks.view()
 	return(rawMasks)
 }
-
 
 
 def parse_json_file(overlayConfigFile) {
@@ -80,9 +81,13 @@ def get_tissue_masks_config(overlayConfigFile) {
 	/*  Overlay cell objects with segmented/annotated tissue regions. 
 	   Segmented tissue regions are either user-defined in tissue_segmentation.json 
 	   and/or produced with the workflow TISSEG */
+	   
 	Channel.fromPath(overlayConfigFile) | 
 			flatMap { parse_json_file(it) } |
 			map { entry -> tuple(entry.value.tissueDir,  entry.value.maskRegEx, 
 				entry.value.annotationName, entry.value.imgNameRegExIndex,
 				entry.value.regionRegExIndex)}
 }
+
+
+

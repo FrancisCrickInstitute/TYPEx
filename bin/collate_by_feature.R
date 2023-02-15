@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 # Collate files by feature
-# source("scripts/settings/settings.R")
 library(tidyr)
 source(glue::glue(Sys.getenv("BASE_DIR"), '/conf/settings.R'))
 source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/utilities.R'))
@@ -20,9 +19,6 @@ arg_parser=add(arg_parser, "--feature",
 	default="LocationCenter", help="Panel of markers")
 
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
-
-# outDir=f("{labwd}/analyses/imc/cell_objects/{args$study}/{args$cohort}")
-
 
 for(feature in args$feature) {
 

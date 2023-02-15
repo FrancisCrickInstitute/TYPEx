@@ -29,7 +29,6 @@ for (i = 0; i < slideDirList.length; i++) {
 
 	if(! endsWith(slideDirList[i], "_Probabilities.h5")) continue;
 		imgName = replace(slideDirList[i], "_Probabilities.h5", "");
-		//if(imgName != 'P2_TMA002_R_20190619-roi_3') continue;
 		print(imgName);
 		fileOut=outDirOverlay + "overlay_" + imgName +".png";
 		if(File.exists(fileOut)) continue;

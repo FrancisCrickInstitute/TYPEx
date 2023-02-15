@@ -1,124 +1,9 @@
 # Generic function
   
-assign_cluster_positivity <- function(dfExp, clusters, panel, run, runID,
-			fdr=0.05, log2=F, magnitude=10**5,
-			fromList=NA)  {
-				
-	# # panel="P1"; run="B"; fdr=0.05; log2=F; magnitude=10**6; runID="~/labwd/analyses/typing/test"
-	effect_field='AUC'
-	
-	scranPkg=packageVersion("scran")
-	if(scranPkg == "1.12.1") effect_field='overlap'
-	if(length(unique(clusters)) == 1)
-		return(
-			data.frame(cluster=rep(NA, length(clusters)), 
-					   name=rep(NA, length(clusters)))
-		)
-	if(! is.null(magnitude)) {
-		
-		cat('Magnitude transformation ', magnitude, '\n')
-		
-		dfExp=to_magnitude(dfExp, magnitude)
-	}
-	
-	if(log2) 
-	  dfExp=log2(dfExp + .1)
-	clusterSize=table(clusters)
-	clusterLabels=names(clusterSize)
-
-
-	if(! is.na(fromList)) {
-		cat('NOTE: Assigning based on the list of markers for the identified cell type\n')
-		positive=sapply(clusterLabels, function(cluster) {
-		  expressedMarkers=get_celltype_markers(marker_gene_list[[fromList]], cluster)
-		  paste0("up:", paste1(expressedMarkers), " ", "down:")
-		})
-		return(data.frame(
-					cluster=names(positive),
-					positive=positive))
-	}
-	
-	# Not required for the latest version of the scran package
-	if(! file.exists(f('{runID}.pairwise.RData'))) {
-
-		print('Runing pairwise')
-		# Get probabilities of overlap
-		wilcoxTestUp=scran::pairwiseWilcox(
-			t(dfExp), 
-			as.factor(clusters), 
-			direction="up")
-		# save(wilcoxTestUp, file = f("${runID}.wtu.RData"))
-		# print(packageVersion("scran"))
-		markersUp=scran::combineMarkers(
-			wilcoxTestUp$statistics, 
-			wilcoxTestUp$pairs, 
-			effect.field = effect_field) # previously overlap
-		rowNames=rownames(markersUp[[1]])
-		# Data frame with probabilities for each pairwise comparison
-		upDf=do.call(cbind, lapply(markersUp, function(x) x[rowNames, ]))
-		upDf=upDf[, grep(effect_field, colnames(upDf))]
-		# Summarise per marker
-		upStats=apply(upDf, 1, mean) + apply(upDf, 1, sd)
-		upDf=data.frame(upDf, check.names = F)
-		upDf = upDf %>% t %>%  as.data.frame
-		save(upDf, upStats, file = f('{runID}.pairwise.RData'))
-	
-	} else  {
-		load(f('{runID}.pairwise.RData'))
-	}
-  
-	
-	print('Assigning')
-    upDfConf=upDf[grep(f('.{effect_field}.Excluded.*'), rownames(upDf), invert = T), ]
-	upDfConf=upDfConf[grep('summary', rownames(upDfConf), invert = T),]
-    # New way
-    assigned=plot_overlaps(upDfConf, clusterLabels, runID, effect_field=effect_field)
-	if(pars$subset %in% c(majorDir, sampledDir) | ! pars$stratify ) {
-	    print('Determining threshold without stratification')
-		pars$threshold %>% print
-		positive=determine_threshold(
-			assigned, 
-			clusterSize, 
-			runID, 
-			confidence='all',
-			greater=F,
-			markers=pars$threshold[["markers"]])
-		return(
-			data.frame(
-				rbind(
-					cbind(
-						cluster=names(positive), positive=positive))
-		))
-	} else {
-		print('Determining threshold with stratification')
-		positiveHigh=determine_threshold(
-				assigned,
-				clusterSize,
-				runID,
-				confidence='high',
-				greater=F, 
-				markers=pars$threshold[["markers"]])
-				
-		positiveLow=determine_threshold(
-				assigned, 
-				clusterSize, 
-				runID, 
-				confidence='low',
-				greater=F,
-				markers=pars$threshold[["markers"]])
-
-		return(
-			data.frame(rbind(cbind(cluster=names(positiveLow), 
-									positive=positiveLow),
-							cbind(cluster=names(positiveHigh),
-									positive=positiveHigh))
-				)
-			)
-	}
-}
 
 determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
-		breakStep=0.001, greater = F, markers=c('CD3', 'CD8a', 'CD4')) {
+		
+		breakStep=0.0001, greater = F, markers=c('CD3', 'CD8a', 'CD4')) {
 		breaks=seq(0, 1, breakStep)
 		cat("Determining threshold with markers: ", markers, '\n')
 		# Determine separation by T cell markers
@@ -127,8 +12,6 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		} else {
 			stop("ERROR: Cell type-specific markers not provided for positivity calling")
 		}
-		
-
 
 		dfD=data.frame(assigned, check.names = F) %>% t %>% 
 			as.data.frame
@@ -139,11 +22,10 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			gsub('\\.([^.]+)$', '', .) %>% 
 			gsub('\\.', ' ', .) %>% 
 			gsub('^X([0-9]+)$', '\\1', .)
+
 		dfD=subset(dfD, !is.na(D))
 		mark=reshape2::dcast(formula = cluster ~ marker, data= dfD,
 					   		value.var = "D", fill = 0)
-
-		# mark[, -1]=apply(mark[, -1], 2, to_min_max)
 		if(confidence == 'low') {
 			mark=mark[ grep('Excluded', mark$cluster),]
 		} else if(confidence == 'high') {
@@ -186,40 +68,80 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		}
 		mat$D=breaks
 		signRange=range(dfD$D[dfD$pval <= .1])
-		print(signRange)
+		cat('Sign range:', signRange, '\n')
 
-		pdfOut=f('{runID}.positivity_kstest.{confidence}.pdf')
+		plotDir=f('{runID}_plots')
+		if(! dir.exists(plotDir))
+			dir.create(plotDir)
+		pdfOut=f('{plotDir}/positivity_kstest.{confidence}.pdf')
 		pdf(pdfOut, height=4, width = 4.5)
 
-		frequences=sapply(c("high_frequency", 'rare', 'low_frequency'), 
+		frequences=sapply(c("high_frequency", 'rare', 'low_frequency', 'variable'), 
 			function(x) pars$threshold[[x]]) %>% unlist
 		if(! all(frequences %in% colnames(mat))) {
 			cat(frequences[! frequences %in% colnames(mat)], ' is missing in ', 
 				colnames(mat), '\n')
-			stop("ERROR: Verify that the marker combinations in stratification.json as", 
-				pars$stratify_label, "are valid")
+			stop("ERROR: Verify that the marker combinations in typing_params.json are valid")
 		}
-		tcell_separation=apply(mat[, pars$threshold[['high_frequency']]], 1, sum) - 
-						 apply(mat[, pars$threshold[['rare']]], 1, sum)
-		print(colnames(mat))
-		
-		# only using high frequency as low may not be found in a small dataset
+		present=sapply(c("high_frequency", 'variable'),
+            function(x) pars$threshold[[x]]) %>% unlist
+		rare=sapply(c("low_frequency", 'rare'),
+            function(x) pars$threshold[[x]]) %>% unlist
+		lower_freq=sapply(c("low_frequency", 'variable'),
+			function(x) pars$threshold[[x]]) %>% unlist
+		# Convert to DF in case one column/combination specified
+		tcell_separation=apply(as.data.frame(mat[, present]), 1, sum) -
+					apply(as.data.frame(mat[, rare]), 1, sum)
+					
 		tcell_count=sapply(1:nrow(mat), function(x) {
+			presentCombos = present
 			all(
-				sapply(pars$threshold[['high_frequency']], 
-					function(combination) mat[x, combination] > 0)
-			) &  mat$D[x] >= signRange[1] & 
+				sapply(
+					presentCombos, function(combination) mat[x, combination] > 0
+				)
+			) & 
+			mat$D[x] >= signRange[1] & 
 			mat$D[x] <= signRange[2]
 		})
-		
-		# Previously excluded CD4 requirement here
+		print(table(tcell_count))
+		# only using high frequency low may not be found in a small dataset
 		if(all(! tcell_count)) 
 			tcell_count=sapply(1:nrow(mat), 
-				function(x) sum(mat[x, pars$threshold[['high_frequency']] ])  > 0)
+				function(x) all(mat[x, pars$threshold[['high_frequency']] ]) > 0 & 
+							mat$D[x] >= signRange[1] & 
+							mat$D[x] <= signRange[2])
+		print(table(tcell_count))
 		
+		if(all(! tcell_count)) 
+			tcell_count=sapply(1:nrow(mat), 
+				function(x) sum(mat[x, pars$threshold[['high_frequency']] ]) > 0) 
+		
+		tcell_frequency_cmp=sapply(1:nrow(mat), function(x) {
+			sum(sapply(pars$threshold[['high_frequency']], function(comb) mat[x, comb])) >
+				sum(sapply(lower_freq, function(comb) mat[x, comb]))
+		})
+		
+		#if(any(tcell_frequency_cmp)) {
+		#	print('Checking more frequent vs rare populations')
+		#	tcell_count = tcell_count & tcell_frequency_cmp
+		#}
+		
+		signInd=sapply(1:nrow(mat), function(x) {
+			mat$D[x] >= signRange[1] & mat$D[x] <= signRange[2]
+		})
+		
+		plot(mat$D, tcell_separation, pch=19, cex=0.1, 
+			main = 'Significance range')
+	    abline(v=mat$D[which(! signInd)],
+				col=rgb(red = 0.8, blue = 0.8, green = 0.8, alpha = 0.5))
+		plot(mat$D, tcell_separation, pch=19, cex=0.1, 
+			main = 'T cell count - high-freq sum')
+	    abline(v=mat$D[which(! tcell_count)],
+			col=rgb(red = 0.8, blue = 0.8, green = 0.8, alpha = 0.5))
+				
 		intervals=diff(tcell_count) == 1
 		if(sum(intervals) > 0) {
-
+			
 			# calculate the sizes of each tcell_count == true bin and select the largest bin
 			sizes=sapply(1:sum(intervals), function(x)	{
 				if(x == sum(intervals)) {
@@ -230,7 +152,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 				start=which(intervals)[x]
 				sum(tcell_count[start:end])
 			})
-    		start=which(intervals)[which.max(sizes)]
+    		start=max(which(intervals)[which.max(sizes)], min(signInd))
     		if(which.max(sizes) == sum(intervals))	{
       			end = max(which(tcell_count))
    		 	} else {
@@ -239,16 +161,24 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			}
 			tcell_count=rep(F, length(tcell_count))
 			tcell_count[start:end] = T
+			plot(mat$D, tcell_separation, pch=19, cex=0.1, 
+				main = f("Selected interval with size {max(sizes)}:{start}-{end}"))
+		    abline(v=mat$D[which(! tcell_count)],
+				col=rgb(red = 0.8, blue = 0.8, green = 0.8, alpha = 0.5))
  		 }
 		
- 		minimise_combos = sapply(c('rare', 'low_frequency'),
+ 		minimise_combos = sapply(c('rare'), #, 'low_frequency'
 			function(x) pars$threshold[[x]]) %>% unlist
+		maximise_combos = sapply(c('high_frequency'), #variable
+            function(x) pars$threshold[[x]]) %>% unlist
+		cat("CHECK: minimise these combos: ", minimise_combos, "\n",
+			append = T, file = f("{runID}.log"))
  		tcell_pct=sapply(1:nrow(mat), function(x)
-			sum(mat[x, minimise_combos]) / 
-						rowSums(mat[ x, ! colnames(mat) %in% c("V1", 'D')])
+			sum(mat[x, minimise_combos]) /
+				sum(mat[ x, c(minimise_combos, maximise_combos)])
+				#sum(mat[ x, ! colnames(mat) %in% c("V1", 'D')])
 		)
- 		plot(tcell_pct, tcell_separation)
-
+		print(colnames(mat))
 		if(! any(tcell_count))	{
 			cat('WARNING: No T cell count -> taking a threshold of 0.5,', 
 				' which matches wilcox.test differential expression at p=0.05\n',
@@ -261,43 +191,56 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 				append = T, file = f("{runID}.log"))
 			cat('INFO: Minimum tcell_count', min(tcell_pct[which(tcell_count)], na.rm = T), '\n')
 			cat('INFO: Range', range(tcell_pct[which(tcell_count)], na.rm = T), '\n')
-			Dsel=intersect(which(tcell_pct == min(tcell_pct[which(tcell_count)], na.rm = T)), which(tcell_count))
-			print(tcell_pct[Dsel])
-			cat('INFO: Dsel options', Dsel, '\n')
+			Dsel=intersect(which(tcell_pct == min(tcell_pct[which(tcell_count)], na.rm = T)), 
+						   which(tcell_count))
+						   
+			cat('INFO: Dsel index options', Dsel, '\n')
 			Dsel = max(Dsel)
-			threshold=round(mat$D[Dsel], 2)
-			plot(mat$D, tcell_pct, pch=19, cex=0.1)
+			threshold=mat$D[Dsel] # %>% round(., 2)
+			plot(mat$D, tcell_pct, pch=19, cex=0.1, ylim = c(0, 1), 
+				main = threshold)
 			abline(v=threshold, color = 'red', lty =2)
 			abline(v=mat$D[which(!tcell_count)], 
 				col=rgb(red = 0.8, blue = 0.8, green = 0.8, alpha = 0.5))
 			points(mat$D, tcell_pct, pch=19, cex=0.1, type='l')
-			plot(mat$D, tcell_separation, pch=19, cex=0.1)
-			abline(v=mat$D[Dsel], lty=2)
 			cat('Selected D cutoff ', mat$D[Dsel], 
 				' for confidence ', confidence, '\n')
 			cat('INFO: Selected D cutoff ', mat$D[Dsel], 
 				' for confidence ', confidence, '\n', append = T,
 				file = f("{runID}.log"))
-				
-			g <- ggplot(mat, aes(D))
-				         plot= g +
-				            geom_path(aes(y=`CD3_CD4_CD8` + 1, color="CD3_CD8a_CD4", linetype='CD3_CD8a_CD4'), size=.7) +
-				            geom_path(aes(y=`CD3` + 1, color="CD3"), size=.7) +
-				            geom_path(aes(y=`CD4_CD8` + 1, linetype='CD8a_CD4', color='CD8a_CD4'), size=.7) +
-				            geom_path(aes(y=`CD3_CD8` + 1 , color='CD3_CD8a'), size=.7) +
-				            geom_path(aes(y=`CD3_CD4` + 1, color='CD3_CD4'), size=.7) +
-				            geom_path(aes(y=`CD4` + 1, color='CD4', linetype='CD4'), size=.7) +
-				            geom_path(aes(y=`CD8` + 1, linetype='CD8a', color='CD8a_CD4a'), size=.7) +
-				            scale_color_manual(values= unlist(palette$tcellLines)) +
-				            scale_linetype_manual(values=unlist(palette$tcellLinetype)) +
-				            cowplot::theme_cowplot() +
-				            theme(legend.position = 'top', legend.title = element_blank()) +
-				            guides(color=guide_legend(nrow=3), linetype=guide_legend(nrow=3)) +
-				            # scale_y_log10() +
-				            ylab('Cell count')
-			print(plot)
-			print(plot + geom_vline(xintercept=threshold, linetype='dotted', color = 'grey80'))
+			cat("CHECK: % rare cell types (e.g. DP): ",
+				sum(mat[Dsel, grepv("_", pars$threshold[['rare']])]) / 
+					sum(mat[Dsel, grep('V1|^D',names(mat), invert=T)]) * 100, '\n',
+				file = f("{runID}.log"), append = T)
+			cat("CHECK: % rare cell types (e.g. Double positive T cells): ",
+				sum(mat[Dsel,  grepv("_", pars$threshold[['rare']])]), 
+				sum(mat[Dsel, grep('V1|^D', names(mat), invert=T)]) , '\n',
+					file = f("{runID}.log"), append = T)
+			cat("CHECK: % rare cell types (e.g. Double positive T cells): ", 
+				sum(mat[Dsel, grepv("_", pars$threshold[['rare']])]) / 
+					sum(mat[Dsel, grep('V1|^D', names(mat), invert=T)]) * 100, '\n')
 
+			# Plotting the counts for each possible threshold
+			groups=list('rare'=rare, 'present'=present, 'combined'=c(rare, present))
+			for(group in names(groups)) {
+				g <- ggplot(mat, aes(x = D))
+				for(combo in groups[[group]])	{
+		            g = g + geom_path(aes_string(y= f("{combo} + 1"), 
+						color=f('"{combo}"')), size=.7)
+				}
+				groups[[group]]= groups[[group]] %>% gsub('(.*)', '`\\1`', .)
+				string_formula=f(paste(groups[[group]], collapse = "+", sep = '+'), "+ 1")
+				g = g + geom_path(aes_string(y=string_formula), color="black", linetype="dashed", size=.7)
+				plot = g + 	scale_color_manual(values= unlist(palette$tcellLines)) +
+							scale_linetype_manual(values=unlist(palette$tcellLinetype)) +
+							cowplot::theme_cowplot() +
+							theme(legend.position = 'top', legend.title = element_blank()) +
+							guides(color=guide_legend(nrow=3), linetype=guide_legend(nrow=3)) +
+							scale_y_log10() +
+							ylab(f('Cell count [ {group} ]'))
+				print(plot + geom_vline(xintercept=threshold, linetype='dotted', color = 'black'))
+				
+			}
 			dev.off()
 		}
 		posAll=sapply(setdiff(colnames(mark), c('cluster', 'sizes')), function(m) {
@@ -323,196 +266,336 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		return(positive)
 }
 
-assign_celltype <- function(names, markers, majorTypes=NULL, region=NULL, major=F) {
 
+assign_cluster_positivity <- function(dfExp, clusters, panel, run, runID,
+			fdr=0.05, log2=F, magnitude=10**5,
+			fromList=NA)  {
+				
+	effect_field='AUC'
+	
+	scranPkg=packageVersion("scran")
+	if(scranPkg == "1.12.1") effect_field='overlap'
+	if(length(unique(clusters)) == 1)
+		return(
+			data.frame(cluster=rep(NA, length(clusters)), 
+					   name=rep(NA, length(clusters)))
+		)
+		
+	if(! is.null(magnitude)) {
+		cat('Magnitude transformation ', magnitude, '\n')
+		dfExp=to_magnitude(dfExp, magnitude)
+	}
+	
+	if(log2) 
+	  dfExp=log2(dfExp + .1)
+	clusterSize=table(clusters)
+	clusterLabels=names(clusterSize)
+
+	if(! is.na(fromList)) {
+		cat('NOTE: Assigning based on the list of markers for the identified cell type\n')
+		positive=sapply(clusterLabels, function(cluster) {
+		  expressedMarkers=get_celltype_markers(marker_gene_list[[fromList]], cluster)
+		  paste0("up:", paste1(expressedMarkers), " ", "down:")
+		})
+		return(data.frame(
+					cluster=names(positive),
+					positive=positive))
+	}
+	outDir=f('{runID}_aux/{effect_field}')
+	if(! dir.exists(outDir))
+		dir.create(outDir, recursive = T)
+	compFile=f('{outDir}/pairwise.RData')
+	# Not required for the latest version of the scran package
+	if(! file.exists(compFile)) {
+
+		print('Running pairwise comparisons')
+		# Get probabilities of overlap
+		wilcoxTestUp=scran::pairwiseWilcox(
+			t(dfExp), 
+			as.factor(clusters), 
+			direction="up")
+		# save(wilcoxTestUp, file = f("${runID}.wtu.RData"))
+		# print(packageVersion("scran"))
+		markersUp=scran::combineMarkers(
+			wilcoxTestUp$statistics, 
+			wilcoxTestUp$pairs, 
+			effect.field = effect_field)
+		rowNames=rownames(markersUp[[1]])
+		# Data frame with probabilities for each pairwise comparison
+		upDf=do.call(cbind, lapply(markersUp, function(x) x[rowNames, ]))
+		upDf=upDf[, grep(effect_field, colnames(upDf))]
+		# Summarise per marker
+		upStats=apply(upDf, 1, mean) + apply(upDf, 1, sd)
+		upDf=data.frame(upDf, check.names = F)
+		upDf = upDf %>% t %>%  as.data.frame
+		save(upDf, upStats, file = compFile)
+	} else  {
+		load(compFile)
+	}
+  
+	print('Assigning')
+	assigned=plot_overlaps(upDf, clusterLabels, runID, effect_field=effect_field)
+	if(pars$subset %in% c(majorDir, sampledDir) | ! pars$stratify ) {
+	    print('Determining threshold without stratification')
+		pars$threshold %>% print
+		positive=determine_threshold(
+			assigned, 
+			clusterSize, 
+			runID, 
+			confidence='all',
+			greater=F,
+			markers=pars$threshold[["markers"]])
+		return(
+			data.frame(
+				rbind(
+					cbind(
+						cluster=names(positive), positive=positive))
+		))
+	} else {
+		print('Determining threshold with stratification')
+		
+		positiveLow=determine_threshold(
+				assigned, 
+				clusterSize, 
+				runID, 
+				confidence='low',
+				greater=F,
+				markers=pars$threshold[["markers"]])
+				
+		positiveHigh=determine_threshold(
+				assigned,
+				clusterSize,
+				runID,
+				confidence='high',
+				greater=F, 
+				markers=pars$threshold[["markers"]])
+		
+
+		return(
+			data.frame(rbind(cbind(cluster=names(positiveLow), 
+									positive=positiveLow),
+							cbind(cluster=names(positiveHigh),
+									positive=positiveHigh))
+				)
+			)
+	}
+}
+
+
+assign_celltype <- function(names, markers, 
+	majorTypes=NULL, region=NULL, major=F, mostLikelyCellType=NULL) {
+	
 	markerNames=unlist(markers) %>% unique
 	cellTypeNames=get_celltypes(markers)
-	if(all(majorTypes %in% c('', 'Excluded')))
-		majorTypes=NULL
 	
-	if(!is.null(majorTypes)) 
-		names=paste(majorTypes, names, sep =  "|")
-	if(!is.null(region)) 
+	# Consider only high confidence majorType calls
+	# unassigned is not. the same as NULL/none
+	if(all(majorTypes %in% c('', 'Excluded')))
+		majorTypes = NULL
+	if(any(majorTypes %in% mostLikelyCellType)) {
+			majorTypes[majorTypes %in% mostLikelyCellType] = 'Unassigned'
+	}
+	if(!is.null(majorTypes))
+		majorTypes = majorTypes %>% 
+			gsub('Ambiguous .*', 'Ambiguous', .)
+	names=paste(majorTypes, names, sep =  "|")
+	if(!is.null(region))
 		names=paste(region, names, sep =  "=")
 	
 	clusters=sapply(unique(names), toString)
 	markerFrequency=unlist(markers) %>% table
 	
-	
 	markersList=get_node_list(markers)
-	
 	
 	celltypes=sapply(clusters, function(name) {
 		if(is.na(name))
 			name=""
 		region=strsplit(name, split="=")[[1]][1]
-		if(length(grep("\\|", region)))
+		if(is.na(region) | region=='NA' | 
+			region=='' | region == name |
+			grepl("\\|", region))
 			region="none"
-		if(is.na(region) | region=='NA' | region=='')
-			region="none"
-	    if(region == name)
-			region='none'
 
 	    majorType=gsub("^[^=]+=", "", name) %>% 
 			gsub("^([^|]+)\\|.*", "\\1", .)
-	    if(is.null(majorTypes))
+	    if(is.null(majorTypes) | 
+			grepl("Excluded", majorType) |
+			grepl("\\|", majorType))
 			majorType='none'
-	    if(length(grep("Excluded", majorType)))
-			majorType="none"
-	    if(length(grep("\\|", majorType)))
-			majorType="none"
-
-	    name=gsub("^[^|]+\\|", "", name) %>%
+		
+	    name=gsub("^[^|]*\\|", "", name) %>%
 			gsub("^[^=]+=", "", .) %>%
 			gsub("^[^:]+:([^ ]+).*", "\\1", .)
+		
+		considerTissueSeg=
+			majorType == 'none' &
+			region != 'none' & 
+			region > 0
 
 	    if(name %in% c("", "|", "NA"))
 	      if(majorType == "none" & region == "none") {
 	        return("Unassigned")
-	      } else if(majorType != "none" & 
-		  	majorType != 'Epithelial cells') {
+			} else if(majorType != "none") {
 	        return(majorType)
-	      } else if(region != 'none' & ! is.na(region) & region > 0) {
-	        # added if region == 1
+	      } else if(considerTissueSeg) {
+  	        # added if region == 1
 	        return("Epithelial cells - Tissue Segmentation")
-	      } else if(majorType != 'none') {
-	        return(majorType)
-	    }
+		}
 
 	    if(name == "Excluded")
 			return(name)
-		
-		# cat(name, region, majorType, '\n')
 	
 		# Split, format and select the celltype-specifc marker
-	    cellMarkers=strsplit(name, split="_")[[1]]
-	    cellMarkers=markers_format(cellMarkers)
-	    cellMarkers=intersect(cellMarkers, markerNames)
-	
+	    cellMarkers = strsplit(name, split = "_")[[1]]		
+	    cellMarkers = intersect(cellMarkers, markerNames)
+		cat(name, majorType, region, cellMarkers, major, '\n')
+		
 		if(! length(cellMarkers)) {
-
-	      if(grepl('Epithelial cells', majorType) & 
-			 region != 'none' & region != name & 
-		  	 region > 0) 
-			  return("Epithelial cells - Tissue Segmentation")
-	      if(majorType != "none") 
+	      if(majorType != "none")
 			  return(majorType)
-	      if(major & majorType != 'none') 
-			  return('Unassigned')
-	      if(region != 'none' & region != name & region > 0) 
+	      if(considerTissueSeg)
 			  return("Epithelial cells - Tissue Segmentation")
-	      if(majorType == 'Mesenchymal cells') 
-			  return(majorType)
 	      return("Unassigned")
 	    }
-		
-	    types=sapply(cellTypeNames, function(celltype) {
-			cellspecific_markers=markersList[[celltype]]
+	    types = sapply(cellTypeNames, function(celltype) {
+			cellspecific_markers = markersList[[celltype]]
 			all(cellMarkers %in% cellspecific_markers) &
 				length(cellMarkers) == length(cellspecific_markers)
 		})
-	    if(sum(types) == 1)  return(names(types)[types])
-
+	    if(sum(types) == 1) {
+			# complete overlap of all markers with the ones specified
+			return(names(types)[types])
+		}
+		# Is the combination of markers specific for one cell type
 	    intersect=sapply(cellMarkers, function(.mark1) {
-	      # if(.mark1 == "alphaSMA") return(1)
-	      sel1=sapply(cellTypeNames, function(celltype) 
-			  	.mark1 %in% markersList[[celltype]]
-		)
-	      sel1=cellTypeNames[sel1]
-	      sum(sapply(cellMarkers, function(.mark2) {
-	        if(.mark1==.mark2) return(0)
-				sel2=sapply(cellTypeNames, function(celltype) 
+			sel1=sapply(cellTypeNames, function(celltype)
+			  	.mark1 %in% markersList[[celltype]])
+			sel1=cellTypeNames[sel1] %>% unique
+			matching=sapply(cellMarkers, function(.mark2) {
+				if(.mark1==.mark2)
+					return(0)
+				sel2=sapply(cellTypeNames, function(celltype)
 					.mark2 %in% markersList[[celltype]]
 				)
-	        sel2=cellTypeNames[sel2]
-	        length(intersect(sel1, sel2))
-	      }))
+				sel2=cellTypeNames[sel2] %>% unique
+					if(!length(intersect(sel1, sel2))) return(0)
+						# cat(.mark1, .mark2, intersect(sel1, sel2), '\n')
+				intersect(sel1, sel2) %>% length
+			})
+			sum(matching)
 	    })
-		
+			
 		if(all(intersect == length(cellMarkers) - 1) & length(intersect) > 1) {
 			overlap=sapply(names(markers), function(celltype) {
 				all(cellMarkers %in% markersList[[celltype]])
 			})
-			if(any(overlap)) return(names(overlap)[overlap])
+			if(any(overlap))
+				return(names(overlap)[overlap])
 		}
 		
+		# Check if there are specific cell markers for different cell types
 		specificity=sapply(cellMarkers, function(.mark) {
-			# Vimentin is the only marker that distinguishes uniquely 
-			# a cell type but is found in others, EMT
-			if(.mark == "Vimentin" & ! major) 
-				return(F)
 			specific=unlist(markers) %in% .mark
-
 			return(sum(specific) == 1)
 		})
-		
-		# Consider if the cell belondgs to the tumour region
-		if(sum(specificity) > 1 & majorType == 'none' & 
-		  region != 'none' & region != name & region > 0) 
-			return("Epithelial cells - Tissue Segmentation")
-		if(sum(specificity) > 1 & majorType == 'none')
-			return("Ambiguous")
-		
-		#overlap=sapply(cellTypeNames, function(celltype) {
-		#	sum(cellMarkers %in% get_celltype_markers(markers, celltype))
-		#})
-		
+		if(sum(specificity) > 1) {
+	    	specific_cellTypes=sapply(cellMarkers[specificity], function(.mark1) {
+				sel1=sapply(cellTypeNames, function(celltype)
+					.mark1 %in% markersList[[celltype]]
+				)
+				sel1=cellTypeNames[sel1] %>% unique
+			})
+			nrSpecficCellTypes=specific_cellTypes %>%
+				unlist %>% unique %>% length
+			# Consider if the cell belondgs to the tumour region
+			if(nrSpecficCellTypes > 1  & considerTissueSeg)
+				return("Epithelial cells - Tissue Segmentation")
+			if(nrSpecficCellTypes > 1 & grepl('^Ambiguous|^none|Unassigned', majorType)) {
+				if(! major) 
+					return('Ambiguous')
+				return(paste("Ambiguous -",
+					paste(unlist(specific_cellTypes), collapse = ':', sep = ":")))
+			}
+		}
+
 		assigned=sapply(cellTypeNames, function(celltype) {
 			cellspecific_markers=markersList[[celltype]]
-			if(length(cellspecific_markers) == 0) return(0)
+			if(length(cellspecific_markers) == 0) 
+				return(0)
 
-			sum(sapply(cellspecific_markers, function(marker) {
-				if(! marker %in% names(markerFrequency)) return(0)
-					1 / markerFrequency[[marker]] * sum(marker %in% cellMarkers) *
-				sum(cellMarkers %in% cellspecific_markers) / length(cellspecific_markers)
+			weight = sum(sapply(cellspecific_markers, function(marker) {
+				if(! marker %in% names(markerFrequency))
+						return(0)
+				# The more frequently expressed the marker, the less weight it has
+				1 / markerFrequency[[marker]] * sum(marker %in% cellMarkers)
 			}))
+			weight = weight  * sum(cellMarkers %in% cellspecific_markers) / 
+						length(cellspecific_markers)
 		})
-		# sort(assigned)
+		
+		if(all(assigned == 0)) {
+			if(considerTissueSeg)
+				return("Epithelial cells - Tissue Segmentation")
+			if(! majorType %in% c('none', 'mostLikelyCellType'))
+				return(majorType)
+			return("Unassigned")
+		}
+		
+		if(! major & ! grepl('none|Unassigned|Ambiguous', majorType)) {
+			# reduce possible cell types to children of major
+			selectChild=sapply(names(assigned), function(x) {
+				if(assigned[x] == 0)
+					return(F)
+				 isChild(tree=markers, parent=majorType, child=x)
+			})
+			if(any(selectChild)) {
+				cat('Truncating assigned based on', majorType, 'to', names(assigned)[selectChild], '\n')
+				assigned=assigned[selectChild]
+			}
+			if(length(assigned) == 1) {
+				return(names(assigned))
+			}
+		}
+		
 		maxas=max(assigned, na.rm  = T)
-		
-		if(sum(assigned==maxas & maxas > 0, na.rm = T) > 1) {
-			if(! majorType %in% c("none")) 
-				return(majorType) 
-			if(region != 'none' & region != name & region > 0) 
-				return("Epithelial cells - Tissue Segmentation")
-			return("Ambiguous")
-		}
-		if(all(assigned == 0) & majorType != 'none') {
-			if(region != 'none' & region != name & region > 0) 
-				return("Epithelial cells - Tissue Segmentation")
-			if(majorType != 'Mesenchymal cells') 
-				return("Unassigned")
-			return(majorType)
+		assignedCelltype=names(assigned)[which(assigned == maxas)]
+		# if we rely on any specific markers in the absense of majorType, make sure the assigned type has them
+		if(sum(specificity) == 1 & grepl('none|Unassigned', majorType)) {
+			assignedMarkers=get_celltype_markers(tree=markers, assignedCelltype)
+			if(! any(names(specificity)[specificity] %in% assignedMarkers))
+				return('Ambiguous')
 		}
 		
-		if(length(intersect) > 1 & all(intersect == 0) & majorType != 'none') {
-			if(! majorType %in% c("none") & !major)
+		if(length(assignedCelltype) > 1) {
+			if(! majorType %in% c("none"))  {
 				return(majorType)
-			if(majorType != 'none' & region != 'none' & region != name & region > 0 & ! major)
+			}
+			if(considerTissueSeg) 
 				return("Epithelial cells - Tissue Segmentation")
-			if(majorType != "none") 
-				return(majorType)
-			return("Ambiguous")
+			return("Ambiguous - Multiple celltypes with equal score")
 		}
 		
-		if(major & sum(assigned == maxas, na.rm = T) > 1 & majorType != "none") 
-			return(majorType)
-		if(major & sum(assigned == maxas, na.rm = T) > 1 & 
-				majorType == "none" & 
-				region != 'none' & region != name &
-				region > 0) 
-			return("Epithelial cells - Tissue Segmentation")
-			
-		if(major & sum(assigned==maxas, na.rm = T) > 1 & majorType == "none") 
-			return('Unassigned')
+		if(length(intersect) > 1 & all(intersect == 0) & 
+				! majorType %in% c('none', "Unassigned")) {
+			if(! majorType %in% c("none") & ! major)
+				return(majorType)
+			if(considerTissueSeg & ! major)
+				return("Epithelial cells - Tissue Segmentation")
+			return("Ambiguous - Intersect")
+		}
 		
-		assignedCelltype=names(assigned)[which(assigned==maxas)]
 		# See if on the subtree of the majorType
-		if(! majorType %in% c('none', 'Unassigned'))
-			if(! isChild(tree=markers, parent=majorType, child=assignedCelltype))
-  			 	return('Ambiguous - For Review')
-		  
+		if(! grepl('none|Unassigned', majorType)) {
+			cat("CHECK:", majorType, name, '\n')
+			if(! isChild(tree=markers, parent=majorType, child=assignedCelltype)) {
+				if(! major) 
+					return(f('{assignedCelltype}'))
+				if(majorType != 'none')
+					return(majorType)
+			}
+		}
 		return(assignedCelltype)
 	})
 	celltypes[match(names, clusters)]
 }
+

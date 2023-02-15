@@ -5,14 +5,6 @@ convert_mat2fcs <- function(inMat)  {
   return(inMatFcs)
 }
 
-markers_format <- function(values)  {
-  # values = an array of protein names, the names of the ion Abs
-  return(gsub("vimentin", "Vimentin",
-              gsub("CASP3", "casp3",
-                   gsub("^aSMA.*","alphaSMA",
-                        gsub("pancytokeratin", "panCK", values)))))
-}
-
 # INPUTS
 get_region_info <- function(panel, cellIDs, featurePattern, regFile) {
 
@@ -231,7 +223,7 @@ get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
 		if(class == 'background')
 			return(data.frame(
 					Background=rep(NA, length(cellIDs)), 
-					region="Background"
+					region=NA
 					)
 			)
 		if(class == 'regional')
@@ -241,17 +233,18 @@ get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
 					# Immune=rep(NA, length(cellIDs)),
 					Stroma=rep(NA, length(cellIDs)),
 					Tumour=rep(NA, length(cellIDs)),
-					region="Background")
+					region=NA)
 			)
 			output=data.frame(rep(NA, length(cellIDs)), rep(NA, length(cellIDs)))
 			colnames(output) = c(f('non-{class}'), class)
 			return(output)
 	}
+	
 	data=data.table::fread(inFile)
-	if(class=="background")
+	if(class == "background")
 		data$regionID = abs(data$regionID - 255)/255
 	
-	tmp=subset(data, regionID > 0 & region != "Background")
+	tmp = subset(data, regionID > 0 & region != "Background")
 	categs=tmp[, lapply(.SD, paste1), .SDcols="region", by=c("imagename", "ObjectNumber")]
 	
 	wideDf=data.table::dcast(data, imagename + ObjectNumber + centerX + centerY ~ region, value.var="regionID")
@@ -266,7 +259,7 @@ get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
 	           .SDcols=unique(data$region)]
 		}
 	}
-	ind=match(cellIDs, with(wideDf, paste(ObjectNumber, imagename)))
+	ind = match(cellIDs, with(wideDf, paste(ObjectNumber, imagename)))
 	categories=c(names(table(data$region)), "region")
 	cbind(wideDf[ind, categories, with=F])
 }
@@ -309,25 +302,45 @@ get_tissue_categ_area <- function(samples, panel, category) {
 get_filtered_objects <- function(inData, celltypeModelFile) {
 	
   if(all(is.na(inData$probability))) {
-    	print('WARNING: Skipping stratification by confidence.')
-	  
+	  print('WARNING: Skipping stratification by confidence.')
 	  return(NULL)
   } else if(! file.exists(f(celltypeModelFile))) {
-	  return(inData$probability > 0.5)
-  }
-  
-  load(f(celltypeModelFile))
-  print(table(inData$cellType))
-  predictions=predict(model, newdata=inData, type="response", allow.new.levels=T)
-  predictions > modelCutoff
+	  cat('No stratification -> take lower quartile\n')
+	  thres=tapply(inData$probability, inData$cellType, function(subset) quantile(subset, .25, na.rm = T))
+		labels=names(table(inData$cellType))
+		names(thres) = labels
+		print(thres)
+		values=sapply(1:nrow(inData), 
+			function(x) is.na(thres[[inData$cellType[x]]]) |
+				inData$probability[x] > thres[[inData$cellType[x]]])
+		print(table(values))
+		return(values)
+ 	}
+	inData$meanIntensity=log2(to_magnitude(inData$meanIntensity, pars$magnitude) + 1)
+	load(f(celltypeModelFile))
+	print(table(inData$cellType))
+	predictions=predict(model, newdata=inData, type="response", allow.new.levels=T)
+	predictions > modelCutoff
 }
 
 # Comparison with flow
 get_marker_frequency <- function(data, marker, column="positivity") {
-  markerPattern=paste(paste0(marker, c("_", "$", " ")), collapse="|")
-  values=rep(f("{marker}-"), nrow(data))
-  values[grep(markerPattern, data[[column]])] = f("{marker}+")
-  return(values)
+	markerPattern=paste(paste0(marker, c("_", "$", " ")), collapse="|")
+	values=rep(f("{marker}-"), nrow(data))
+	values[grep(markerPattern, data[[column]])] = f("{marker}+")
+	return(values)
+}
+
+get_positive_combination <- function(data, combo, column='positive')  {
+  
+  markers=sapply(combo, function(x)
+    strsplit(x, split = '\\+|-')[[1]]) %>%
+    unlist %>% unique
+  pos = lapply(markers, function(x)
+    get_marker_frequency(data, x, column=column))
+  pos=do.call(paste, pos) %>%
+    gsub(' ', '', .)
+  pos==combo
 }
 
 review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssignFile) {
@@ -338,15 +351,15 @@ review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssi
   # if in the same branch, assign to subtype (lowest level)
   # CD56_CD79a_panactin_VISTA is assigned to  Lymphocytes
   positivity=gsub('pos:(.*) neg:', '\\1', positivity)
-	print(cellAssignFile)
-  if(!file.exists(cellAssignFile)) {
+  print(cellAssignFile)
+  if(! file.exists(cellAssignFile)) {
     return(cellTypes)
   }
   
   guide=read.delim(cellAssignFile, stringsAsFactors = F)
-  guide=subset(guide, !is.na(newCellType) & !is.na(newMajor))
+  guide=subset(guide, !is.na(newCellType) & !is.na(newMajorType))
   ind=match(paste(cellTypes, majorTypes, positivity),
-            with(guide, paste(cellType, majorType, positivity)))
+         with(guide, paste(OldCellType, OldMajorType, positive)))
   if(!all(is.na(ind))) {
     cellTypes[!is.na(ind)] = guide$newCellType[ind[!is.na(ind)]]
   }
@@ -359,27 +372,45 @@ review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssi
   return(cellTypes)
 }
 
-review_major_by_cellType <- function(cellTypes, majorTypes, positivity, cellAssignFile) {
+review_major_by_cellType <- function(cellTypes, majorTypes, positivity, 
+		cellAssignFile, subtypeMarkersList, majorMarkersList) {
+  
   # Stromal
-  if(!file.exists(f(cellAssignFile))) {
-   return(majorTypes)
+  if(file.exists(cellAssignFile)) {
+   
+	  positivity=gsub('pos:(.*) neg:', '\\1', positivity)
+	  # majorTypes[which(majorTypes == "Smooth muscle cells")] = "Myofibroblasts"
+	  guide=read.csv(f(cellAssignFile), sep='\t', stringsAsFactors = F)
+	  guide=subset(guide, !is.na(newCellType) & !is.na(newMajorType))
+	  ind=match(paste(cellTypes, majorTypes, positivity),
+	         with(guide, paste(OldCellType, OldMajorType, positive)))
+	  if(!all(is.na(ind))) {
+	    majorTypes[! is.na(ind)] = guide$newMajorType[ind[!is.na(ind)]]
+	  }
   }
-  positivity=gsub('pos:(.*) neg:', '\\1', positivity)
-  # majorTypes[which(majorTypes == "Smooth muscle cells")] = "Myofibroblasts"
-  guide=read.csv(f(cellAssignFile), sep='\t', stringsAsFactors = F)
-  guide=subset(guide, !is.na(newCellType) & !is.na(newMajor))
-  ind=match(paste(cellTypes, majorTypes, positivity),
-        with(guide, paste(cellType, majorType, positivity)))
-  if(!all(is.na(ind))) {
-    majorTypes[!is.na(ind)] = guide$newMajor[ind[!is.na(ind)]]
-  }
-  majorTypes=gsub('^CD4$', 'CD4 T cells', majorTypes)
-  majorTypes=gsub('^CD8$', 'CD8 T cells', majorTypes)
-  majorTypes=gsub('^T cells$', 'T cells - Other', majorTypes)
-  majorTypes=gsub('^Leukocytes$', 'Leukocytes - Other', majorTypes)
-  majorTypes=gsub('^Smooth muscle cells$', 'Myofibroblasts', majorTypes)
-  majorTypes[grepl('^Epithelial cells Region$', majorTypes)] = 'Epithelial cells'
-  return(majorTypes)
+  ambiguousIndices = grepl('Ambiguous|Unassigned', majorTypes) & 
+  	! grepl('Ambiguous|Unassigned', cellTypes)
+	
+	if(any(ambiguousIndices)) {
+		
+	    majorReview = sapply(unique(cellTypes[ambiguousIndices]), function(cellType) {
+	  		selectedMarkers = get_celltype_markers(subtypeMarkersList, cellType)
+	  		assign_celltype(paste(selectedMarkers, sep = "_", collapse = "_"), majorMarkersList, major = T)
+	    })
+	    majorTypes[ambiguousIndices] = sapply(which(ambiguousIndices), function(x) {
+	  	  cellType = gsub('For Review ', '', cellTypes[x])
+	  	  if(cellType %in% c('Ambiguous', 'Unassigned'))
+	  		  return(cellType)
+		  if(majorReview[x] %in% c("Unassigned"))
+			  return(cellType)
+		  if(cellType == 'CD4+ Myeloid cells')
+			  majorReview[x] = 'CD4+ Myeloid cells'
+	  	  majorReview[x]
+	    })
+	}
+	majorTypes[grepl('^Epithelial cells Region$', majorTypes)] = 'Epithelial cells'
+	
+	return(majorTypes)
 }
 
 summary_table <- function(inDf) {

@@ -1,23 +1,28 @@
 
 # Read in cell type annotations
 library(tidyr)
-baseDir=Sys.getenv('BASE_DIR')
-marker_gene_list=jsonlite::fromJSON(glue::glue("{baseDir}/conf/cell_type_annotation.json"))
-# Load parameters
-pars=jsonlite::fromJSON(glue::glue('{baseDir}/conf/typing_params.json'))
-pars_stratify=jsonlite::fromJSON(glue::glue('{baseDir}/conf/stratification.json'))
 
+# User-provided cell-type definitions
+annConf=Sys.getenv('ANN_CONF')
+cat('Reading cell-type annotation config', annConf, '\n')
+marker_gene_list=jsonlite::fromJSON(annConf)
+
+# Load parameters
+paramsConf=Sys.getenv('PARAMS_CONF')
+cat('Reading typing config', paramsConf, '\n')
+pars=jsonlite::fromJSON(paramsConf)
+
+# Color settings
+colConf=Sys.getenv('COL_CONF')
+cat('Reading typing config', colConf, '\n')
+palette=jsonlite::fromJSON(colConf)
 
 analysisPath="{subset}/{markers}/{method}"
 subtypesDir='subtypes'
 sampledDir='sampled'
 majorDir='major'
 
-txpalette=jsonlite::fromJSON(glue::glue("{baseDir}/conf/TRACERx_palette.json"))
-palette=jsonlite::fromJSON(glue::glue("{baseDir}/conf/celltype_colors.json"))
-
 dimred_methods=c('umap', 'rtsne')
-
 
 clusterColors=c( 
 		"#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",

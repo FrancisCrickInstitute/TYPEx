@@ -1,6 +1,3 @@
-#@String panel
-#@String runPattern
-#@Boolean mcd
 #@String rootDir
 
 // Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
@@ -11,7 +8,6 @@ directional='none';
 
 panck_thres=15
 
-
 setBatchMode(true);
 runs=getFileList(rootDir);
 print(runs.length + ' images in ' + rootDir);
@@ -19,76 +15,76 @@ print(runs.length + ' images in ' + rootDir);
 f = File.open('panck_range.txt');
 
 for (k=0; k < runs.length; k++)	{
-
-	if(startsWith(runs[k], "run")) {
 	
-		runDir=rootDir + runs[k] + "results/imctools/";
-		slideDirList=getFileList(runDir);
+	runDir=rootDir + runs[k];
+	slideDirList=getFileList(runDir);
 
-		for (h = 0; h < slideDirList.length; h++) {
-			roiList=getFileList(runDir + slideDirList[h]);
+	for (h = 0; h < slideDirList.length; h++) {
+		roiList=getFileList(runDir + slideDirList[h]);
 
-			for (j = 0; j < roiList.length; j++) {
-				tma=replace(slideDirList[h],  "/", "");
-				roi=replace(roiList[j], "/", "");
-				imgName=tma + "-" + roi;
+		for (j = 0; j < roiList.length; j++) {
+		
+			tma=replace(slideDirList[h],  "/", "");
+			roi=replace(roiList[j], "/", "");
+			imgName=tma + "-" + roi;
 
-				if(image != "all" && imgName != image)
+			if(image != "all" && imgName != image)
+				continue;
+			stacks=getFileList(runDir+slideDirList[h]+ roiList[j]);
+
+			if(stacks.length==0) continue;
+			fileOut='panckf_' + imgName + '.tif'; 
+
+			if(File.exists(fileOut)) {
+				print('File exists', fileOut);
+				continue;
+			}
+
+			newPanel=0;
+			for (m = 0; m < stacks.length; m++)	{
+				if(! endsWith(stacks[m], "full_stack/")) continue;
+				
+				imgDir=runDir + slideDirList[h] + roiList[j] + stacks[m];
+				print(imgDir);
+				if(stacks.length==0) {
+					print("ERROR: empty stack " + stacks[m] + "\n");
+					exit;
+				}
+				if(stacks[m] != "full_stack/")
 					continue;
-				stacks=getFileList(runDir+slideDirList[h]+ roiList[j]);
-
-				if(stacks.length==0) continue;
-				fileOut='panckf_' + imgName + '.tif'; 
-
-				if(File.exists(fileOut)) {
-					print('File exists', fileOut);
-					continue;
+				
+				if(File.isDirectory(imgDir)) {
+					imgList=getFileList(imgDir);
+					for ( i=0; i<imgList.length; i++ ) {
+					   	if(imgList[i] == '142Nd_CAM52.tiff' || imgList[i] == '142Nd_CAM52Nd142Di.tiff')
+						newPanel=1;
+						
+					}
 				}
 
-				newPanel=0;
-				for (m = 0; m < stacks.length; m++)	{
+				if(newPanel == 1) continue;
+				open(imgDir + "164Dy_panCK.tiff");
+				selectWindow("164Dy_panCK.tiff");
 
-					imgDir=runDir + slideDirList[h] + roiList[j] + stacks[m];
-					if(stacks.length==0) {
-						print("ERROR: empty stack " + stacks[m] + "\n");
-						exit;
-					}
-					if(stacks[m] != "full_stack/")
-						continue;
-					
-					if(File.isDirectory(imgDir)) {
-						imgList=getFileList(imgDir);
-						for ( i=0; i<imgList.length; i++ ) {
-						   	if(imgList[i] == '142Nd_CAM52.tiff' || imgList[i] == '142Nd_CAM52Nd142Di.tiff')
-							newPanel=1;
-							
-						}
-					}
+				autoAdjust();
+				getMinAndMax(min, max);
+				print(imgName, 'Tumour', min, max);
+				print(f, imgName + "\t" + 'Tumour' + '\t' + min + '\t' +  max);			
 
-					if(newPanel == 1) continue;
-					open(imgDir + "164Dy_panCK.tiff");
-					selectWindow("164Dy_panCK.tiff");
-
-					autoAdjust();
-					getMinAndMax(min, max);
-					print(imgName, 'Tumour', min, max);
-					print(f, imgName + "\t" + 'Tumour' + '\t' + min + '\t' +  max);			
-
-				//	print('Additional  filtering on the tumour intensities');
-					if(max < panck_thres) {
-						run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
-						run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
-						run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
-					} else {
-						run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
-					}
-					run('Median (3D)');
-					run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
-					singleMarkerImg="Tumour";
-					rename(singleMarkerImg);
-					saveAs('Tiff', 'panckf_' + imgName);
-					run("Close All");
+			//	print('Additional  filtering on the tumour intensities');
+				if(max < panck_thres) {
+					run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
+					run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
+					run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
+				} else {
+					run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
 				}
+				run('Median (3D)');
+				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
+				singleMarkerImg="Tumour";
+				rename(singleMarkerImg);
+				saveAs('Tiff', 'panckf_' + imgName);
+				run("Close All");
 			}
 		}
 	}

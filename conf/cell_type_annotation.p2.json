@@ -25,21 +25,19 @@
   		"aSMA+ cells":["Vimentin", "alphaSMA"],
 		"Smooth muscle cells":["alphaSMA"]
   	},
-  	"Epithelial cells":["panCK", "CAM52"]
+  	"Epithelial cells":["panCK"]
   },
   
   "subtype_markers":{
     "Leukocytes":{
 		"Leukocytes - Other":["Vimentin", "CD45", "CD103", "FAP1", "PD1"],
 		"Lymphocytes":{
-			// "Lymphocytes - Other": ["Vimentin", "CD45", "CD3", "CD4", "CD8a", "CD20", "CD79a", "CD16", "CD56", "KIR2DL3"],
 			"NK cells":["Vimentin", "CD45", "CD16", "CD56", "KIR2DL3"],
 		    "T cells":{
 				"T cells - Other":["Vimentin", "CD45", "CD3"],
 				"T cells DP":["Vimentin", "CD45", "CD3", "CD4", "CD8a"],
 				"Naive T cells":["Vimentin", "CD45", "CD3", "CD8a", "CD4", "CD45RA", "CD27"],
 				"Tgd":["Vimentin", "CD45", "CD3", "TCRd", "KIR2DL3"],
-				"Cytotoxic lymphocytes":["Vimentin", "CD45", "CD16", "CD56", "KIR2DL3", "CD3", "TCRd"],
 				"CD8 T cells": {
 					"CD8 T cells - Other":["Vimentin", "CD45", "CD3", "CD8a", "CD38", "CD16"],
 					"CD8 Tcm":["Vimentin", "CD45", "CD3", "CD8a", "CD27", "CCR7"],
@@ -69,8 +67,7 @@
 		    "B cells":{
 				"B cell lineage":["Vimentin", "CD45", "CD79a"],
 		    	"B cells":["Vimentin", "CD45", "CD20", "CD79a"],
-		    	"Plasma cells":["Vimentin", "CD45", "CD79a", "CD38"],
-		    	"Memory B cells":["Vimentin", "CD45", "CD20", "CD79a", "CD27"]
+		    	"Plasma cells":["Vimentin", "CD45", "CD79a", "CD38"]
 			}
 		},
 		"Myeloid cells": {
@@ -85,48 +82,16 @@
 		    		"CD206+ Macrophages":["Vimentin", "CD45", "CD11b", "CD14", "CD68", "CD206"]
 				}
 			},
-		    "Granulocytes":{
-				"Granulocytes - Other":["Vimentin", "CD45", "CD11b", "CD66b"],
-				"Neutrophils":["Vimentin", "CD45", "CD11b", "CD66b", "MPO"]
-			},
-		    "mDC":["Vimentin", "CD45", "CD11b", "CD11c"]
+			"Neutrophils":["Vimentin", "CD45", "CD11b", "CD66b", "MPO"],
+			"Granulocytes - Other":["Vimentin", "CD45", "CD11b", "CD66b"],
+			"mDC":["Vimentin", "CD45", "CD11b", "CD11c"]
 		}
 	},
 	"Endothelial cells":["Vimentin", "CD31", "alphaSMA"],
 	"Mesenchymal cells":{
 		"Mesenchymal cells - Other":["Vimentin"],
-		"aSMA+ cells":["Vimentin", "alphaSMA"],
-		"Fibroblasts":["Vimentin", "alphaSMA", "FAP1"]
+		"aSMA+ cells":["Vimentin", "alphaSMA"]
 	},
-	"Epithelial cells":["panCK", "CAM52"]
-  },
-  
-  "major_codex":{
-	  
-      "Leukocytes":{
-  		"Leukocytes - Other":["Vimentin", "CD45"],
-  		"Lymphocytes":{
-  		    "T cells":{
-  				"T cells - Other":["Vimentin", "CD45", "CD3"],
-  				"CD8 T cells":["Vimentin", "CD45", "CD3", "CD8"],
-  				"CD4 T cells":["Vimentin", "CD45", "CD3", "CD4"]
-  			},
-  		    "B cells":["Vimentin", "CD45", "CD20"]
-			//"NK cells":["Vimentin", "CD45", "CD56"]
-  		},
-  		"Myeloid cells": {
-  		    "Myeloid cells - Other":["Vimentin", "CD45", "CD11b"],
-			"Granulocytes":["Vimentin", "CD45", "CD11b", "CD15", "GFAP"],
-  		    "Macrophages":["Vimentin", "CD45", "CD11b", "CD68", "CD163"]
-  		}
-	},
-	"Endothelial cells":["Vimentin", "CD31"],
-	"Mesenchymal cells":{
-		"Mesenchymal cells - Other":["Vimentin"],
-  		"aSMA+ cells":["Vimentin", "aSMA"],
-		"Smooth muscle cells":["aSMA"]
-  	},
-	"Nerves":["GFAP"], //Non-specific, also Schwann cells, Neutrophils, Mac?
-  	"Epithelial cells":["Cytokeratin"]
+	"Epithelial cells":["panCK"]
   }
 }

@@ -13,7 +13,7 @@ source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/summary.R'))
 arg_parser=argparser::arg_parser("Summarize celltype-specific mask results")
 add=argparser::add_argument
 arg_parser=add(arg_parser, "--inDir", help="Input directort")
-arg_parser=add(arg_parser, "--celltypeReviewFile",
+arg_parser=add(arg_parser, "--regFile",
 	help="Input directory")
 arg_parser=add(arg_parser, arg="--subset", 
 	default="major", help=paste("major", "subtypes", "sampled"))
@@ -121,13 +121,14 @@ for(panel in names(data))	{
     data.table::fwrite(dfCell, file = f("{runID}.clusters.txt"), sep = "\t")
     cat("Output saved in", runID, "\n")
 		
-    if(file.exists(args$celltypeReviewFile)) {
+
+	metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
+	if("useImage" %in% colnames(metaDf)) {
 			
-      cellTypeReview=read.delim(args$celltypeReviewFile, stringsAsFactors = F)
-      controls=unique(cellTypeReview$control)
+      controls=unique(metaDf$useImage)
       for(subset in controls) {
 				
-        IDs=cellTypeReview$imagename[cellTypeReview$control == subset]
+        IDs=cellTypeReview$imagename[metaDf$useImage == subset]
         if(! sum(dfCell$imagename %in% IDs)) 
 			next
 		fst::write.fst(dfCell[ dfCell$imagename %in% IDs, ], 

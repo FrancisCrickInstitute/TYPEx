@@ -13,11 +13,14 @@ arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
 
 arg_parser=add(arg_parser, arg="--wDir", default='output/sampled/robustness', help='Where typing results are')
-arg_parser=add(arg_parser, arg="--outDir", default='output', help='Where typing results are')
+arg_parser=add(arg_parser, arg="--outDir", default='output/sampled/robustness/plots', help='Where typing results are')
 args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 
 inDir=args$wDir
 outDir=args$outDir
+
+if(! dir.exists(outDir))
+	dir.create(outDir)
 
 inFiles=list.files(inDir, pattern='matchedLabels.*.RData')
 
@@ -26,7 +29,7 @@ for(fileIn in inFiles) {
 	load(f("{inDir}/{fileIn}"))
 	analysisID=gsub('matchedLabels.(.*).RData', '\\1', fileIn)
 	pdfOut = f("{outDir}/matchedClustersComparison.{analysisID}.pdf")
-	tiffOut = f("{outDir}/matchedClustersComparison.{analysisID}.tiff")
+	pngOut = f("{outDir}/matchedClustersComparison.{analysisID}.png")
 	clusterSizes = sapply(clusters, function(x) length(unique(x)))
 	
 	clusterStats = table(clusters[[1]])
@@ -37,9 +40,10 @@ for(fileIn in inFiles) {
 	clLabels=unique(unlist(sapply(1:length(clusters), function(x) unique(clusters[[x]]))))
 	clusterColorsOrd=clusterColors[order(match(unique(clLabels), names(clusterStats)))]
 
-
-	colorMat = WGCNA::labels2colors(as.data.frame(clusters), colorSeq=clusterColorsOrd)
-	colorLabels=sapply(1:length(clusters), function(x) tapply(colorMat[,x], clusters[[x]], unique))
+	colorMat = WGCNA::labels2colors(as.data.frame(clusters), 
+		colorSeq = clusterColorsOrd, naColor = 'white')
+	colorLabels=sapply(1:length(clusters), 
+		function(x) tapply(colorMat[,x], clusters[[x]], unique))
 	colorLabels=unlist(colorLabels)
 	colorLabels=colorLabels[!duplicated(names(colorLabels))]
 	cellOrder = order(match(names(colorLabels), names(clusterStats)))
@@ -66,13 +70,13 @@ for(fileIn in inFiles) {
 	print(clusterNames)
 
 	# Add cluster sizes and iteration # 
-#	if(!file.exists(pngOut)) {
-		print(tiffOut)
-		tiff(filename = tiffOut, res = 200, width = 5, height=1.5, units = 'in', type = 'cairo')
+#	if(!file.exists(pdfOut)) {
+		print(pngOut)
+		png(filename = pngOut, res = 200, width = 5, height=1.5, units = 'in', type = 'cairo')
 		par(mar = c(0.5, 0.5, 0.5, 0.5))
 		plotOrderedColors(colors = colorMat, order = clusterOrder, rowLabels = names(colorMat))
 		dev.off()
-   # browseURL(pngOut)
+   # browseURL(pdfOut)
 #	}
  
 	overlap=data.frame(t(sapply(1:length(clusters), function(x) {
@@ -118,6 +122,8 @@ for(fileIn in inFiles) {
 	cellCols=cellCols[order(names(cellCols))]
 	print(unique(unlist(cellTypes)))
 	print(table(unlist(cellTypes)))
+	print(names(palette$cellTypeColors))
+	print(unique(cellTypes)[is.null(cellCols)])
 	print(cellCols)	
 	colorMat  = WGCNA::labels2colors(as.data.frame(cellTypes), colorSeq = cellCols, naColor = 'white')
 	colorLabels=sapply(1:length(cellTypes), function(x) tapply(colorMat[,x], cellTypes[[x]], unique))
@@ -132,8 +138,8 @@ for(fileIn in inFiles) {
 		matchInd[is.na(cellTypes[[x]])] = NA
 		matchInd
 	}))
-	tiffOut = f("{outDir}/matchedCellTypes.{analysisID}.tiff")
 	pdfOut = f("{outDir}/matchedCellTypes.{analysisID}.pdf")
+	pngOut = f("{outDir}/matchedCellTypes.{analysisID}.png")
 
 	nrCells=length(clusters[[1]])
 	clusterNames=sapply(1:length(clusters), function(x) {
@@ -145,14 +151,14 @@ for(fileIn in inFiles) {
         paste0(label,'\n', clusterSizes[[x]], " cell types")
 	})
 	colnames(colorMat)=c('Ref', paste0('Run', 1:(length(clusters) - 1)))
-	#if(!file.exists(pngOut)) {
-		tiff(filename = tiffOut, res = 300, width = 5, height=1.5, units = 'in', type = 'cairo')
+	#if(!file.exists(pdfOut)) {
+		png(filename = pngOut, res = 300, width = 5, height=1.5, units = 'in', type = 'cairo')
 		par(mar = c(0.5, 0.5, 0.5, 0.5))
 		print(head(clusterOrder))
 		plotOrderedColors(colors = colorMat, order = clusterOrder,  rowLabels = names(colorMat))
 		dev.off()
  	#}
- # browseURL(pngOut)
+ # browseURL(pdfOut)
 	overlap=data.frame(t(sapply(1:length(clusters), function(x) {
 		subset=!is.na(cellTypes[[x]]) & ! cellTypes[[1]] %in% c('Unassigned', 'Ambiguous')
 	      # print(table(cellTypes[[x]][subset]))
@@ -181,9 +187,6 @@ for(fileIn in inFiles) {
        pch = 20, col = colorLabels, xpd = NA)
 
     dev.off()
-
-
-	
 
   typeDf = data.frame(do.call(cbind, cellTypes))
  overlap=data.frame(t(sapply(1:length(clusters), function(run) {
@@ -218,7 +221,6 @@ for(fileIn in inFiles) {
         pch = 20, col = colorLabels, xpd = NA)
  
  dev.off()
- browseURL(pdfOut)
  # browseURL(pdfOut)
     # # Plot number of cells per cluster (using the same colors)
     # pdf(paste0("Cluster_stats.", analysis_id, ".pdf"))

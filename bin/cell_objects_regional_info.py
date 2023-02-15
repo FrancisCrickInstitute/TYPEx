@@ -12,6 +12,8 @@ parser.add_argument('--panel', default="p2",
     help='Antibody panel')
 parser.add_argument('--maskDir', metavar='wDir',
     default="tissue_seg/labels", help='NextFlow Run')
+parser.add_argument('--tissueAreaDir', metavar='wDir',
+    default="tissue_seg/labels", help='NextFlow Run')
 parser.add_argument('--cellObjFile', metavar='coords',
     help='NextFlow Run')
 parser.add_argument('--maskRegEx', metavar='coords',
@@ -25,17 +27,23 @@ parser.add_argument('--regionRegEx', default = None,
 
 args = parser.parse_args()
 
-outDir=os.path.join("cell_info")
+outDir = os.path.join("cell_info")
 if(not os.path.isdir(outDir)):
     os.mkdir(outDir)
 
 cellFrame=pd.read_csv(args.cellObjFile, sep =",")
 print(cellFrame.columns.values.tolist())
 
-maskList=glob.glob(os.path.join(args.maskDir, 
+if not os.path.exists(args.maskDir) and args.regionType == 'regional':
+    args.maskDir = os.path.join(args.tissueAreaDir, 'labels')
+
+maskList=glob.glob(os.path.join(args.maskDir,
     args.maskRegEx.replace(".*", "*").
                    replace("(", "").
                    replace(")", "")))
+print(args.maskRegEx.replace(".*", "*").
+                   replace("(", "").
+                   replace(")", ""))
 fileOut=os.path.join(outDir, args.panel + "_" + args.regionType + "_cell_info.csv")
 print(len(maskList), " masks listed in dir ", 
     args.maskDir, ' with regex ', args.maskRegEx)
@@ -51,13 +59,11 @@ if(len(maskList) > 0):
         
         imagename=re.sub(args.maskRegEx, args.imageRegEx, os.path.basename(mask))
         tiff = pyplot.imread(mask)
-    
+
         imgIndex=cellFrame['imagename'] == imagename
         dataTmp=cellFrame[imgIndex]
         
-        print(region, imagename)
-        print(cellFrame['imagename'][1])
-        
+        print(region, imagename)        
         if(dataTmp.shape[0] == 0):
             continue
         

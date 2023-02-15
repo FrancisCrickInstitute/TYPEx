@@ -116,12 +116,12 @@ load_files <- function(inDir, pattern="*.txt",
                      pattern   =pattern,
                      full.names=full.names,
                      recursive =recursive)
-
-  if(!is.null(run))
-    inFiles=grepv(paste0(run, "\\/"), inFiles)
-  
+										 
+	if(! is.null(run) & any(grepl(f("{run}\\/"), inFiles)))
+    inFiles=grepv(f("{run}\\/"), inFiles)
+	
   if(length(inFiles) == 0)
-    stop("No input files at the given in ", inDir, " run:", run)
+		stop("No input files at the given in ", inDir, " run:", run, " pattern:", pattern)
   fullSet=vector(mode="list")
   start=Sys.time()
   cat("Loading files", length(inFiles), "\n")
@@ -171,7 +171,6 @@ cat("Total number of loaded files", length(fullSet), "\n",
     print("Warning:", col.names[! col.names %in% colnames(inData)], 
           "not found in data.\n")
   }
-  colnames(inData)=markers_format(colnames(inData))
   return(inData)
 }
 

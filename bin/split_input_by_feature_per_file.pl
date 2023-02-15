@@ -60,7 +60,7 @@ map { $_=~s/^[_]+//; $_}  @markers;
 map {s/^.*_([^_]+)_c1$/$1/; $_} @markers;
 my ($object_col) = grep { $header[$_] eq "ObjectNumber" } (0 .. $#header);
 my ($imageID_col) = grep { $header[$_] eq "imagename" } (0 .. $#header);
-print join("\t", $object_col, $imageID_col, "\n");
+# print join("\t", $object_col, $imageID_col, "\n");
 print join(",", @header, "\n");
 
 my (%in_hash, %markers);
@@ -68,7 +68,12 @@ while(<IN>) {
 	$_ =~ s/\n//;
       my @columns = split /$delim/;
       my $object=$columns[$object_col];
-			my $imageID=$columns[$imageID_col];
+			my $imageID;
+			if(! defined $imageID_col) {
+				$imageID=$core;
+			} else {
+				$imageID=$columns[$imageID_col];
+			}
 			
       for (my $i = 0; $i < $#columns; $i++) {
         next if($header[$i] =~ "Location_Max|Location_CenterMass");
@@ -79,6 +84,7 @@ while(<IN>) {
       }
  }
 close(IN);
+
 print "Read $inFile \n";
 foreach my $imageID (keys %in_hash) {
 
@@ -93,11 +99,11 @@ foreach my $imageID (keys %in_hash) {
 		my @columns = keys %{ $markers{$feature}};
 		my $fileOut = join("/", $feature, "$imageID.txt");
 		open OUT, ">". $fileOut or die "Could not open $fileOut:$!\n";
-		print OUT join($delim, "ObjectNumber", @columns), "\n";
+		print OUT join("\t", "ObjectNumber", @columns), "\n";
 		my @cells = sort keys %{$in_hash{$imageID}{$feature}};
 		
 		foreach my $cell (@cells) {
-			print OUT join($delim, $cell,
+			print OUT join("\t", $cell,
 				map {
 					if(exists($in_hash{$imageID}{$feature}{$cell}{$_})) {
 						$in_hash{$imageID}{$feature}{$cell}{$_}

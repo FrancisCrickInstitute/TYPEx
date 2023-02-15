@@ -8,14 +8,13 @@ process preprocess_panck {
 			   overwrite: true
 
 	output:
-		path ("*") 
-
+		path ("*")
 
 	script:
 	"""
 		## Using params.inDir as an absolute path
-		ImageJ-linux64 --ij2 --headless --run $baseDir/bin/panck_filters.ijm \
-			'rootDir=\"${params.rawImgDir}/\", panel=\"${params.panel}\", runPattern="\${params.run}\", mcd=true'
+		ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/panck_filters.ijm" \
+			'rootDir=\"${params.imageDir}/\"'
 	
 	"""
 }
@@ -23,7 +22,7 @@ process preprocess_panck {
 
 process create_composites {
 
-    // label 'medium_mem'
+    label 'medium_mem'
 	
 	publishDir path:"${params.outDir}/composites/", 
 			   mode: params.publish_dir_mode, 
@@ -38,21 +37,16 @@ process create_composites {
 
     script:
     """
-		# compositeDir has the output directory from the previous 
-		# which processes panck raw single-channel images
-			ImageJ-linux64 --ij2 --headless \
-				--run $baseDir/bin/create_composites.ijm \
-				'rootDir=\"${params.rawImgDir}/\", \
-					panel=\"${params.panel}\", \
-					mcd=true, \
-					compositeDir="${params.outDir}/composites/"'
+		# compositeDir has the output directory from the previous
+		ImageJ-linux64 --ij2 --headless \
+			--run "${baseDir}/bin/create_composites.ijm" \
+				'rootDir="${params.imageDir}/", panel=\"${params.panel}\", mcd=true, compositeDir=\"${params.outDir}/composites/\"'
 
     """
+
 }
 
 process run_classifier {
-
-	// label 's'
 	
 	// publishDir path: "${params.outDir}/composites/probs/", 
 			//	  mode: params.publish_dir_mode, 
@@ -62,7 +56,6 @@ process run_classifier {
 		val files
 	output:
 		val params.outDir
-		// val (*h5)
 
 	script:
 	
@@ -118,6 +111,10 @@ process ts_exporter {
     """
 	
 		export BASE_DIR=$baseDir
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
 		summarise_tissue_seg.R \
 			--tissAreaDir "${params.outDir}/tissue_seg" \
 			--panel ${params.panel}
@@ -135,7 +132,7 @@ process mask_overlay {
 				overwrite: true
 
 	input:
-		tuple val(maskDir), val(maskRegEx), val(regionType), val(imageRegEx), val(regionRegEx)
+		tuple path(maskDir), val(maskRegEx), val(regionType), val(imageRegEx), val(regionRegEx)
 		val cellObjFile
 		val files
 		val cells
@@ -144,9 +141,11 @@ process mask_overlay {
 		path("*")
 
 	script:
-    """	
+    """
+			
 		cell_objects_regional_info.py \
 			--maskDir ${maskDir} \
+			--tissueAreaDir "${params.outDir}/tissue_seg" \
 			--panel ${params.panel} \
 			--cellObjFile ${cellObjFile} \
 			--maskRegEx "${maskRegEx}" \
