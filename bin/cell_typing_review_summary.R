@@ -207,9 +207,11 @@ if(! length(data)) {
 		
 		if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
 			
+			qCut = quantile(recast[[intensityColNameRef]][mostFreqIndices], .9, na.rm = T)
+			nCut = quantile(recast[[intensityColNameFull]][mostFreqIndices], .4, na.rm = T)
 			mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
-			negCutoff = quantile(recast[[intensityColNameFull]][mostFreqIndices], .4, na.rm = T)
-			qCutoff=min(quantile(recast[[intensityColNameRef]][mostFreqIndices], .9, na.rm = T), negCutoff)
+			negCutoff = max(nCut, qCut)
+			qCutoff=min(qCut, nCut)
 						 
 			cols=palette$cellTypeColors
 			pdfOut=f("{out}/MostFrequentExcluded.{analysisID}.pdf")
@@ -218,18 +220,18 @@ if(! length(data)) {
 			plot = g + geom_point(aes_string(color = typedCols[1]), size = 0.01) + 
 				scale_color_manual(values = cols[names(cols) %in% recast[[typedCols[1]]]]) +
 				theme_classic() +
-				geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
-				geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
-				geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
-				geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+				geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
+				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+				geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
+				geom_hline(aes(yintercept = nCut), linetype= 'dotted')
 			print(plot)
 			g <-ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
 			plot = g + geom_point(aes(color = typedCols[1]), size = 0.01) + 
 				theme_classic() +
-				geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
-				geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
-				geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
-				geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+				geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
+				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+				geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
+				geom_hline(aes(yintercept = nCut), linetype= 'dotted')
 			print(plot)
 			dev.off()
 			
