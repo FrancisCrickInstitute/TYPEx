@@ -1,14 +1,15 @@
 
 process TYPE {
-//	label  'max'
-	 label 'xs' 
+
+	label 'max'
 
 	input:
 		tuple val(method)
 		val subset
-		val markers
+		tuple val (markers)
+		tuple val (major_markers)
 		val stratify
-		val nfDir
+		path nfDir
 		val files
 		
 
@@ -18,26 +19,28 @@ process TYPE {
 	script:
 	"""
 		export BASE_DIR=$baseDir
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
 		typing.R --wDir ${params.outDir} \
 			--nfDir ${nfDir} \
 			--method ${method}  \
 			--subset ${subset} \
 			--markers ${markers} \
-			--run ${params.run} \
+			--run ${params.release} \
 			--panel ${params.panel} \
-			--celltypeReviewFile ${params.celltypeReviewFile} \
-			--regFile ${params.regFile} \
+			--regFile ${params.sampleFile} \
 			--tissAreaDir "${params.outDir}/tissue_seg/" \
-			--cellAssignFile ${params.cellAssignFile} \
 			--celltypeModelFile ${params.outDir}/review/${params.panel}_${params.major_markers}.RData \
 			--stratify ${stratify} \
-			--stratify_label "${params.stratify_label}" \
-			--major_markers "${params.major_markers}"
-			
+			--mostFreqCellType ${params.mostFreqCellType} \
+			--major_markers "${major_markers}"
+
 	"""
 }
 
-process review_major_types {
+process build_strata_model {
 	
 	label 'xs'
 	
@@ -51,14 +54,19 @@ process review_major_types {
 	script:
 	"""
 		export BASE_DIR=$baseDir
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
 		cell_typing_review_summary.R \
 			--wDir ${params.outDir} \
 			--cellReviewDir ${params.outDir}/review \
 			--major_method ${params.major_method}  \
-            --subset major --panel ${params.panel} \
-			--subtype_markers ${params.subtype_markers} \
-			--celltypeReviewFile ${params.celltypeReviewFile} \
-			--stratify_label ${params.stratify_label}
+            --subset major \
+			--panel ${params.panel} \
+			--regFile ${params.sampleFile} \
+			--mostFreqCellType ${params.mostFreqCellType} \
+			--major_markers ${params.major_markers}
 
 	"""
 }

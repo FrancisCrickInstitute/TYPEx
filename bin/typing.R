@@ -22,26 +22,24 @@ arg_parser=add(arg_parser, "--wDir",
 	help="Working directory")
 arg_parser=add(arg_parser, "--nfDir", 
 	help="Directory with image-level matrices")
+arg_parser=add(arg_parser, "--run", 
+	default="final", help="NextFlow run")
+arg_parser=add(arg_parser, "--panel",
+	default="p2", help="Panel of markers")
 arg_parser=add(arg_parser, "--subset", 
 	help="sampled|major|subtypes")
 arg_parser=add(arg_parser, arg="--method",
 	default="FastPG", 
 	help="Rphenograph|flowSOM|kmeans|rtsne|umap") 
-arg_parser=add(arg_parser, "--run", 
-	default="final", help="NextFlow run")
-arg_parser=add(arg_parser, "--panel",
-	default="p2", help="Panel of markers")
 
 ## METADATA
 arg_parser=add(arg_parser, "--regFile", help="Metadata")
 
 ## ASSIGNMENT
-arg_parser=add(arg_parser, "--cellAssignFile", 
-	help="List with reassignments")
 arg_parser=add(arg_parser, "--markers",
 	help="Marker list name in cell_type_annotation.json")
 arg_parser=add(arg_parser, "--major_markers",
-	default="major_markers", 
+	default="major_markers",
 	help="Marker list name in cell_type_annotation.json")
 arg_parser=add(arg_parser, "--tissAreaDir", 
 	default=NULL, help="file or NULL")
@@ -53,34 +51,47 @@ arg_parser=add(arg_parser, "--resampleBy",
 	default=NULL, help="file or NULL")
 
 # STRATIFICATION BY CONFIDENCE
-arg_parser=add(arg_parser, "--celltypeReviewFile",
-	help='File with image annotations')
 arg_parser=add(arg_parser, arg="--celltypeModelFile", 
 	help="Review model")
 arg_parser=add(arg_parser, "--stratify", 
-	default=T, help="file or NULL")	
-arg_parser=add(arg_parser, "--stratify_label", help="file or NULL")
+	default=T, help="file or NULL")
+arg_parser=add(arg_parser, "--mostFreqCellType",
+	default='None', help="file or NULL")	
 
-args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
-
-
-pars=c(pars, args, pars_stratify[[args$stratify_label]])
-# Run-specific markers
-cellTypeReview=read.csv(args$celltypeReviewFile, 
-	sep = "\t", stringsAsFactors = F)
+args=argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
+pars=c(pars, args)
 
 if(! pars$markers %in% names(marker_gene_list))
-  stop("Marker list -", pars$markers, "- not found")
+	stop("Marker list -", pars$markers, "- not found")
 
-if(! is.null(pars_stratify$stratify_label) & pars$stratify & pars$subset == majorDir) {
-	abrv=strsplit(pars$excludedCellType, split = '')[[1]][1:3] %>% 
-		tolower %>% paste0(., collapse = "")
+metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
+
+# If reference model called for stratification
+if(pars$stratify & pars$subset == majorDir) {
+	if(args$mostFreqCellType == 'None') {
+		# get the most freq from the full model
+		
+		fullModelDir = file.path(args$wDir, with(pars, f(analysisPath)))
+		fullModelID=paste0(pars[[pars$method]], collapse="_")
+		fullModelFile=f("{fullModelDir}/{fullModelID}.clusters.fst")
+		fullData=fst::read.fst(fullModelFile)
+		cellStats=table(fullData$cellType)	
+		
+		pars$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
+
+	} 
+	abrv=strsplit(pars$mostFreqCellType, split = '')[[1]][1:3] %>% 
+			tolower %>% paste0(., collapse = "")
 	ref_markers_list=paste1(pars$markers, abrv)
-	truncated_list=remove_node(
-		marker_gene_list[[pars$markers]], pars$stratify_label)
+	removedMarker= get_celltype_markers(marker_gene_list[[pars$markers]], 
+		pars$mostFreqCellType)
+	truncated_list=remove_node_marker(
+			marker_gene_list[[pars$markers]], pars$mostFreqCellType,
+			removedMarker)
 	marker_gene_list[[ref_markers_list]] = truncated_list 
 	pars$markers=ref_markers_list
 }
+
 # Set output directory
 outDir=file.path(args$wDir, with(pars, f(analysisPath)))
 if(args$subset == sampledDir)
@@ -89,15 +100,15 @@ if(args$subset == sampledDir)
 if(! args$stratify & args$subset == subtypesDir)
 	outDir=paste(outDir, args$stratify, sep = "_")
 
-if(!dir.exists(outDir))
+if(! dir.exists(outDir))
   dir.create(outDir, recursive=T)
 
 # Path and prefix used for the files, uniquely identifying that run
 runID=file.path(outDir, paste1(pars[[pars$method]]))
+print(pars$method)
 write.table(x = data.frame(unlist(pars[[pars$method]])),
-	file=f("{runID}.log"), append=T)
+	file=f("{runID}.log"), append = F)
 cat("Output dir:", outDir, "\n")
-print(pars[[pars$method]])
 
 for(feature in pars$features) {
 	
@@ -107,7 +118,7 @@ for(feature in pars$features) {
 	if('resample' %in% names(pars$method))
 		resample = pars[[pars$method]]$resample
 	toResample=(args$subset == sampledDir | resample) &
-		! file.exists(f("{runID}.clusters.RData"))
+		! file.exists(f("{runID}.pars.yaml"))
 	
 	inData=load_files(
 		inDir=inDir,
@@ -122,13 +133,19 @@ for(feature in pars$features) {
 	cat("Running", feature, pars$method, "\n")
 	
 	## Filter out excluded samples
-	imagenames=gsub(".txt", "", basename(inData$imagename))
-	excludeIDs=cellTypeReview$imagename[
-		which(cellTypeReview$control == "excluded" &
-			cellTypeReview$imagename %in% imagenames)]
-	inData=inData[! imagenames %in% excludeIDs, ]
-	cat("Kept cells", sum(! imagenames %in% excludeIDs), 
-		"out of", length(imagenames), '\n')
+	if("useImage" %in% colnames(metaDf)) {
+	
+		imagenames=gsub(".txt", "", basename(inData$imagename))
+		excludeIDs=metaDf$imagename[
+			which(metaDf$useImage == "exclude" &
+				metaDf$imagename %in% imagenames)]
+				inData=inData[! imagenames %in% excludeIDs, ]
+		cat("Kept cells", sum(! imagenames %in% excludeIDs), 
+			"out of", length(imagenames), '\n')
+	} else {
+		excludeIDs = c()
+	}
+
 	print(nrow(inData))
 	
 	if(pars$method %in% c("MC", dimred_methods) | pars$subset == subtypesDir) {
@@ -158,17 +175,15 @@ for(feature in pars$features) {
 			
 			rowSel=get_filtered_objects(clustData, 
 				celltypeModelFile=pars$celltypeModelFile)
-
-			print(which(is.na(rowSel)))
+				print(table(rowSel))
 			if(pars$stratify) {
 				
-				if(is.null(rowSel))	{
+				if(all(is.null(rowSel)))	{
 					print('No stratification for the following cell types')
 					print(sum(is.na(rowSel)))
 					print(table(clustData$cluster[is.na(rowSel)]))
 				} else {
 					filteredInd=which(! rowSel | is.na(rowSel))
-					print(clustData[filteredInd, ])
 					clustData$cluster[filteredInd]=f("Excluded {clustData$cluster[filteredInd]}")
 				}
 			}
@@ -188,7 +203,11 @@ for(feature in pars$features) {
 	} else {
 			clusters="black"
 	}
+	cat("WARNING: check whether stratification is done as configured:\n", 
+		paste(table(clusters), names(table(clusters)), collapse = ":", sep = ":"), "\n", sep = "\n", 
+		file=f("{runID}.log"), append=T)
 	print(table(clusters))
+
 	# Running analysis
 	results=run_method(
 		inData = inData,
@@ -199,7 +218,7 @@ for(feature in pars$features) {
 		wDir=args$wDir,
 		regFile=args$regFile, 
 		nfDir=args$nfDir)
-		
+
 	if(! pars$method %in% dimred_methods) {
 		out=summarise_output(inData=inData, 
 			method=pars$method, pars=pars,
@@ -211,10 +230,12 @@ for(feature in pars$features) {
 	} else {
 		out=NA
 	}
-	if(file.exists(args$celltypeReviewFile) & !is.na(out)) {
-		controls=unique(cellTypeReview$control)
+	
+	# TODO: Check if exists
+	if("useImage" %in% colnames(metaDf) & ! is.na(out)) {
+		controls=unique(metaDf$useImage)
 		for(subset in controls) {
-			IDs=cellTypeReview$imagename[cellTypeReview$control == subset]
+			IDs=metaDf$imagename[metaDf$useImage == subset]
 			if(! sum(out$imagename %in% IDs))
 				next
 			fst::write.fst(out[out$imagename %in% IDs, ], 
@@ -253,5 +274,5 @@ for(feature in pars$features) {
 	cat(f("Analysis run {runID} finished in"),
 		end - start, "\n", file=f("{runID}.pars.yaml"), append=T)
 	cat("Analysis for", runID, "finished in ", end - start, "\n")
-	cat(f("Settings and parameters are saved in the log file: {runID}.log"), "\n")
+	print(f("Settings and parameters are saved in the log file: {runID}.log"))
 }

@@ -1,52 +1,56 @@
-
 # Generic function
 run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
                      feature="MeanIntensity", colors=NULL)  {
-  
-  # inData     - a data frame object with cells in rows and markers in columns
+						 
+  # inData     - a data frame object with cells in rows and markers	 in columns
   # method     - accepts the value of Rphenograph, X-shift, CellAssign, kmeans FlowSOM
   # feature    - the value that summarizes the intensity signal (mean, integrated, median)
   # parameters - method-specific parameters + contains markers to be excluded/included
   
-  
   ids=with(inData, paste(ObjectNumber, basename(imagename)))
-  colnames(inData)=markers_format(colnames(inData))
+  
   funForward=match.fun(paste0("run_", method))
   pars[[method]]$run_id=runID
   pars[[method]]$markers=pars$markers
   pars[[method]]$magnitude=pars$magnitude
-  
+
   # Load info
   areaData=load_files(file.path(nfDir, "AreaShape"), run=pars$run)
   areaMatch=match(ids, with(areaData, paste(ObjectNumber, basename(imagename))))
   
   # if the analysis has been done
-  inMatFile=f("{runID}.inMat.RData")
-  clFile=f("{runID}.clusters.RData")
+  inMatFile=f("{runID}_aux/inMat.RData")
+  clFile=f("{runID}_aux/clusters.RData")
   
-  
-  columnNames=setdiff(grepv(feature, colnames(inData)), 
-  	c(pars$channels_exclude, "ObjectNumber", "imagename"))
-  colnames(inData)=colnames(inData) %>%
-	gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", .)
-  columnNames=columnNames %>%
-  	gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", .)
+  # Select the columns with the selected feature, .e.g MeanIntensity
+  columnNames=colnames(inData)
+  if(grepl(feature, colnames(inData)))
+	  columnNames=grepv(feature, columnNames)
 
-  if(! file.exists(inMatFile))  {
+  print(feature)
+  colnames(inData)=colnames(inData) %>%
+	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+	gsub('^[0-9]+[A-Z]+_(.*)_c1', '$1', .) # remove metals
+  columnNames=columnNames %>%
+  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+	gsub('^[0-9]+[A-Z]+_(.*)_c1', '$1', .) # remove metals
+  columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
+
+  if(! file.exists(inMatFile))	{
     # Keep only numeric columns
     rowsKeep=rep(TRUE, nrow(inData))
 
     if(! is.null(pars$markers) & pars$subset != subtypesDir) {
 		selectedMarkers=marker_gene_list[[pars$markers]] %>% 
-		unlist %>% unique 
-      indices=match(selectedMarkers, colnames(inData))
-      keep=colnames(inData)[indices[! is.na(indices)]]
-      cat("INFO: Column names matching the markers list:", keep, "\n",
-		file=f("{runID}.log"), append=T)
+			unlist %>% unique
+		indices=match(selectedMarkers, colnames(inData))
+		keep=colnames(inData)[indices[! is.na(indices)]]
+		cat("INFO: Column names matching the markers list:", keep, "\n",
+			file=f("{runID}.log"), append=T)
 	  columnNames=intersect(columnNames, keep)
-  	  
     }
 	cat("Columns:", columnNames, '\n')
+	
     # Exlude cells with an area smaller or equal to pars$area_exclude
     if(! is.null(pars$area_exclude) & pars$area_exclude > 0) {
       cat("INFO: Number of cells with area smaller than", pars$area_exclude, "is",
@@ -56,8 +60,11 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     }
 
     # Exclude cells with intensity smaller or equal to pars$min_expression for all markers
-    rowsKeep=apply(inData[, ..columnNames], 1, function(x) any(x > pars$min_expresssion))
-	cat("INFO: Number of cells with zero expression for all markers of interest",
+    rowsKeep=apply(inData[, ..columnNames], 1, 
+		function(x) any(x > pars$min_expresssion))
+
+	cat("INFO: Number of cells with intensity higher than", pars$min_expresssion, 
+		" for all markers of interest",
         sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
     
     # Include batches for cellassign; # rows must match cov matrix
@@ -71,14 +78,21 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	  })
       if(all(is.na(tma_values))) {
 		tma_values=rep("one", nrow(inData))
-		cat("WARNING:  Batch effects will not be calculated for the probabilistic cellassign model",
+		cat("WARNING:  Batch effects will not be calculated for",
+			"the probabilistic cellassign model",
 	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
         #stop("ERROR: Missing TMA values")
-	  }
+	  } else {
+	  	tma_values=apply(tma_values, 1, paste, collapse = '_')
+  	  }
+	  print(unique(unique(tma_values[rowsKeep])))
       if(length(unique(tma_values[rowsKeep])) > 1) {
-	  	tma_values=apply(tma_values, 1, paste)
+		  print(head(tma_values))
+	  	
 		print("TMA values for batch effect correction")
         print(table(tma_values[rowsKeep]))
+		print(head(tma_values))
+		print(class(rowsKeep))
       	rowsKeep=rowsKeep & ! is.na(tma_values)  # & !is.na(tissue_values)
         pars[[method]]$X=model.matrix(~ 0 + tma_values[rowsKeep])   
       } else {
@@ -93,10 +107,11 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     if(! dir.exists(dirname(runID)))
       dir.create(dirname(runID), recursive=T)
 	
-    cat("Number of cells with zero expression for all markers of specified in", 
+    cat("Number of cells below intensity and area cutoffs", 
 		pars$markers, " is ", sum(! rowsKeep), "\n", append=T)
+
+	inMat=inData[rowsKeep, ..columnNames]
 	
-    inMat=inData[rowsKeep, ..columnNames]
     colors=colors[rowsKeep]
 	stopifnot(ncol(inMat) & nrow(inMat))
   	cat('INFO: range of values in the input matrix is ', range(inMat), 
@@ -141,7 +156,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
       runOutput[rowsKeep] = funForward(inMat, pars[[method]], colors=colors)
     }
   }
-  cat('WARNING: range of transformed values is ', range(inMat), 
+  cat('WARNING: range of transformed values is ', range(inMat),
   	'using magnitude ', pars$magnitude, '\n',
   	file = f('{runID}.log'), append = T)
   if(method %in% pars$visualisation_methods)
@@ -154,11 +169,13 @@ run_cellassign <- function(inMat, p, colors)  {
   
   # Note: marker_gene_list requires an object of class matrix as input
   # marker_mat rows must match inmat columns
-  
-  outFile=paste0(p$run_id, ".out.RData")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  probsFile=paste0(p$run_id, ".probs.txt")
-  clFile=paste0(p$run_id, ".clusters.RData")
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+  outFile=f("{outDir}/out.RData")
+  inMatFile=f("{outDir}/inMat.RData")
+  probsFile=f("{outDir}/probs.txt")
+  clFile=f("{outDir}/clusters.RData")
   
   if(! file.exists(outFile)) {
 	  
@@ -183,13 +200,16 @@ run_cellassign <- function(inMat, p, colors)  {
     keep=colnames(inMat)[match(rownames(markerMat), colnames(inMat))]
     cat("From them,", length(keep), "are found in inMat.\n")
     
+	# Constant library size
     s=rep(1, nrow(inMat))
-    fit <- cellassign::cellassign(exprs_obj=as.matrix(inMat[, ..keep]),
-                    marker_gene_info=markerMat,
-                    s=s, X=p$X,
-                    learning_rate=p$learning_rate,
-                    shrinkage=p$shrinkage,
-                    verbose=p$verbose)
+    fit <- cellassign::cellassign(
+		exprs_obj        = as.matrix(inMat[, ..keep]),
+        marker_gene_info = markerMat,
+        s                = s, 
+		X                = p$X,
+        learning_rate    = p$learning_rate,
+        shrinkage        = p$shrinkage,
+        verbose          = p$verbose)
     save(fit, file = outFile)
     save(inMat, file=inMatFile)
   } else {
@@ -208,9 +228,17 @@ run_cellassign <- function(inMat, p, colors)  {
 run_Rphenograph <- function(inMat, p, colors) {
 
   library(Rcpp)	
-  outFile=paste0(p$run_id, ".out.RData.gz")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
+	
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+		
+  outFile=f("{outDir}/out.RData.gz")
+  inMatFile=f("{outDir}/inMat.RData")
+  probsFile=f("{outDir}/probs.txt")
+  clFile=f("{outDir}/clusters.RData")
+ 
+	
   pdfOut=paste0(p$run_id, ".heatmap.pdf")
   if(file.exists(clFile)) {
     load(clFile)
@@ -227,7 +255,7 @@ run_Rphenograph <- function(inMat, p, colors) {
         Rout=tapply(1:nrow(inMat), colors, function(subset) {
           cluster=colors[subset[1]]
 		  cat(cluster, ' has ', sum(colors == cluster), p[["k"]], '\n')
-          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
+          outCellFile=f("{outDir}/{cluster}.cell.out.RData.gz")
           if(file.exists(outCellFile))  {
             load(outCellFile)
             return(out)
@@ -274,7 +302,8 @@ run_Rphenograph <- function(inMat, p, colors) {
   })
   clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary>0])
   pdf(pdfOut, useDingbats = F)
-  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), symm=F)
+  pheatmap::pheatmap(apply(clusterSummary, 2, to_zscore), 
+  	symm=F, scale = 'none', clustering_method = 'complete')
   dev.off()
   # igraph object
   # plot(Rout[[1]], cex=0.1)
@@ -286,10 +315,14 @@ run_Rphenograph <- function(inMat, p, colors) {
 
 # FastPG
 run_FastPG <- function(inMat, p, colors) {
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+		
+  outFile=f("{outDir}/out.RData.gz")
+  inMatFile=f("{outDir}/inMat.RData")
+  clFile=f("{outDir}/clusters.RData")
 	
-	outFile=paste0(p$run_id, ".out.RData.gz")
-	inMatFile=paste0(p$run_id, ".inMat.RData")
-	clFile=paste0(p$run_id, ".clusters.RData")
 	pdfOut=paste0(p$run_id, ".heatmap.pdf")
 	if(file.exists(clFile)) {
 		load(clFile)
@@ -309,7 +342,7 @@ run_FastPG <- function(inMat, p, colors) {
     } else {
         Rout=tapply(1:nrow(inMat), colors, function(subset) {
           cluster=colors[subset[1]]
-          outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
+          outCellFile=f("{outDir}/{cluster}.cell.out.RData.gz")
           if(file.exists(outCellFile))  {
             load(outCellFile)
             return(out)
@@ -371,9 +404,15 @@ run_FastPG <- function(inMat, p, colors) {
 # Rphenograph metaclusters
 run_MC <- function(inMat, p, colors) {
   
-  outFile=paste0(p$run_id, ".out.RData.gz")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
+	
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+		
+  outFile=f("{outDir}/out.RData.gz")
+  inMatFile=f("{outDir}/inMat.RData")
+  clFile=f("{outDir}/clusters.RData")
+	
   if(!file.exists(outFile)) {
     Rout=Rphenograph::Rphenograph(inMat, k=p[["k"]])
     save(Rout, file=outFile, compress="gzip")
@@ -395,15 +434,21 @@ run_flowSOM <- function(inMat, p, colors) {
   # p         - is a list of all parameters for the functions: 
   # Functions - ReadInput, BuildSOM, BuildMST, and Metaclutersing
   #             all embedded in the wrapper function FlowSOM
-  # colsToUse - the columns to use will be preselected in the previous step
+  # colsToUse - the columns to use will be preselected in the preselectedious step
   # nClus     - Metaclustering option
   # seed      - 42 (Seed for reproducible results)
   # metaclustering method options: metaClustering_consensus,
   #         metaClustering_hclust,metaClustering_kmeans,metaClustering_som
   
-  outFile=paste0(p$run_id, ".out.RData")
-  inMatFile=paste0(p$run_id, ".inMat.RData")
-  clFile=paste0(p$run_id, ".clusters.RData")
+	
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+		
+  outFile=f("{outDir}/out.RData")
+  inMatFile=f("{outDir}/inMat.RData")
+  clFile=f("{outDir}/clusters.RData")
+	
   nrClusters=length(unique(colors[!is.na(colors)]))
   print(table(colors))
   if(!file.exists(outFile) | !file.exists(inMatFile)) {
@@ -420,7 +465,7 @@ run_flowSOM <- function(inMat, p, colors) {
     } else {
       fMST=tapply(1:nrow(inMat), colors, function(subset) {
         cluster=colors[subset[1]]
-        outCellFile=paste0(p$run_id, ".", cluster, ".cell.out.RData.gz")
+        outCellFile=f("{outDir}/{cluster}.cell.out.RData.gz")
         print(outCellFile)
         if(file.exists(outCellFile)) {
           load(outCellFile)
@@ -495,9 +540,16 @@ run_rtsne <- function(inMat, p, colors)  {
   # (best to make sure there are no duplicates, esp. for large datasets)
   # the colors/clusters can be provided under pars$rtsne$clusters
   
+	outDir=f("{p$run_id}_aux")
+  if(! dir.exists(outDir))
+		dir.create(outDir)
+		
+  outFile=f("{outDir}/out.RData.gz")
+  inMatFile=f("{outDir}/inMat.RData")
+  probsFile=f("{outDir}/probs.txt")
+  clFile=f("{outDir}/clusters.RData")
+	
   print(p[["nthread"]])
-  outFile=paste0(p[["run_id"]], ".out.RData")
-  inMatFile=paste0(p[["run_id"]], ".inMat.RData")
   if(!file.exists(outFile)) {
     rtsne_out<-Rtsne::Rtsne(as.matrix(inMat),
                        pca=as.logical(p[["pca"]]),

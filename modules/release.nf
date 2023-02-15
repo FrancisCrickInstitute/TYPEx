@@ -10,6 +10,8 @@ process exporter {
     input:
         tuple val(method)
 		val	subset
+		tuple val (markers)
+		val ref_markers
         val typing
 		
 	output:
@@ -18,19 +20,23 @@ process exporter {
     script:
     """
         export BASE_DIR=$baseDir
-        cell_density_exporter.R --subset ${subset} \
-            --method $method --run ${params.run} \
-            --panel ${params.panel} --markers ${params.subtype_markers} \
-			--regFile ${params.regFile} --inDir ${params.outDir} \
-			--cellAssignFile ${params.cellAssignFile} \
-			--tissAreaDir "${params.outDir}/tissue_seg/"
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
+        cell_density_exporter.R \
+			--subset ${subset} \
+            --method $method --run ${params.release} \
+            --panel ${params.panel} --markers ${markers} \
+			--regFile ${params.sampleFile} --inDir ${params.outDir} \
+			--tissAreaDir "${params.outDir}/tissue_seg/" \
+			--ref_markers ${ref_markers}
     """
 }
 
-
 process plot_dr {
 	
-		label 'median_mem'  // 'max'
+		label 'max'
         
         input:
                 val method
@@ -43,13 +49,17 @@ process plot_dr {
         script:
         """
                 export BASE_DIR=$baseDir
+				export PARAMS_CONF=${params.paramsConfig}
+				export ANN_CONF=${params.annotationConfig}
+				export COL_CONF=${params.colorConfig}
+				
                 typing.R --wDir ${params.outDir} --nfDir ${nfDir} \
 						--method $method  \
                         --subset subtypes --markers ${params.subtype_markers} \
-                        --run ${params.run} --panel ${params.panel} \
-                        --celltypeReviewFile ${params.celltypeReviewFile} --regFile ${params.regFile} \
+                        --run ${params.release} --panel ${params.panel} \
+                        --regFile ${params.regFile} \
                         --celltypeModelFile ${params.outDir}/review/${params.panel}_${params.major_markers}.RData \
                         --tissAreaDir "${params.outDir}/tissue_seg/" \
-                        --cellAssignFile ${params.cellAssignFile} --stratify false
+						--stratify false
         """
 }

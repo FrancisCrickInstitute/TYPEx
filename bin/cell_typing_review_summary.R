@@ -1,24 +1,16 @@
 #!/usr/bin/env Rscript
-
+source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/utilities.R'))
+source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/imc_utils.R'))
+source(glue::glue(Sys.getenv("BASE_DIR"), '/conf/settings.R'))
+		
 library(tidyr)
 library(ggplot2)
 library(data.table)
 library(plyr)
 
-source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/utilities.R'))
-source(glue::glue(Sys.getenv("BASE_DIR"), '/lib/imc_utils.R'))
-source(glue::glue(Sys.getenv("BASE_DIR"), '/conf/settings.R'))
-
-# Overlay function
-
-# TODO
-# get marker names from input params and infer the name of the model with one celltype excluded
-# 
-
-# MeanIntensity 0 for some cells (Mesenchymal)
 arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
-arg_parser=add(arg_parser, "--celltypeReviewFile", 
+arg_parser=add(arg_parser, "--regFile", 
 		help='File with image annotations')
 arg_parser=add(arg_parser, arg="--wDir", help="output")
 arg_parser=add(arg_parser, arg="--cellReviewDir", 
@@ -28,208 +20,356 @@ arg_parser=add(arg_parser, arg="--subset",
 arg_parser=add(arg_parser, arg="--panel",
 	 default='p1', help="Panel of markers")
 arg_parser=add(arg_parser, arg="--major_method",
-	 default="cellassign", help="Panel of markers")
-arg_parser=add(arg_parser, arg="--markers", 
-	default="major_markers", help="Panel of markers")
-arg_parser=add(arg_parser, "--stratify_label", 
-	default=NULL, help="file or NULL")
-
-arg_parser=add(arg_parser, arg="--subtype_markers", 
-	default="subtype_markers", help="Marker lists defined in TME_settings.R")
-args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
+	 default="cellassign", help="")
+arg_parser=add(arg_parser, arg="--major_markers", 
+	default="major_markers", help="")
+arg_parser=add(arg_parser, "--mostFreqCellType",
+	default='None', help="file or NULL")
+args=argparser::parse_args(arg_parser, 
+	argv=commandArgs(trailingOnly=TRUE))
+args = c(args, pars)
 
 methods=c(args$major_method ,"csm")
 features=c('area', 'meanIntensity', 'probability')
-cellTypePattern=".review.fst"
+cellTypePattern = ".clusters.txt"
 
-subsetReview=read.delim(args$celltypeReviewFile, stringsAsFactors = F)
-subsetReview=subset(subsetReview, control=="review")
+csmCol = f("cellType_csm_{args$major_markers}")
+regionCol = f("region_{args$major_method}_{args$major_markers}")
+print(args$mostFreqCellType)
+if(args$mostFreqCellType == 'None') {
+	# get the most freq from the full model
+	fullPath = analysisPath %>%
+		gsub('markers', 'major_markers', .) %>%
+		gsub('method', 'major_method', .)
+	fullModelDir = file.path(args$wDir, with(args, f(fullPath)))
+	fullModelID=paste0(args[[args$major_method]], collapse="_")
+	fullModelFile=f("{fullModelDir}/{fullModelID}.clusters.fst")
+	fullData=fst::read.fst(fullModelFile)
+	cellStats=table(fullData$cellType)
+	args$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
+	if(args$mostFreqCellType == 'Smooth muscle cells')
+		args$dependentCell = 'aSMA+ cells'
+}
 
-if(! args$stratify_label %in% names(pars_stratify)) 
-	stop("ERROR: parameters label ", args$stratify_label,
-		"does not exist in conf/stratification.json")
-
-args=c(args, pars_stratify[[args$stratify_label]])
-csmCol=f("cellType_csm_{args$markers}")
-regionCol=f("region_cellassign_{args$markers}")
-markerSets=c(args$markers, args$excludedCellType)
-cellAsCols=sapply(markerSets, 
-	function(marker) f("cellType_cellassign_{marker}"))
-
-abrv=strsplit(args$stratify_label, split = '')[[1]][1:3] %>% 
+abrv=strsplit(args$mostFreqCellType, split = '')[[1]][1:3] %>% 
 	tolower %>% paste0(., collapse = "")
-ref_markers_list=paste1(pars$markers, abrv)
+ref_markers_list=paste1(args$major_markers, abrv)
+markerSets=c(args$major_markers, ref_markers_list)
+
+typedCols=sapply(markerSets,
+	function(marker) f("cellType_{args$major_method}_{marker}"))
+
+intensityColNameFull = f("meanIntensity_{args$major_method}_{args$major_markers}")
+intensityColNameRef = f("meanIntensity_{args$major_method}_{ref_markers_list}")
 	
-# IO
-out=f("{args$wDir}/review/{args$panel}_{args$markers}")
+# I/O
+out=f("{args$wDir}/review/{args$panel}_{args$major_markers}")
 visDir=f("{out}/overlay")
-analysisID=with(args, f("{panel}_{markers}"))
+analysisID=with(args, f("{panel}_{major_markers}"))
 modelOut=with(args, f("{cellReviewDir}/{analysisID}.RData"))
 
 if(! dir.exists(out))
 	dir.create(out, recursive = T)
-if(! dir.exists(visDir)) 
-	dir.create(visDir, recursive =T)
+if(! dir.exists(visDir))
+	dir.create(visDir, recursive = T)
 
 print('Merging files')
 data=vector(mode="list")
+
 for(markers in markerSets) {
   for(method in methods) {
     wdir=f("{args$wDir}/", with(args, f(analysisPath)))
     if(method == "csm" & length(grep(method, names(data)))) 
 		next
     revFile=list.files(wdir, pattern=cellTypePattern, full.names = T)
-	print(wdir)
-	print(cellTypePattern)
-    if(! length(revFile)) 
+    if(! length(revFile))
 		next
-    tmp=fst::read_fst(revFile)
-    cat(markers, method, length(unique(tmp$imagename)), '\n')
+	print(revFile)
+
+#    tmp=fst::read_fst(revFile)
+	tmp = read.csv(revFile, sep = '\t')
+    cat(markers, method, wdir, length(unique(tmp$imagename)), '\n')
 	if(method == "csm")
 		tmp$positive=tmp$names
 	
 	# Only keep CD3+CD4+ T cells as a positive control for CD4 T cells
-    tmp$CD3=get_marker_frequency(marker = 'CD3', data = tmp, column='positive')
+    tmp$CD3 = get_marker_frequency(marker = 'CD3', data = tmp, column='positive')
     tmp$cellType[tmp$cellType == 'CD4 T cells' & grepl('\\-', tmp$CD3)] = NA
-	tmp$cellType=gsub(" - Other", "", .) %>% 
-		gsub('Smooth muscle cells', "Myofibroblasts", .)
-   
-    data[[paste1(method, markers)]]=data.table::as.data.table(cbind(tmp, method=method, markers=markers))
+    data[[paste1(method, markers)]] = 
+		data.table::as.data.table(cbind(tmp, method=method, markers=markers))
   }
 }
+
 if(! length(data)) {
-	print('WARNING: Skipping stratification by confidence. 
-		No images for manual review selected.')
+	print('No data')
 } else {
+	
+	# If the input was not generated by deep-imcyto
+	if(! paste1('csm', args$major_markers) %in% names(data)) {
+		data[[paste1('csm', args$major_markers)]] = data.frame(
+				cellType = NA, positive = '', method = 'csm',
+				markers=args$major_markers)
+	}
 	mrg=data.table::rbindlist(data, use.names = T, fill = T)
 	# Exclude unassigned, esp from csm, so that there are not considered as false negatives
-	mrg=mrg[!mrg$cellType %in% c('Excluded', 'Unassigned'), ]
-	mrg$cellID=with(mrg, paste(object, imagename))
-	mrg$centerX=round(mrg$centerX, 2)
-	mrg$centerY=round(mrg$centerY, 2)
-
+	mrg = mrg[!mrg$cellType %in% c('Excluded', 'Unassigned'), ]
+	mrg$cellID = with(mrg, paste(object, imagename))
+	mrg$centerX = round(mrg$centerX, 2)
+	mrg$centerY = round(mrg$centerY, 2)
+	
+	# tranform for plotting
 	for(feature in grepv("Intensity", features))
-	  mrg[, (feature) := lapply(.SD, function(x) log2(to_magnitude(x) + 1)), .SDcols=feature]
-	smoothMuscle=which(mrg$cellType == "Smooth muscle cells")
-	if(length(smoothMuscle)) mrg$cellType[smoothMuscle] = "Myofibroblasts"
-	mrg=mrg[mrg$imagename %in% subsetReview$imagename, ]
-	recast<-data.table::dcast(mrg, cellID + panel + imagename + 
-	                            centerX + centerY + object ~ method + markers,
-	                          value.var=c("cluster", "cellType", "positive"))
-	print(head(recast))
+		mrg[, (feature) := lapply(.SD, 
+			function(x) log2(to_magnitude(x, pars$magnitude) + 1)), 
+			.SDcols=feature]
+	
+	recast <- data.table::dcast(mrg, 
+		cellID + imagename + centerX + centerY + object ~ method + markers,
+		value.var=c("cluster", "cellType", "positive", "meanIntensity"))
+							  
+	# If the input was not generated by deep-imcyto
+	if(all(is.na(recast[[csmCol]])))
+		recast[[csmCol]] = 'None'
 	# Those in csm that do not have any associated raw masks
-	recast$cellType_csm_mcsa[is.na(recast$cellType_csm_mcsa)] = 'None'
-
+	recast[is.na(recast[, markerSets[2]]), markerSets[2]] = 'None'
+	recast$cellIDTest = gsub('-roi_p.*', '', recast$cellID)
+	print(head(recast$cellIDTest))
+	
 	imagenames=unique(recast$imagename)
-	# Exclude the cells that have been correctly called by CSM in the negative control
-	negative=setdiff(which(recast[[csmCol]] == recast[[cellAsCols[1]]] &
-	                         recast[[cellAsCols[1]]] != recast[[cellAsCols[2]]] |
-	                         recast[[csmCol]] == 'None' & 
-	                         recast[[cellAsCols[1]]] %in% args$mostLikelyCellType_full & 
-	                         recast[[cellAsCols[2]]] %in% args$mostLikelyCellType_ref),
-	                 which(recast[[cellAsCols[1]]] %in% c(args$excludedCellType,args$dependentCell) &
-	                         recast[[cellAsCols[2]]] %in% args$dependentCell))
-	if(toupper(args$panel)=='P2')
-	  negative = union(negative,
-	                   which(recast[[csmCol]] != args$mostLikelyCellType_full & 
-	                           recast[[cellAsCols[1]]] == args$mostLikelyCellType_full &
-	                           recast[[cellAsCols[2]]] == args$mostLikelyCellType_ref & #recast[[cellAsCols[2]]]
-	                           recast$imagename %in% review$imagename[subsetReview$description=='Carcinosarcoma']))
-						   
-	# Exclude low-intensity lymphocytes that might have been assigned to Mesenchymal
-	negative=recast$cellID[negative]
-	positive=recast$cellID[which(recast[[csmCol]] == recast[[cellAsCols[2]]] &
-	                             recast[[csmCol]] == recast[[cellAsCols[1]]])]
-	if(regionCol %in% colnames(recast))
-	  positive=union(positive, recast$cellID[which(recast[[regionCol]] == "Tumour" & recast[[cellAsCols[2]]] == "Epithelial cells")])
-	positiveExcluded=recast$cellID[which(recast[[cellAsCols[1]]] %in% args$excludedCellType &
-	                                     recast[[cellAsCols[2]]] %in% c(args$dependentCell, args$mostLikelyCellType_ref) &
-	                                     recast[[csmCol]] %in% c(args$dependentCell, args$excludedCellType))]
-	negativeExcluded=recast$cellID[which(recast[[csmCol]] != recast[[cellAsCols[1]]] &
-	                                     recast[[cellAsCols[1]]] %in% args$excludedCellType &
-	                                   ! recast[[cellAsCols[2]]] %in% c(args$mostLikelyCellType_ref, args$dependentCell))]
-	#recast$cellType_cellassign_mcsamy[recast$cellID %in% grepv('P2_TMA001_L_20190508-roi_11', negativeExcluded)] %>% table
-	totalargs$excludedCellType=mrg$markers==args$markers & mrg$method == "cellassign" &
-	  !is.na(mrg$probability) & mrg$cellType %in% args$excludedCellType
-	posExcludedIndices=mrg$cellID %in% positiveExcluded & totalargs$excludedCellType
-	negExcludedIndices=mrg$cellID %in% negativeExcluded & totalargs$excludedCellType
+	
+	fullStats = recast[[typedCols[1]]] %>% table
+	refStats = recast[[typedCols[2]]] %>% table
+	mostLikelyCellTypes = c(
+		names(fullStats)[order(fullStats, decreasing = T)][1],
+		names(refStats)[order(refStats, decreasing = T)][1]
+	)
+	print(mostLikelyCellTypes)
+	
+	# No cell-specific raw masks to be used to define positive controls
+	refCellTypes=unique(recast[[typedCols[2]]])
+	fullCellTypes=unique(recast[[typedCols[1]]])
 
+	undefinedFullTypes=fullCellTypes[!fullCellTypes %in% c(refCellTypes, args$mostFreqCellType)]
+	undefinedRefTypes=refCellTypes[! refCellTypes %in% c(fullCellTypes)]
+	
+	negativeIndices=setdiff(which(recast[[typedCols[1]]] != recast[[typedCols[2]]]),
+							which(recast[[typedCols[2]]] %in% undefinedRefTypes |
+						 		recast[[typedCols[1]]] %in% c(args$mostFreqCellType, args$dependentCell) &
+								recast[[typedCols[2]]] %in% args$dependentCell))
+								
+	table(recast[[typedCols[2]]][! recast[[typedCols[1]]] %in% refCellTypes]) %>% 
+		sort %>% print
+	negative=recast$cellID[negativeIndices]
+	cat('Negative CellIDs: ', length(negative), '\n')
+		
+	posIndices = recast[[typedCols[2]]] == recast[[typedCols[1]]]
+	positiveExcludedIndices = recast[[typedCols[1]]] %in% args$mostFreqCellType &
+		recast[[typedCols[2]]] %in% c(args$dependentCell, mostLikelyCellTypes[2])
+	negativeExcludedIndices = recast[[typedCols[1]]] %in% args$mostFreqCellType &
+								! recast[[typedCols[2]]] %in% c(mostLikelyCellTypes[2], args$dependentCell)
+											   
+		
+	if(mostLikelyCellTypes[2] == mostLikelyCellTypes[1]) {
+		#	# If both models have the same most likley cell type, and we don't 
+		# have other references for positive -> narrow down to higher expessed than the majority
+		mostFreqIndices = recast[[typedCols[2]]] == mostLikelyCellTypes[2]
+		# If any negative
+		mostFreqNeg = recast[[typedCols[1]]] == mostLikelyCellTypes[2] &
+						recast[[typedCols[2]]] != recast[[typedCols[1]]]
+		# If most frequent celltypes are equal and there are differences
+		negCutoff = quantile(recast[[intensityColNameRef]][mostFreqNeg], .9, na.rm = T)
+
+		cat('Most likely cell type in reference model equals",
+			"the most likely cell type in full model\n', negCutoff, '\n')
+		
+		pdfOut=f("{out}/MostFrequentCellTypesSame.{analysisID}.pdf")
+		pdf(pdfOut, width = 5, height = 4)
+		plot(recast[[intensityColNameFull]][mostFreqIndices],
+			recast[[intensityColNameRef]][mostFreqIndices],
+			xlab='Full model', ylab = 'Reference model'
+		)
+		abline(v = negCutoff, lty = 2)
+		abline(h = negCutoff, lty = 2)
+		dev.off()
+		
+		posIndices=posIndices & (recast[[typedCols[2]]] != mostLikelyCellTypes[2] |
+								recast[[typedCols[2]]] == mostLikelyCellTypes[2] &
+								recast[[intensityColNameFull]] > negCutoff)
+	}
+		
+		positive=recast$cellID[which(posIndices)]
+		cat('Positive CellIDs: ', length(positive), '\n')
+		if(regionCol %in% colnames(recast))
+		  positive=union(positive, 
+			  			recast$cellID[which(recast[[regionCol]] == "Tumour" &
+									  grepl("Epithelial cells|tumour cells", 
+									  		recast[[typedCols[2]]], ignore.case = T))])
+		
+		if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
+			
+			mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
+			negCutoff = quantile(recast[[intensityColNameFull]][mostFreqIndices], .4, na.rm = T)
+			qCutoff=min(quantile(recast[[intensityColNameRef]][mostFreqIndices], .9, na.rm = T), negCutoff)
+						 
+			cols=palette$cellTypeColors
+			pdfOut=f("{out}/MostFrequentExcluded.{analysisID}.pdf")
+			pdf(pdfOut, width = 6, height = 4)
+			g <-ggplot(recast, aes_string(intensityColNameFull, intensityColNameRef))
+			plot = g + geom_point(aes_string(color = typedCols[1]), size = 0.01) + 
+				scale_color_manual(values = cols[names(cols) %in% recast[[typedCols[1]]]]) +
+				theme_classic() +
+				geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
+				geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
+				geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
+				geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+			print(plot)
+			g <-ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
+			plot = g + geom_point(aes(color = typedCols[1]), size = 0.01) + 
+				theme_classic() +
+				geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
+				geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
+				geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
+				geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+			print(plot)
+			dev.off()
+			
+			cat('Most likely cell type in full model equals the excluded cell type in the reference model\n',
+				'considering mean intensities: ', negCutoff, '\n')
+
+			positiveExcludedIndices=positiveExcludedIndices &
+					  recast[[intensityColNameFull]] > negCutoff &
+					  recast[[intensityColNameRef]] < qCutoff
+		}
+		for(missedCellType in undefinedFullTypes) {
+			
+				mostFreqIndices=recast[[typedCols[1]]] == missedCellType
+				negCutoff = quantile(recast[[intensityColNameFull]][mostFreqIndices], .4, na.rm = T)
+				qCutoff=min(quantile(recast[[intensityColNameRef]][mostFreqIndices], .9, na.rm = T), negCutoff)
+				cols=palette$cellTypeColors
+				pdfOut=f("{out}/Missing.{missedCellType}.{analysisID}.pdf")
+				pdf(pdfOut, width = 6, height = 4)
+				g <-ggplot(recast, aes_string(intensityColNameFull, intensityColNameRef))
+				plot = g + geom_point(aes_string(color = typedCols[1]), size = 0.01) + 
+					scale_color_manual(values = cols[names(cols) %in% recast[[typedCols[1]]]]) +
+					theme_classic() +
+					geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
+					geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
+					geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
+					geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+				print(plot)
+				g <-ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
+				plot = g + geom_point(aes(color = typedCols[1]), size = 0.01) + 
+					theme_classic() +
+					geom_vline(aes(xintercept = qCutoff), linetype= 'dashed') +
+					geom_vline(aes(xintercept = negCutoff), linetype= 'dotted') +
+					geom_hline(aes(yintercept = qCutoff), linetype= 'dashed') +
+					geom_hline(aes(yintercept = negCutoff), linetype= 'dotted')
+				print(plot)
+				dev.off()
+			
+				cat('Missing cell type in ref model ', missedCellType,
+					'considering mean intensities: ', negCutoff, '\n')
+
+				positiveExcludedIndices=positiveExcludedIndices |
+					recast[[typedCols[1]]] %in% missedCellType &
+					recast[[intensityColNameFull]] > negCutoff &
+				    recast[[intensityColNameRef]] < qCutoff
+				
+				negativeExcludedIndices = negativeExcludedIndices | 
+						recast[[typedCols[1]]] %in% missedCellType &
+							recast[[intensityColNameFull]] < qCutoff
+					
+		}
+		
+		positiveExcluded=recast$cellID[positiveExcludedIndices]
+		cat('Positive mostFreqCellType CellIDs: ', length(positiveExcluded), '\n')
+		
+		negativeExcluded=recast$cellID[negativeExcludedIndices]
+		cat('Neg mostFreqCellType CellIDs: ', length(negativeExcluded), '\n')
+ 	}
+
+	totalExcludedCell=mrg$markers==args$major_markers & 
+		mrg$method == args$major_method &
+		! is.na(mrg$probability) &
+		mrg$cellType %in% c(args$mostFreqCellType, undefinedFullTypes)
+
+	posExcludedIndices=mrg$cellID %in% positiveExcluded & totalExcludedCell
+	negExcludedIndices=mrg$cellID %in% negativeExcluded & totalExcludedCell
+	
 	print('Negative')
-	paste(recast[[cellAsCols[1]]][recast$cellID %in% negative],
-	                       recast[[cellAsCols[2]]][recast$cellID %in% negative]) %>%
+	paste(recast[[typedCols[1]]][recast$cellID %in% negative],
+			recast[[typedCols[2]]][recast$cellID %in% negative]) %>%
 						   		table %>% sort %>% print
 	print('Positive')
-	paste(recast[[cellAsCols[1]]][recast$cellID %in% positive],
-	                       recast[[cellAsCols[2]]][recast$cellID %in% positive]) %>% 
+	paste(recast[[typedCols[1]]][recast$cellID %in% positive],
+			recast[[typedCols[2]]][recast$cellID %in% positive]) %>% 
 						   table %>% sort %>% print
-	print('positiveExcluded')
-	recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% args$excludedCellType &
-						  recast$cellID %in% positiveExcluded] %>% table %>% 
-						  	sort(., decreasing = T) %>% head %>% print 
-	print('Negative excluded')
-	recast$names_csm_mcsa[recast[[cellAsCols[1]]] %in% args$excludedCellType &
-						  recast$cellID %in% negativeExcluded] %>% table %>%
-						 	 sort(., decreasing = T) %>% head %>% print
 
 	mrg$control="undetermined"
 	mrg$control[which(mrg$cellID %in% negative)] = "negative"
 	mrg$control[which(mrg$cellID %in% positive)] = "positive"
-	mrg$control[totalargs$excludedCellType]="undetermined"
+	mrg$control[totalExcludedCell]="undetermined"
 	mrg$control[negExcludedIndices]="negative"
 	mrg$control[posExcludedIndices]="positive"
-	print(table(mrg$control))
-	# mrg$control[mrg$cellType == "Excluded"] = "negative"
-
-	# mrg$cellType[smoothMuscle]="Smooth muscle cells"
+		
 	# Predict positive and negative cell objects
 	controlCellIDs=mrg$control %in% c("positive", "negative") &
-	  mrg$markers==ref_markers_list & mrg$method == "cellassign" &
+	  mrg$markers==ref_markers_list & mrg$method == args$major_method &
 	  !is.na(mrg$probability)
+	cat('Control CellIDs', length(controlCellIDs), '\n')
+	cat('Positive mostFreqCellType CellIDs: ', length(posExcludedIndices), '\n')
+	cat('Negative mostFreqCellType CellIDs: ', length(negExcludedIndices), '\n')
 	print('Probability')
-	print(table(mrg$cellType[is.na(mrg$probability & mrg$method == "cellassign")]))
-
+	print(table(mrg$cellType[ is.na(mrg$probability &
+			    mrg$method == args$major_method)]))
+	
 	dfFlt=mrg[controlCellIDs | posExcludedIndices | negExcludedIndices, ]
 	dfFlt$control=sapply(dfFlt$control == "positive", sum)
-
+	
 	# Model on selected covariates
 	print('Creating model with')
-	print(table(dfFlt$control, dfFlt$cellType))
+	print(table(dfFlt$control, dfFlt$cellType, dfFlt$markers))
+	
+	#if(!all(recast[[csmCol]] == 'None')) {
 	model<-lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
-	                                (1|cellType)")), data=dfFlt, family=binomial)
+		                                (1|cellType)")), data=dfFlt, family=binomial)
 	predict=predict(model, newdata=dfFlt, type="response", allow.new.levels=T)
-	ROCRpred <- ROCR::prediction(predict[!is.na(predict)], dfFlt$control[!is.na(predict)])
+	ROCRpred <- ROCR::prediction(predict[! is.na(predict)], dfFlt$control[! is.na(predict)])
 	sensit=ROCR::performance(ROCRpred, 'sens')
 	specif=ROCR::performance(ROCRpred, 'spec')
 	# cat(sensit, specif, "\n")
 	modelCutoff=sensit@x.values[[1]][which.min(abs(sensit@y.values[[1]] - specif@y.values[[1]]))]
-
+	cat('Model cutoff: ', modelCutoff, "\n")
 	save(modelCutoff, model, file = modelOut)
 	sensDf <- data.frame(x=unlist(sensit@x.values), y=unlist(sensit@y.values))
 	specDf <- data.frame(x=unlist(specif@x.values), y=unlist(specif@y.values))
 	pdf(f("{out}/Model.{analysisID}.pdf"), height=3, width=4)
-	plot=sensDf %>% ggplot(aes(x,y)) +
-	  geom_line() +
-	  geom_line(data=specDf, aes(x,y,col="red")) +
-	  scale_y_continuous(sec.axis = sec_axis(~., name = "Specificity")) +
-	  labs(x='Cutoff', y="Sensitivity") +
-	  theme(axis.title.y.right = element_text(colour = "red"), legend.position="none") +
-	  geom_vline(aes(xintercept=modelCutoff), linetype="dashed") +
-	  guides(color='none') +
-	  cowplot::theme_cowplot()
+	plot = sensDf %>% ggplot(aes(x,y)) +
+		geom_line() +
+		geom_line(data=specDf, aes(x,y,col="red")) +
+		scale_y_continuous(sec.axis = sec_axis(~., name = "Specificity")) +
+		labs(x='Cutoff', y="Sensitivity") +
+		theme(axis.title.y.right = element_text(colour = "red"), legend.position="none") +
+		geom_vline(aes(xintercept=modelCutoff), linetype="dashed") +
+		guides(color='none') +
+		cowplot::theme_cowplot()
 	print(plot)
 	dev.off()
 
+	predictProb=predict(model, newdata=droplevels(mrg), type="response", allow.new.levels=T)
 	mrg$predicted=predictProb > modelCutoff
 	mrg$predicted=ifelse(mrg$predicted, "positive", "negative")
-	dfMrg=droplevels(mrg[mrg$method == "cellassign" & mrg$markers == ref_markers_list |
-				posExcludedIndices | negExcludedIndices, ])
-	print(table(dfMrg$cellType, dfMrg$predicted))
-
+	print(table(mrg$predicted, mrg$cellType))
+	dfMrg=droplevels(mrg[mrg$method == args$major_method & 
+		mrg$markers == ref_markers_list |
+		posExcludedIndices | negExcludedIndices, ])
+	
 	stats=data.frame(table(dfMrg$control))
 	stats$Freq=round(stats$Freq/sum(stats$Freq), 3)
 	stats$Var1=factor(stats$Var1, levels=sort(stats$Var1))
-
-	pdf(f("{out}/Control_stats.{analysisID}.pdf"), height=5, width=5)
+	print(stats)
+	pdfOut=f("{out}/Control_stats.{analysisID}.pdf")
+	pdf(pdfOut, height=5, width=5)
 	g <- ggplot(stats, aes(x="", y=Freq, fill=Var1))
 	plot=g + geom_bar(stat="identity") + theme_classic(base_size=18) +
 	  scale_fill_manual(name="Cell type controls", 
@@ -252,7 +392,7 @@ if(! length(data)) {
 	predStats=predStats[predStats$N > 0, ]
 	predStats$V1=factor(predStats$V1, levels=unique(sort(predStats$V1)))
 	g <- ggplot(predStats, aes(x="", y=Freq))
-	plot=g + geom_bar(stat="identity",fill = "lightblue", color="black" ) +
+	plot = g + geom_bar(stat="identity",fill = "lightblue", color="black" ) +
 	  theme_classic(base_size=18) +
 	  facet_grid(. ~ V1) +
 	  coord_polar(theta="y", start=0, direction=-1) +
@@ -263,38 +403,48 @@ if(! length(data)) {
 	print(plot)
 
 	cellStats=data.table(table(dfMrg$control, dfMrg$cellType))
-	# cellStats$Freq=round(cellStats$N/sum(cellStats$N), 3)
 	cellStats$Freq=sapply(1:nrow(cellStats), function(x) with(cellStats, round(N[x]/sum(N[V1 == V1[x]]), 3)))
+	cellTypeColors=palette$cellTypeColors[names(palette$cellTypeColors) %in% cellStats$V2]
+	
 	cellStats$V1=factor(cellStats$V1, levels=unique(sort(cellStats$V1)))
-	cellStats$V2=factor(cellStats$V2, levels=names(palette$cellTypeColors)[names(palette$cellTypeColors) %in% cellStats$V2])
+	cellStats$V2=factor(cellStats$V2, levels=names(cellTypeColors))
 	g <- ggplot(cellStats, aes(x=V1, y=Freq, fill=V2))
 	plot=g + geom_bar(stat="identity", color="black" ) +
 	  theme_classic(base_size=18) +
 	  theme(axis.line=element_blank(), axis.ticks=element_blank(), 
 	        axis.text.x=element_text(angle=45)) +
 	  xlab("") + ylab("") +
-	  scale_fill_manual(values=palette$cellTypeColors) +
+	  scale_fill_manual(values=cellTypeColors) +
 	  guides(fill=guide_legend(title='Cell type'))
-	# scale_y_continuous(limits = c(0, 1))
 	print(plot)
 	dev.off()
-	# browseURL(f("{out}/Control_stats.{analysisID}.pdf"))
+	cat('CHECK:', pdfOut, "\n")
 
-	pdf(f("{out}/Control_comparison.{analysisID}.pdf"), height=4)
+	pdfOut=f("{out}/Control_comparison.{analysisID}.pdf")
+	pdf(pdfOut, height=4)
 	for(feature in features) {
+		cat('Plotting ', feature , '\n')
 
-	  dfMrg=droplevels(mrg[mrg$method == "cellassign" & 
+	  dfMrg=droplevels(mrg[mrg$method == args$major_method & 
 	  					   mrg$markers == ref_markers_list |
-	                       mrg$cellType %in% args$excludedCellType &
-						   mrg$markers== args$markers, ]
+	                       mrg$cellType %in% c(args$mostFreqCellType, undefinedFullTypes) &
+						   mrg$markers== args$major_markers, ]
 	  )
-	  # dfMrg=dfMrg[dfMrg$cellType!= args$excludedCellType, ]
+	  if(! feature %in% colnames(dfMrg)) {
+		  cat('Skipping', feature, ': not in data frame.\n')
+	  }
+
+	  if(all(is.na(dfMrg[[feature]]))) {
+		  cat('Skipping', feature, ': all values undefined.\n')
+		  next
+	  }
+		 
+	  # dfMrg=dfMrg[dfMrg$cellType!= args$mostFreqCellType, ]
 	  cat(feature, nrow(dfMrg), "\n")
 	  cellTypeStats=table(dfMrg$cellType)
-	  print(cellTypeStats)
 	  g <- ggplot(dfMrg)
 	  plot = g + 
-	    cowplot::theme_cowplot(font_size = 14) + # ggtitle(feature) +
+	  	cowplot::theme_cowplot(font_size = 14) + # ggtitle(feature) +
 	    theme(axis.text.x=element_text(angle=45, hjust = 1),
 	          legend.position="top") +
 	    guides(fill=guide_legend(nrow=length(unique(mrg$method)))) +
@@ -308,47 +458,50 @@ if(! length(data)) {
 	  plot1=plot + geom_boxplot(aes_string("cellType", feature, fill="control"), outlier.size = 0.05) +
 	    scale_fill_manual(values = palette$cellTypingStatusCols)
 	  print(plot1)
+	  	  
 	  plot2=plot + geom_boxplot(data=droplevels(subset(dfMrg, !is.na(predicted))),
 	                            aes_string("cellType", feature, fill="predicted")) +
-	    scale_fill_manual(values=palette$cellTypingStatusCols) +
+	    #scale_fill_manual(values=palette$cellTypingStatusCols) +
 	    facet_grid( . ~ control)
 	  print(plot2)
-	  plot3=plot + geom_density(aes_string(feature, color="control"), fill="grey", alpha=0.2) +
+
+	  plot3=plot + geom_density(aes_string(feature, fill="control"), color="black",  alpha=0.2) +
 	    cowplot::theme_cowplot(font_size = 22) +
 	    scale_color_manual(values=palette$cellTypingStatusCols) +
-	    ylab("Density")
+	    ylab(f("Density {feature}"))
 	  print(plot3)
 	}
 	dev.off()
-	# browseURL(f("{out}/Control_comparison.{analysisID}.pdf"))
-	for(imagename in rev(imagenames)) {
+	cat('CHECK:', pdfOut, "\n")
 
-	  pdfOut=f("{visDir}/{imagename}.{analysisID}.pdf")
-	  # pdf(pdfOut, width=10, height=11)
+	overlayImgs=imagenames[1:min(3, length(imagenames))]
+	print(overlayImgs)
+	print(1:min(4, length(imagenames)))
+	for(imagename in rev(overlayImgs)) {  
+
 	  for(analysis in grepv("cellType_", colnames(recast))) {
 		  
 	    method=gsub("cellType_([^_]+)_.*", "\\1", analysis)
-	    if(method=="csm") next
+	    if(method == "csm")
+			next
 	    markers=gsub("cellType_[^_]+_(.*)", "\\1", analysis)
-	    rowSel=mrg$imagename==imagename & mrg$method == method & mrg$markers == markers
-	    if(!sum(rowSel)) next
-    
+		rowSel=mrg$imagename==imagename & mrg$method == method &
+			mrg$markers == markers
+	    if(! sum(rowSel, na.rm = T)) 
+			next
 	    for(region in c("negative", "positive")) {
 		
 	      for(column in c("predicted", "control")) {
 			  
-	        pngOut=f("{visDir}/{region}_{column}.{method}.{imagename}.{analysisID}.{markers}.png")
-	        png(pngOut,  res = 400, units = "in", width=5.73, height=6)
+	        pdfOut=f("{visDir}/{region}_{column}.{imagename}.{analysisID}.{markers}.pdf")
+	        pdf(pdfOut, width=5.73, height=6)
 	        regionSel=rowSel & mrg[[column]] == region
 	        overlay_cell_types(imagename, imageDf=mrg[regionSel, ],
 	                           cellTypeCol="cellType", cellTypes=column,
 	                           title=f("{imagename} {region} {column} {markers}"), 
-	                           legend = T, ptx=0.1)
+	                           legend = T, ptx=0.4)
 	        dev.off()
-	      }
-	    }
-	  }
+		}
+	 }
 	}
 }
-	
-

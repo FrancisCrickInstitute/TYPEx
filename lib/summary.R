@@ -11,15 +11,11 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		pars[[method]]$markers=pars$markers
 		pars[[method]]$magnitude=pars$magnitude
 
-		if(pars$markers %in% c("all", "phenotypic", "functional")) {
-			markersList=marker_gene_list[[pars$defaultMarkersList]]
-		} else {
-			markersList=marker_gene_list[[pars$markers]]
-		}
+		markersList=marker_gene_list[[pars$markers]]
 
 		print("Cell type assignment")
 		clusterNameFile=f("{runID}.clusterNames.txt")
-
+		
 		clusterNames=assign_cluster_positivity(
 			dfExp = inData[, ..columnNames], 
 			clusters=runOutput,
@@ -31,7 +27,8 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		)
 
 		majorTypes=NULL
-		if(method != 'cellassign' & ! all(is.null(colors))) {
+		# If stratfy_by_confidence is true & defined low and high conf groups
+		if(method != 'cellassign' & ! all(is.null(colors)) & pars$stratify) {
 			if(!all(colors=='black')) 
 				majorTypes=gsub(" [0-9]+", "", colors)
 		}
@@ -53,12 +50,12 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 			class="vessels"
 		)
 		colnames(vessel_categs) = gsub('region', 'vessels_region', colnames(vessel_categs))
-			
+		
 		print('Major type assignment')
 		majorTypes=assign_celltype(
 			names = positive, 
 			majorTypes=majorTypes,
-			markers = marker_gene_list[[pars$ref_markers]],
+			markers = marker_gene_list[[pars$major_markers]],
 			major = T, 
 			region=tissue_categs$Tumour
 		)
@@ -83,7 +80,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 
 		print("Getting probabilities")
 		probabilities=get_probabilities(cellIDs = ids, clusters=runOutput,
-								  	probFile = f("{runID}.probs.txt"))
+								  	probFile = f("{runID}_aux/probs.txt"))
 
 		if(method == "cellassign")	{
 			celltypes=runOutput
@@ -107,54 +104,55 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 				clusterNames$major=NULL
 			}
 		}
-
+		
 		clusterNames$majorType=assign_celltype(
 			names = clusterNames$positive,
 			majorTypes=clusterNames$major,
-			markers = marker_gene_list[[pars$ref_markers]],
+			markers = marker_gene_list[[pars$major_markers]],
 			major = T
 		)
 		clusterNames$cellType=assign_celltype(
-			names = clusterNames$cellType, 
+			names = clusterNames$positive, 
 			markers = markersList,
 			majorTypes = clusterNames$majorType
 		)
-			
 		write.tab(clusterNames, file=clusterNameFile)
 		nrClusters=length(unique(runOutput))
-        print('Marker expression heatmap')
-		heatmapOrder=plot_heatmap(dfExp = inData[, ..columnNames],
-		                                clusters = runOutput, runID = runID,
-		                                labels=clusterNames)
 
-
-		cat('Marker expression heatmap for ', nrClusters, ' clusters\n')
-
-		print('Reviewing cell assignments for plotting only')
-		print(pars$cellAssignFile)
-		clusterNames$cellType_rev=review_cellType_by_major(
-			cellTypes      = clusterNames$cellType,
-			majorTypes	   = clusterNames$majorType,
-			positivity	   = clusterNames$positive, 
-			cellAssignFile = pars$cellAssignFile
-		)
+		print('plotting cell assignments for plotting only')
+		cellAssignFile=f("{dirname(runID)}/reassign.{pars$panel}.{pars$run}.txt")
+		cat('CHECK cellAssignFile', cellAssignFile, '\n')
 		clusterNames$majorType_rev=review_major_by_cellType(
 			cellTypes	   = clusterNames$cellType,
 			majorTypes	   = clusterNames$majorType,
 			positivity	   = clusterNames$positive,
-			cellAssignFile = pars$cellAssignFile
-		)
+			cellAssignFile = cellAssignFile,
+			subtypeMarkersList = markersList,
+			majorMarkersList = marker_gene_list[[pars$major_markers]])
+		
+		clusterNames$cellType_rev=review_cellType_by_major(
+			cellTypes      = clusterNames$cellType,
+			majorTypes	   = clusterNames$majorType_rev,
+			positivity	   = clusterNames$positive, 
+			cellAssignFile = cellAssignFile)
 
+		print('Marker expression heatmap')
+		selectedMarkers=colnames(inData)[colnames(inData) %in% unlist(markersList)]
+		heatmapOrder=plot_heatmap(dfExp = inData[, ..selectedMarkers],
+			                                clusters = runOutput, runID = runID,
+			                                labels =clusterNames)
+			cat('Marker expression heatmap for ', nrClusters, ' clusters\n')
+			
 	  print("Plotting expression")
 	  plot_expression(
 		  dfExp = inData[, ..columnNames],
-          clusters = runOutput,
-          clusterNames, pars[[method]],
-          magnitude = pars$magnitude
+		  clusters = runOutput,
+		  clusterNames, pars[[method]],
+		  magnitude = pars$magnitude
 	  )
-
-		print("Wrapping up in data frame")
-		outDF=data.frame(
+	  
+	  print("Wrapping up in data frame")
+	  outDF=data.frame(
 			imagename     = gsub(".txt", "", basename(inData$imagename)),
 			object        = sapply(inData$ObjectNumber, toString),
 			centerX       = spatData$LocationCenter_X[spatMatch],
@@ -179,7 +177,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 get_probabilities <- function(cellIDs, clusters, probFile) {
   
 		if(!file.exists(probFile))
-		return(rep(NA, nrow(inData)))
+			return(rep(NA, nrow(inData)))
 		probs=data.table::fread(probFile, sep = "\t")
 		probMatch=match(cellIDs, probs$imagename)
 		probs=probs[probMatch, ]

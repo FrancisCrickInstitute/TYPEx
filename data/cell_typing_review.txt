@@ -1,3 +1,0 @@
-imagename	description	control
-P2_TMA007_L_20190619-roi_12	Carcinosarcoma	review
-P2_TMA001_R_20190508-roi_6	Myeloid	review

@@ -35,10 +35,14 @@ process csm_export {
 
 	"""
 		export BASE_DIR=$baseDir
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
 		csm_exporter.R --inDir ${csmDir} \
-			--imcyto_run ${params.run} --panel ${params.panel} \
-			--celltypeReviewFile ${params.celltypeReviewFile} \
+			--imcyto_run ${params.release} --panel ${params.panel} \
 			--markers ${params.major_markers} --nndist 5 \
+			--regFile ${params.sampleFile} \
 			--tissAreaDir "${params.outDir}/tissue_seg/" 
 	"""
 }

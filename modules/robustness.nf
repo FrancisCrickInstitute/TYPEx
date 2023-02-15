@@ -1,11 +1,13 @@
 
 process call_subsampled {
-        
-		label 'medium_mem'
+
+
+		label 'max'
+	
 
         input:
                 tuple val(iteration), val(method), val(markers)
-				val nfDir
+				path nfDir
 				val files
 
 		output:
@@ -14,19 +16,23 @@ process call_subsampled {
         script:
         """
                 export BASE_DIR=$baseDir
-                typing.R --wDir ${params.outDir}  --nfDir ${nfDir} \
+				export PARAMS_CONF=${params.paramsConfig}
+				export ANN_CONF=${params.annotationConfig}
+				export COL_CONF=${params.colorConfig}
+				
+                typing.R --wDir ${params.outDir}  \
+						--nfDir ${nfDir} \
 						--method ${method}  \
                         --subset sampled \
 						--markers $markers \
-                        --run ${params.run} --panel ${params.panel} \
-                        --celltypeReviewFile ${params.celltypeReviewFile} --regFile ${params.regFile} \
+                        --run ${params.release} \
+						--panel ${params.panel} \
+						--regFile ${params.regFile} \
 						--iter ${iteration} \
 						--tissAreaDir "${params.outDir}/tissue_seg" \
-						--cellAssignFile ${params.cellAssignFile} \
-						--stratify_label ${params.stratify_label}
+					    --major_markers "${params.major_markers}"
         """
 }
-
 
 process match_clusters {
 	tag "match"
@@ -34,6 +40,8 @@ process match_clusters {
 	input:
 		val inDir
 		tuple val(method)
+		tuple val (source_markers)
+		tuple val (ref_markers)
 		val files
 		val call_method
 	output:
@@ -42,8 +50,18 @@ process match_clusters {
 	script:
     """
         export BASE_DIR=$baseDir
-		match_clusters.R --inDir ${inDir} --method ${method} \
-			--run ${params.run} --panel ${params.panel} --reference_method ${method} 
+		export PARAMS_CONF=${params.paramsConfig}
+		export ANN_CONF=${params.annotationConfig}
+		export COL_CONF=${params.colorConfig}
+		
+		match_clusters.R --inDir ${inDir} \
+			--method ${method} \
+			--run ${params.release} \
+			--panel ${params.panel} \
+			--reference_method ${method} \
+			--markers ${source_markers} \
+			--reference_markers ${ref_markers}
+
     """
 }
 
@@ -54,6 +72,11 @@ process plot_subsampled {
 	script:
     	"""
             export BASE_DIR=$baseDir
-			matchedClusterStats.R --wDir "${params.outDir}/sampled/robustness" --outDir "${params.outDir}/sampled/robustness/plots"
+			export PARAMS_CONF=${params.paramsConfig}
+			export ANN_CONF=${params.annotationConfig}
+			export COL_CONF=${params.colorConfig}
+			
+			matchedClusterStats.R --wDir "${params.outDir}/sampled/robustness" \
+				--outDir "${params.outDir}/sampled/robustness/plots"
 	    """
 }

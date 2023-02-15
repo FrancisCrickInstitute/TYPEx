@@ -10,9 +10,9 @@ resultPattern=".clusters.fst"
 arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
 
-arg_parser=add(arg_parser, arg="--inDir", default='/camp/lab/swantonc/working/angelom/analyses/imc/test_pub_p2/output', help='Where typing results are')
+arg_parser=add(arg_parser, arg="--inDir", help='Where typing results are')
 arg_parser=add(arg_parser, arg="--subset", default="sampled", help=paste0("The output typing directory [", majorDir, sampledDir, "]"))
-arg_parser=add(arg_parser, arg="--method", default="Rphenograph", help=paste("Methods to be compared"))
+arg_parser=add(arg_parser, arg="--method", default="FastPG", help=paste("Methods to be compared"))
 arg_parser=add(arg_parser, "--run", default="publication", help="NextFlow run")
 arg_parser=add(arg_parser, "--panel", default="p2", help="Panel of markers")
 arg_parser=add(arg_parser, "--markers", default="major_markers", help="Marker lists defined in TME_settings.R")
@@ -33,14 +33,14 @@ inDir=file.path(args$inDir, with(args, f(analysisPath)))
 inFiles=list.frec(inDir, pattern=resultPattern)
 
 refDir=file.path(args$inDir, with(ref, f(analysisPath)))
-refFile=list.frec(refDir, pattern=resultPattern
+refFile=list.frec(refDir, pattern=resultPattern)
 
 outDir=file.path(args$inDir, args$subset, "robustness")
-if(!dir.exists(outDir))  dir.create(outDir)
+if(! dir.exists(outDir))  dir.create(outDir)
 ids=c('subset', 'method', 'markers', 'run')
 uniqueID=sapply(ids, function(x) ref[[x]] != args[x])
 analysisID=with(args, paste(c(args[unlist(ids)], ref[ids[uniqueID]]), collapse = "_"))
-cat('Reading ', refFile, '\n')
+cat('Reading ', refFile, "in", refDir, '\n')
 refData=fst::read.fst(refFile)
 cat("Matching labels", analysisID, '\n')
 clusters=vector(mode='list')

@@ -42,9 +42,13 @@ process collate_features {
     """
 		
 			export BASE_DIR=${baseDir}
+			export PARAMS_CONF=${params.paramsConfig}
+			export ANN_CONF=${params.annotationConfig}
+			export COL_CONF=${params.colorConfig}
+			
 			collate_by_feature.R --inDir "${params.outDir}/nfData/" \
 				--panel ${params.panel} \
-				--run ${params.run} \
+				--run ${params.release} \
 				--feature ${feature}
 				
     """

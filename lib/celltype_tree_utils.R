@@ -56,14 +56,40 @@ get_node_breadth <- function(tree, value, tree_path) {
 }
 
 remove_node <- function(tree, value) {
+	if(value %in% names(tree)) {
+		return(remove_node(tree[names(tree) != value], value))
+	}
+	
 	lapply(tree, function(x)  {
-		if( is.list(x) ) { 
-			if(! is.null(names(x))) {
+		if( is.list(x) ) {
+			
+			if(! is.null(names(x))) {				
 				remove_node(x[names(x) != value], value)
 			} else {
 				remove_node(x, value)
 			}
-		} else x
+		} else {
+			x
+		}
+	})
+}
+
+remove_node_marker <- function(tree, value, marker) {
+	if(value %in% names(tree)) {
+		return(remove_node_marker(tree[names(tree) != value], value, marker))
+	}
+	
+	lapply(tree, function(x)  {
+		if( is.list(x) ) {
+			
+			if(! is.null(names(x))) {				
+				remove_node_marker(x[names(x) != value], value, marker)
+			} else {
+				remove_node_marker(x, value, marker)
+			}
+		} else {
+			x[! x %in% marker]
+		}
 	})
 }
 
