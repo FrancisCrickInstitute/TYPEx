@@ -62,7 +62,7 @@ Input paramters
 * run ID: panel name, imcyto run [opt], study name
 
 Optional
-* most frequenct cell type - if provided the longest process will be run in parallel
+* most frequent cell type - if provided the longest process will be run in parallel
 
 Within tissue_segmentation.json, where annotations of tissue can be overlaid and quantified.
 
