@@ -25,7 +25,7 @@
   		"aSMA+ cells":["Vimentin", "alphaSMA"],
 		"Smooth muscle cells":["alphaSMA"]
   	},
-  	"Epithelial cells":["panCK"]
+  	"Epithelial cells":["pancytokeratin"]
   },
   
   "subtype_markers":{
@@ -36,31 +36,29 @@
 		    "T cells":{
 				"T cells - Other":["Vimentin", "CD45", "CD3"],
 				"T cells DP":["Vimentin", "CD45", "CD3", "CD4", "CD8a"],
-				"Naive T cells":["Vimentin", "CD45", "CD3", "CD8a", "CD4", "CD45RA", "CD27"],
 				"Tgd":["Vimentin", "CD45", "CD3", "TCRd", "KIR2DL3"],
 				"CD8 T cells": {
-					"CD8 T cells - Other":["Vimentin", "CD45", "CD3", "CD8a", "CD38", "CD16"],
-					"CD8 Tcm":["Vimentin", "CD45", "CD3", "CD8a", "CD27", "CCR7"],
-					"CD8 Tem":["Vimentin", "CD45", "CD3", "CD8a", "CD27"],
-					"Cytotoxic CD8 T cells":["Vimentin", "CD45", "CD3", "CD8a", "GZMB"],
-					"Naive CD8 T cells":["Vimentin", "CD45", "CD3", "CD8a", "CD45RA", "CD27"],
+					"CD8 T cells - Other":["vimentin", "CD45", "CD3", "CD8a"],
+					"CD8 Tcm":["vimentin", "CD45", "CD3", "CD8a", "CD27", "CCR7"],
+					"CD8 Tem":["vimentin", "CD45", "CD3", "CD8a", "CD27"],
+					"Cytotoxic CD8 T cells":["vimentin", "CD45", "CD3", "CD8a", "CD103", "GZMB"],
+					"Naive CD8 T cells":["vimentin", "CD45", "CD3", "CD8a", "CD45RA"],
 					"CD8 Trm": {
-						"CD8 Trm - Others": ["Vimentin", "CD45", "CD3", "CD8a", "CD103"],
-						"CD8 Exhausted TDT":["Vimentin", "CD45", "CD3", "CD8a", "CD103", "CD57", "CD39", "PD1"], 
-						"CD57+ CD8 Trm":["Vimentin", "CD45", "CD3", "CD8a", "CD57", "CD103"]
-					},
-					"CD8 TDT":["Vimentin", "CD45", "CD3", "CD8a", "CD57", "PD1", "CD27"]
+						"CD8 Trm - Others": ["vimentin", "CD45", "CD3", "CD8a", "CD103"],
+						"CD8 Exhausted TDT":["vimentin", "CD45", "CD3", "CD8a", "CD103", "CD57", "CD39"],
+						"CD57+ CD8 Trm":["vimentin", "CD45", "CD3", "CD8a", "CD57", "CD103"]
+					}
 				 },
 				"CD4 T cells":{
-					"CD4 T cells - Other": ["Vimentin", "CD45", "CD3", "CD4", "FAP1", "CD38", "CD16"],
-					"Tregs":["Vimentin", "CD45", "CD3", "CD4", "CD27", "FOXP3", "CD25"],
-					"Naive CD4 T cells":["Vimentin", "CD45", "CD3", "CD4", "CD45RA", "CD27"],
-					"CD4 Tcm":["Vimentin", "CD45", "CD3", "CD4", "CD27", "CCR7"],
-					"CD4 Tem":["Vimentin", "CD45", "CD3", "CD4", "CD27"],
-					"Cytotoxic CD4 T cells":["Vimentin", "CD45", "CD3", "CD4", "GZMB"],
-					"CD4 Trm":["Vimentin", "CD45", "CD3", "CD4", "CD103"],
-					"CD4 TDT":["Vimentin", "CD45", "CD3", "CD4", "CD57", "PD1", "CD27"],
-					"CD57+ CD4 T cells":["Vimentin", "CD45", "CD3", "CD4", "CD57"]
+					"CD4 T cells - Other": ["vimentin", "CD45", "CD3", "CD4"],
+					"Tregs":["vimentin", "CD45", "CD3", "CD4", "FOXP3"],
+					"Naive CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "CD45RA"],
+					"CD4 Tcm":["vimentin", "CD45", "CD3", "CD4", "CD27", "CCR7"],
+					"CD4 Tem":["vimentin", "CD45", "CD3", "CD4", "CD27"],
+					"Cytotoxic CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "GZMB"],
+					"CD4 Trm":["vimentin", "CD45", "CD3", "CD4", "CD103"],
+					"CD57+ CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "CD57"],
+					"CD4 Exhausted TDT":["vimentin", "CD45", "CD3", "CD4", "CD57", "CD39"]
 				}
 			},
 			
@@ -72,7 +70,6 @@
 		},
 		"Myeloid cells": {
 		    "Myeloid cells - Other":["Vimentin", "CD45", "CD11b"],
-		    "CD4+ Myeloid cells":["Vimentin", "CD45", "CD11b", "CD4"],
 		    "Monocytes":{
 				"Monocytes - Other":["Vimentin", "CD45", "CD11b", "CD14"],
 				"Macrophages":{
@@ -89,9 +86,9 @@
 	},
 	"Endothelial cells":["Vimentin", "CD31", "alphaSMA"],
 	"Mesenchymal cells":{
-		"Mesenchymal cells - Other":["Vimentin"],
-		"aSMA+ cells":["Vimentin", "alphaSMA"]
+		"Mesenchymal cells - Other":["Vimentin", "collagen1"],
+		"aSMA+ cells":["Vimentin", "alphaSMA", "collagen1"]
 	},
-	"Epithelial cells":["panCK"]
+	"Epithelial cells":["pancytokeratin"]
   }
 }
