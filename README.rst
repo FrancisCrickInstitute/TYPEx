@@ -12,22 +12,21 @@ Usage
 =============
 
 
-.. code-block:: console
-
-   nextflow run TYPEx/main.nf \
-    -profile singularity \
-    -c TYPEx/nextflow.config \
-    --inDir <inputDIR> \
-    --regFile data/sample_annotation.tracerx.txt \
-    --outDir "results/TYPEx/" \
-    --stratify_label "p1_tx100" \
-    --run 'test' \
-    --imcyto true
+.. code-block:: bash
+    
+    nextflow run TYPEx/main.nf -profile singularity \
+	-c TYPEx/nextflow.config \
+	--inDir "$PWD/results/" \
+	--sampleFile "$PWD/TYPEx/data/sample_data.tracerx.txt" \
+	--release "TYPEx_test" \
+	--outDir "$PWD/results/TYPEx/$release/" \
+	--paramsConfig "$PWD/TYPEx/data/typing_params.json" \
+	--annotationConfig "PWD/TYPEx/data/cell_type_annotation.p1.json" \
+        --inputTable "$PWD/data/cell_objects.tracerx.txt"
 
 
 Input Files
 ==================
-
 
 The minimal input for TYPEx is a matrix of cell intensities for each protein and a file with cell definitions specific to the user’s antibody panel.
 
@@ -48,7 +47,7 @@ As CellAssign was developed for single-cell sequencing read count data, the inpu
 * batch_effects
 CellAssign also accounts for batch effects, which can be considered if provided in a sample-annotation table and specified as input parameters to TYPEx for batch correction.
 
-#. sample_annotation.table
+#. Table with sample annotations
 
 ============ ================== ======= ===================
   Image ID     Batch effect 1     ...     Batch effect N  
@@ -57,14 +56,15 @@ CellAssign also accounts for batch effects, which can be considered if provided 
 Input paramters
 ==================
 
-* clustering method
-* major cell definitions label
-* subtype definitions label
+* clustering method <FastPG,Rphenograph,flowSOM>
 * run ID: panel name, imcyto run [opt], study name
+
+Optional
+* most frequenct cell type - if provided the longest process will be run in parallel
 
 Within tissue_segmentation.json, where annotations of tissue can be overlaid and quantified.
 
-When using different workflows:
+The workflow can be specified with tree logical variables:
 - stratify_by_confidence
 - clustering only - perform clusering without any stratifications
 - subsampling - perfom subsampling analysis of clustering tools
