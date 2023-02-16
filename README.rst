@@ -12,6 +12,44 @@ Usage
 =============
 
 
+With deep-imcyto as input
+
+.. code-block:: bash
+
+	ml Nextflow/21.04.3
+	ml Singularity/3.6.4
+
+	# Set Nextflow singularity cache directory
+	# This folder is a symbolik link to a folder outside of the home directory, which has a limited quota
+	release='PHLEX_test'
+
+	export NXF_SINGULARITY_CACHEDIR=$PWD/.singularity/cache
+
+	[[ ! -d $NXF_SINGULARITY_CACHEDIR ]] &&
+	    mkdir $NXF_SINGULARITY_CACHEDIR
+	wDIR=$PWD
+
+	releaseDir="results/TYPEx/$release"
+	[[ ! -d $releaseDir ]] && mkdir -p $releaseDir
+
+	cd $releaseDir
+	nextflow run $wDIR/TYPEx/main.nf -profile singularity \
+	    -c $wDIR/TYPEx/nextflow.config \
+	    --inDir $wDIR/results/ \
+	    --sampleFile $wDIR/TYPEx/data/sample_data.tracerx.txt \
+	    --release $release \
+	    --outDir "$wDIR/results/TYPEx/$release/" \
+	    --wd "$wDIR/results/TYPEx/$release" \
+	    --paramsConfig "$wDIR/TYPEx/data/typing_params.json" \
+	    --annotationConfig "$wDIR/TYPEx/data/cell_type_annotation.p1.json" \
+	    --imcyto true --mccs true \
+	    -resume
+	cd ../../..
+
+
+
+Independent of deep-imcyto
+
 .. code-block:: bash
     
     nextflow run TYPEx/main.nf -profile singularity \
@@ -23,6 +61,7 @@ Usage
 	--paramsConfig "$PWD/TYPEx/data/typing_params.json" \
 	--annotationConfig "PWD/TYPEx/data/cell_type_annotation.p1.json" \
         --inputTable "$PWD/data/cell_objects.tracerx.txt"
+
 
 
 Input Files
@@ -62,7 +101,7 @@ Input paramters
 * run ID: panel name, imcyto run [opt], study name
 
 Optional
-* most frequenct cell type - if provided the longest process will be run in parallel
+* most frequent cell type - if provided the longest process will be run in parallel
 
 Within tissue_segmentation.json, where annotations of tissue can be overlaid and quantified.
 
