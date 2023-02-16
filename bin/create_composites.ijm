@@ -50,7 +50,8 @@ f = File.open('panck_range.txt');
 
 setBatchMode(true);
 runs=getFileList(rootDir);
-print(runs.length);
+
+print("Number of images found in " + rootDir + " " + runs.length);
 for (k = 0; k< runs.length;  k++)	{
 	print('RUNL ', runs[k]);
 

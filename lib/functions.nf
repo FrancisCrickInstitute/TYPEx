@@ -20,9 +20,9 @@ def get_cell_files(imcyto, mccs) {
 		println 'Processing files from deep-imcyto run'
 		// tuple (imageID, file)
 		if(mccs) {
-			cellFilePattern="${params.inDir}/deep-imcyto/${params.release}/consensus_cell_segmentation/**/cells.csv"
+			cellFilePattern="${params.inDir}/consensus_cell_segmentation/**/cells.csv"
 		} else {
-			cellFilePattern="${params.inDir}/deep-imcyto/${params.release}/simple_segmentation/**/cells.csv"
+			cellFilePattern="${params.inDir}/simple_segmentation/**/cells.csv"
 		}
 		samplePattern=cellFilePattern
 			.replaceAll('\\*', '.*')
@@ -50,7 +50,7 @@ def get_cell_files(imcyto, mccs) {
 
 def get_imcyto_raw_masks() {
 
-	rawMasksPattern="${params.inDir}/deep-imcyto/PHLEX_test/imcyto/**/full_stack/*.tiff"
+	rawMasksPattern="${params.inDir}/imctools/**/full_stack/*.tiff"
 	rawSamplePattern=rawMasksPattern.
 		replaceAll('\\*', '.*').
 		replaceAll('.\\*.\\*', '(.*)').
