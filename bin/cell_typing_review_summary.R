@@ -207,9 +207,10 @@ if(! length(data)) {
 		
 		if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
 			
+			mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
+			
 			qCut = quantile(recast[[intensityColNameRef]][mostFreqIndices], .9, na.rm = T)
 			nCut = quantile(recast[[intensityColNameFull]][mostFreqIndices], .4, na.rm = T)
-			mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
 			negCutoff = max(nCut, qCut)
 			qCutoff=min(qCut, nCut)
 						 
