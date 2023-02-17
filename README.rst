@@ -27,13 +27,13 @@ Running on input generated with deep-imcyto
 .. code-block:: bash
    nextflow run TRACERx-PHLEX/TYPEx/main.nf \
         -c $PWD/TRACERx-PHLEX/TYPEx/conf/testdata.config \
-        --inDir $PWD/results/deep-imcyto/$release/ \
-        --sampleFile $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+        --input_dir $PWD/results/deep-imcyto/$release/ \
+        --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
         --release $release \
         --outDir "$PWD/results/TYPEx/$release/" \
-        --paramsConfig "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
-        --annotationConfig "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
-        --deep-imcyto true --mccs true \
+        --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
+        --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+        --deep_imcyto true --mccs true \
         -profile singularity \
         --wd "scratch" \
         -resume
@@ -47,13 +47,13 @@ Running indpendently of deep-imcyto
    nextflow run TYPEx/main.nf \
    -c $PWD/TYPEx/conf/testdata.config \
     -c TYPEx/nextflow.config \
-    --inDir $PWD/results/ \
+    --input_dir $PWD/results/ \
     --release $release \
-    --inputTable $PWD/TYPEx/data/cell_objects.tracerx.txt \
-    --sampleFile $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+    --input_table $PWD/TYPEx/data/cell_objects.tracerx.txt \
+    --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
     --outDir "$PWD/results/TYPEx/$release/" \
-    --paramsConfig "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
-    --annotationConfig "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+    --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
+    --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
     -profile singularity \
     --wd "scratch" \
     -resume
