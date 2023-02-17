@@ -8,7 +8,6 @@
 
 |workflow| 
 
-
 Using multiplexed imaging, TYPEx detects protein expression on single cells, annotates cell types automatically based on user-provided definitions and quantifies cell densities per tissue area. It can be customised with input parameters and configuration files, allowing it to perform an end-to-end cell phenotyping analysis without the need for manual adjustments.
 
 Usage
@@ -65,7 +64,7 @@ Input Files
 
 *Required Inputs*
 
-- :bash:`cell_type_annotation.json` - a file with cell definitions specific to the user’s antibody panel (see :ref:`User-provided cell type definitions`).
+- :bash:`cell_type_annotation.json` - a file with cell definitions specific to the user’s antibody panel (see :ref:`Cell type definitions`).
     Specified with :bash:`--annotationConfig` parameter.
 - :bash:`sample_data.tracerx.txt`
     A tab-delimited file with information for all images (see :ref:`Sample annotation table`).
@@ -107,14 +106,15 @@ The following parameters refer to the typing approach:
 - :bash:`mostFreqCellType` the most frequent cell type in the cohort if known in :bash:`cell_type_annotation.json` [default: None]
     .. note:: The most frequent cell type is used to build the reference model by excluding this cell type. When it is not provided, the complete model wil be built, followed by the reference model. If provided, both will be executed in parallel. Parallel execution can make a difference in time, as these are the most time-consuming processes.
 
-.. User-provided cell type definitions
+.. _Cell type definitions:
+
 User-provided cell type definitions
 -----------------------------
  
 The cell-type definitions file :bash:`cell_type_annotation.json` includes a list of cell lineages and the corresponding marker proteins that together can be used to identify a cell lineage. When designing this file it is important to ensure that each cell in the cohort can be covered by these definitions. Some markers, such as CD45 and Vimentin, are expressed by multiple cell lineages. These shared proteins are used to infer a hierarchy of cell lineages, which is later considered for cell stratification and annotation. An example of a cell-type definitions file is shown below for TRACERx analyses, where we defined 13 major cell types targeted by our two antibody panels, while ensuring that each cell in the cohort can be covered by these definitions. 
 
 
-.. Input table
+.. _Input table:
 Input table
 -----------------------------
 
@@ -124,7 +124,7 @@ The input matrix has values that summarise the intensity of a protein per cell o
   Cell Object ID    Image ID     X     Y     Area [opt].    Marker 1     ...          Marker N  
 ================= ============ ===== ===== ============== ============ ============ ============
 
-.. Typing parameters config
+.. _Typing parameters config:
 Typing parameters config
 -----------------------------
 
@@ -137,7 +137,7 @@ As CellAssign was developed for single-cell sequencing read count data, the inpu
 * batch_effects
 CellAssign also accounts for batch effects, which can be considered if provided in a sample-annotation table and specified as input parameters to TYPEx for batch correction.
 
-.. Sample annotation table
+.. _Sample annotation table:
 Sample annotation table
 -----------------------------
 Provide the sample annotation table in the following format: 
@@ -146,9 +146,8 @@ Provide the sample annotation table in the following format:
   Image ID     Batch effect 1     ...     Batch effect N  
 ============ ================== ======= ===================
 
-.. Outputs and Troubleshooting
-
-Outputs and Troubleshooting
+.. _Outputs:
+Outputs
 =============
 TYPEx outputs summary tables that can be readily interrogated for biological questions. 
 These include densities of identified cell phenotypes (cell_density_*.txt), a catalogue of the expressed proteins and combinations thereof (phenotypes.*.txt), quantified across the whole tissue area (summary_*.cell_stats.txt) or within each tissue compartment (categs_summary_*.cell_stats.txt).
