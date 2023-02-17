@@ -64,8 +64,11 @@ pars=c(pars, args)
 if(! pars$markers %in% names(marker_gene_list))
 	stop("Marker list -", pars$markers, "- not found")
 
-metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
-
+if(file.exists(args$regFile)) {
+	metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
+} else {
+	stop('Sample annotation file does not exist', args$regFile)
+}
 # If reference model called for stratification
 if(pars$stratify & pars$subset == majorDir) {
 	if(args$mostFreqCellType == 'None') {

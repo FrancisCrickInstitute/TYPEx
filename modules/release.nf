@@ -3,7 +3,7 @@ process exporter {
 
 	label 'xs'
 	
-	publishDir path: "${params.outDir}/summary/", 
+	publishDir path: "${params.output_dir}/summary/", 
 			   mode: params.publish_dir_mode, 
 			   overwrite: true
 	
@@ -20,16 +20,16 @@ process exporter {
     script:
     """
         export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
         cell_density_exporter.R \
 			--subset ${subset} \
             --method $method --run ${params.release} \
             --panel ${params.panel} --markers ${markers} \
-			--regFile ${params.sampleFile} --inDir ${params.outDir} \
-			--tissAreaDir "${params.outDir}/tissue_seg/" \
+			--regFile ${params.sample_file} --inDir ${params.output_dir} \
+			--tissAreaDir "${params.output_dir}/tissue_seg/" \
 			--ref_markers ${ref_markers}
     """
 }
@@ -44,22 +44,22 @@ process plot_dr {
                 val files
 
         output:
-            val params.outDir
+            val params.output_dir
 
         script:
         """
                 export BASE_DIR=$baseDir
-				export PARAMS_CONF=${params.paramsConfig}
-				export ANN_CONF=${params.annotationConfig}
-				export COL_CONF=${params.colorConfig}
+				export PARAMS_CONF=${params.params_config}
+				export ANN_CONF=${params.annotation_config}
+				export COL_CONF=${params.color_config}
 				
-                typing.R --wDir ${params.outDir} --nfDir ${nfDir} \
+                typing.R --wDir ${params.output_dir} --nfDir ${nfDir} \
 						--method $method  \
                         --subset subtypes --markers ${params.subtype_markers} \
                         --run ${params.release} --panel ${params.panel} \
                         --regFile ${params.regFile} \
-                        --celltypeModelFile ${params.outDir}/review/${params.panel}_${params.major_markers}.RData \
-                        --tissAreaDir "${params.outDir}/tissue_seg/" \
+                        --celltypeModelFile ${params.output_dir}/review/${params.panel}_${params.major_markers}.RData \
+                        --tissAreaDir "${params.output_dir}/tissue_seg/" \
 						--stratify false
         """
 }

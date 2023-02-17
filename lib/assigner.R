@@ -5,6 +5,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		
 		breakStep=0.0001, greater = F, markers=c('CD3', 'CD8a', 'CD4')) {
 		breaks=seq(0, 1, breakStep)
+		smallImageSetCutoff = 100000
 		cat("Determining threshold with markers: ", markers, '\n')
 		# Determine separation by T cell markers
 		if(! is.null(markers)) {
@@ -73,6 +74,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		plotDir=f('{runID}_plots')
 		if(! dir.exists(plotDir))
 			dir.create(plotDir)
+		
 		pdfOut=f('{plotDir}/positivity_kstest.{confidence}.pdf')
 		pdf(pdfOut, height=4, width = 4.5)
 
@@ -81,10 +83,19 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		if(! all(frequences %in% colnames(mat))) {
 			cat(frequences[! frequences %in% colnames(mat)], ' is missing in ', 
 				colnames(mat), '\n')
-			stop("ERROR: Verify that the marker combinations in typing_params.json are valid")
+			stop("ERROR: Verify that the marker combinations in ",
+				"typing_params.json are valid")
 		}
-		present=sapply(c("high_frequency", 'variable'),
-            function(x) pars$threshold[[x]]) %>% unlist
+		
+		# If there are few images, variable is likely to be low
+		if(sum(clusterSize) > smallImageSetCutoff) {
+			present=sapply(c("high_frequency", 'variable'),
+	            function(x) pars$threshold[[x]]) %>% unlist
+		} else {
+			# If there are few images, variable is likely to be low
+			present=sapply(c("high_frequency"),
+	            function(x) pars$threshold[[x]]) %>% unlist
+		}
 		rare=sapply(c("low_frequency", 'rare'),
             function(x) pars$threshold[[x]]) %>% unlist
 		lower_freq=sapply(c("low_frequency", 'variable'),
@@ -114,17 +125,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		
 		if(all(! tcell_count)) 
 			tcell_count=sapply(1:nrow(mat), 
-				function(x) sum(mat[x, pars$threshold[['high_frequency']] ]) > 0) 
-		
-		tcell_frequency_cmp=sapply(1:nrow(mat), function(x) {
-			sum(sapply(pars$threshold[['high_frequency']], function(comb) mat[x, comb])) >
-				sum(sapply(lower_freq, function(comb) mat[x, comb]))
-		})
-		
-		#if(any(tcell_frequency_cmp)) {
-		#	print('Checking more frequent vs rare populations')
-		#	tcell_count = tcell_count & tcell_frequency_cmp
-		#}
+				function(x) sum(mat[x, pars$threshold[['high_frequency']] ]) > 0)
 		
 		signInd=sapply(1:nrow(mat), function(x) {
 			mat$D[x] >= signRange[1] & mat$D[x] <= signRange[2]
@@ -513,8 +514,7 @@ assign_celltype <- function(names, markers,
 			if(nrSpecficCellTypes > 1 & grepl('^Ambiguous|^none|Unassigned', majorType)) {
 				if(! major) 
 					return('Ambiguous')
-				return(paste("Ambiguous -",
-					paste(unlist(specific_cellTypes), collapse = ':', sep = ":")))
+				return("Ambiguous")
 			}
 		}
 
@@ -549,7 +549,8 @@ assign_celltype <- function(names, markers,
 				 isChild(tree=markers, parent=majorType, child=x)
 			})
 			if(any(selectChild)) {
-				cat('Truncating assigned based on', majorType, 'to', names(assigned)[selectChild], '\n')
+				cat('Truncating assigned based on', majorType, 'to',
+					 names(assigned)[selectChild], '\n')
 				assigned=assigned[selectChild]
 			}
 			if(length(assigned) == 1) {
@@ -572,7 +573,7 @@ assign_celltype <- function(names, markers,
 			}
 			if(considerTissueSeg) 
 				return("Epithelial cells - Tissue Segmentation")
-			return("Ambiguous - Multiple celltypes with equal score")
+			return("Ambiguous Equal score")
 		}
 		
 		if(length(intersect) > 1 & all(intersect == 0) & 
@@ -581,7 +582,7 @@ assign_celltype <- function(names, markers,
 				return(majorType)
 			if(considerTissueSeg & ! major)
 				return("Epithelial cells - Tissue Segmentation")
-			return("Ambiguous - Intersect")
+			return("Ambiguous Intersect")
 		}
 		
 		# See if on the subtree of the majorType

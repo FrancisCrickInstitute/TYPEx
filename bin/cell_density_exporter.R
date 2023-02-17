@@ -230,7 +230,7 @@ for(file in resultFiles) {
   dfStatsMrg = subset(dfStatsMrg, 
 	  select = c('imagename', 'cellType', 'majorType', 'positivity', 
 	  			 'cellCount', 'cellDensity', 'cellPercentage'))
-  write.tab(dfStatsMrg, file=f("{inDir}/{fileOut}"))
+  write.tab(dfStatsMrg, file=f("{outDir}/{fileOut}"))
 
   markers=setdiff(unique(unlist(
 	  	lapply(unique(dfStatsMrg$positivity),

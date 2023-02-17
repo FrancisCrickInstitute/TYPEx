@@ -31,18 +31,18 @@ process csm_export {
 		val (csmDir)
 		val files
 	output:
-		val params.outDir
+		val params.output_dir
 
 	"""
 		export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
 		csm_exporter.R --inDir ${csmDir} \
 			--imcyto_run ${params.release} --panel ${params.panel} \
 			--markers ${params.major_markers} --nndist 5 \
-			--regFile ${params.sampleFile} \
-			--tissAreaDir "${params.outDir}/tissue_seg/" 
+			--regFile ${params.sample_file} \
+			--tissAreaDir "${params.output_dir}/tissue_seg/" 
 	"""
 }

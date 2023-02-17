@@ -14,27 +14,27 @@ process TYPE {
 		
 
 	output:	
-		val params.outDir
+		val params.output_dir
 	
 	script:
 	"""
 		export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
-		typing.R --wDir ${params.outDir} \
+		typing.R --wDir ${params.output_dir} \
 			--nfDir ${nfDir} \
 			--method ${method}  \
 			--subset ${subset} \
 			--markers ${markers} \
 			--run ${params.release} \
 			--panel ${params.panel} \
-			--regFile ${params.sampleFile} \
-			--tissAreaDir "${params.outDir}/tissue_seg/" \
-			--celltypeModelFile ${params.outDir}/review/${params.panel}_${params.major_markers}.RData \
+			--regFile ${params.sample_file} \
+			--tissAreaDir "${params.output_dir}/tissue_seg/" \
+			--celltypeModelFile ${params.output_dir}/review/${params.panel}_${params.major_markers}.RData \
 			--stratify ${stratify} \
-			--mostFreqCellType ${params.mostFreqCellType} \
+			--mostFreqCellType ${params.most_freq_celltype} \
 			--major_markers "${major_markers}"
 
 	"""
@@ -50,22 +50,22 @@ process build_strata_model {
 		val csm
 		val tissue
 	output:
-		val params.outDir
+		val params.output_dir
 	script:
 	"""
 		export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
 		cell_typing_review_summary.R \
-			--wDir ${params.outDir} \
-			--cellReviewDir ${params.outDir}/review \
+			--wDir ${params.output_dir} \
+			--cellReviewDir ${params.output_dir}/review \
 			--major_method ${params.major_method}  \
             --subset major \
 			--panel ${params.panel} \
-			--regFile ${params.sampleFile} \
-			--mostFreqCellType ${params.mostFreqCellType} \
+			--regFile ${params.sample_file} \
+			--mostFreqCellType ${params.most_freq_celltype} \
 			--major_markers ${params.major_markers}
 
 	"""

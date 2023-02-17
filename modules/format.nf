@@ -7,7 +7,7 @@ process format_input {
 
 	label 'xs'
 
-	publishDir "${params.outDir}/nfData/", mode: params.publish_dir_mode, overwrite: true
+	publishDir "${params.output_dir}/nfData/", mode: params.publish_dir_mode, overwrite: true
 
 	input:
 		tuple val(imageID), path(inFile), val(feature)
@@ -17,7 +17,7 @@ process format_input {
 
 	script:
 		"""
-			split_input_by_feature_per_file.pl ${inFile} ${imageID} ${feature} ${params.imcyto}
+			split_input_by_feature_per_file.pl ${inFile} ${imageID} ${feature} ${params.deep_imcyto}
 			
 		"""
 }
@@ -29,7 +29,7 @@ process collate_features {
 
 	label 'medium_mem'
 	
-	publishDir "${params.outDir}/features/", mode: params.publish_dir_mode, overwrite: true
+	publishDir "${params.output_dir}/features/", mode: params.publish_dir_mode, overwrite: true
 	
 	input:
 		tuple val(feature)
@@ -42,11 +42,11 @@ process collate_features {
     """
 		
 			export BASE_DIR=${baseDir}
-			export PARAMS_CONF=${params.paramsConfig}
-			export ANN_CONF=${params.annotationConfig}
-			export COL_CONF=${params.colorConfig}
+			export PARAMS_CONF=${params.params_config}
+			export ANN_CONF=${params.annotation_config}
+			export COL_CONF=${params.color_config}
 			
-			collate_by_feature.R --inDir "${params.outDir}/nfData/" \
+			collate_by_feature.R --inDir "${params.output_dir}/nfData/" \
 				--panel ${params.panel} \
 				--run ${params.release} \
 				--feature ${feature}

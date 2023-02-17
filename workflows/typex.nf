@@ -39,7 +39,7 @@ features =
 subsample_markers = Channel.of( [params.annotate_markers] )
 iterations = Channel.of( [1], [2], [3] )
 
-cellObjFile="${params.outDir}/features/LocationCenter/${params.panel}_LocationCenter_${params.release}.csv"
+cellObjFile="${params.output_dir}/features/LocationCenter/${params.panel}_LocationCenter_${params.release}.csv"
 
 workflow TYPEx {
 
@@ -50,7 +50,7 @@ workflow TYPEx {
 	TISSEG()
 	
 	/* -- OVERLAY TISSUE ANNOTATIONS */
-	overlayParams = get_tissue_masks_config(params.overlayConfigFile)
+	overlayParams = get_tissue_masks_config(params.overlay_config_file)
 	mask_overlay(
 		overlayParams,
 		cellObjFile,
@@ -73,7 +73,7 @@ workflow TYPEx {
 workflow PREPROCESS {
 
 	main:
-		cellFiles=get_cell_files(params.imcyto, params.mccs)
+		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
 		// if(cellFiles.size() > 0) {
 			cellFiles.combine(features).view()
 			format_input(cellFiles.combine(features))
@@ -114,7 +114,7 @@ workflow TIERED {
 			params.major_markers,
 			params.major_markers,
 			false,
-			"${params.outDir}/nfData",
+			"${params.output_dir}/nfData",
 			mask_overlay // waits for PREPROCESS, TISSEG and mask_overlay
 		)
 		if(params.stratify_by_confidence) {
@@ -129,7 +129,7 @@ workflow TIERED {
 					"${params.subtype_markers}",
 					"${params.major_markers}",
 					params.stratify_by_confidence,
-					"${params.outDir}/nfData",
+					"${params.output_dir}/nfData",
 					STRATIFY.out
 				)
 		} else {
@@ -142,7 +142,7 @@ workflow TIERED {
                     "${params.subtype_markers}",
                     "${params.major_markers}",
                     params.stratify_by_confidence,
-                    "${params.outDir}/nfData",
+                    "${params.output_dir}/nfData",
                     tier_one.out
                 )
 
@@ -173,7 +173,7 @@ workflow STRATIFY {
 		  mask_overlay
 		  tier_one
 	main:
-		cellFiles=get_cell_files(params.imcyto, params.mccs)
+		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
 		rawMasks=get_imcyto_raw_masks()
 		
 		if(params.mostFreqCellType != 'None') {
@@ -183,7 +183,7 @@ workflow STRATIFY {
 				params.major_markers,
 				params.major_markers,
 				true,
-				"${params.outDir}/nfData", 
+				"${params.output_dir}/nfData", 
 				out
 			)
 		} else {
@@ -193,7 +193,7 @@ workflow STRATIFY {
 				params.major_markers,
 				params.major_markers,
 				true,
-				"${params.outDir}/nfData", 
+				"${params.output_dir}/nfData", 
 				tier_one
 			)
 		}
@@ -202,10 +202,10 @@ workflow STRATIFY {
 		//if(params.imcyto) {
 		//	csm_submit(
 		//		rawMasks.combine(cellFiles, by: 0), 
-		//		"${params.outDir}/major/${params.major_markers}/csm"
+		//		"${params.output_dir}/major/${params.major_markers}/csm"
 		//	)
 		//	csm_export(
-		//		"${params.outDir}/major/${params.major_markers}/csm",
+		//		"${params.output_dir}/major/${params.major_markers}/csm",
 		//		csm_submit.out.collect())
 		//	build_strata_model(
 		//		tier_one, 
@@ -243,7 +243,7 @@ workflow SUBSAMPLING {
 				params.annotate_markers,
 				false,
 				params.stratify_label,
-				"${params.outDir}/nfData",
+				"${params.output_dir}/nfData",
 				out
 			)
 		 	major_exporter(
@@ -256,12 +256,12 @@ workflow SUBSAMPLING {
 		if(params.sampled) {
 			call_subsampled(
 	            pars,
-	            "${params.outDir}/nfData",
+	            "${params.output_dir}/nfData",
 				out
 			)
 
 			match_clusters(
-				params.outDir, 
+				params.output_dir, 
 				subsample_methods,
 				subsample_markers,
 				params.annotate_markers,
@@ -273,7 +273,7 @@ workflow SUBSAMPLING {
 
 		//plot_dr(
 		//	"${params.dimred_method}", 
-		//	"${params.outDir}/nfData", 
+		//	"${params.output_dir}/nfData", 
 		//	call_cluster.out.collect()
 		//)
 }
