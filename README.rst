@@ -1,126 +1,166 @@
 .. _TYPEx_anchor: 
-
+.. role:: bash(code)
+   :language: bash
+   
 .. |workflow| image:: docs/source/_files/images/typing4.png
         :height: 200
         :alt: TYPEx workflow
 
 |workflow| 
 
-TYPEx uses multiplexed imaging to detect protein expression on single cells, annotate cell types automatically based on user-provided definitions and quantify cell densities per tissue area. It can be customised with input parameters and configuration files, allowing it to perform an end-to-end cell phenotyping analysis without the need for manual adjustments. 
+Using multiplexed imaging, TYPEx detects protein expression on single cells, annotates cell types automatically based on user-provided definitions and quantifies cell densities per tissue area. It can be customised with input parameters and configuration files, allowing it to perform an end-to-end cell phenotyping analysis without the need for manual adjustments.
 
 Usage
 =============
 
+First, clone the `TYPEX <https://github.com/FrancisCrickInstitute/TYPEx>`_ or the `TRACERx-PHLEX <https://github.com/FrancisCrickInstitute/TRACERx-PHLEX>`_ repository:
 
-With deep-imcyto as input
+    .. code-block:: bash
+
+        git clone git@github.com:FrancisCrickInstitute/TRACERx-PHLEX.git
+        
+        git clone git@github.com/FrancisCrickInstitute/TYPEx.git
+
+Running on input generated with deep-imcyto
+--------------
+
+.. code-block:: bash
+   nextflow run TRACERx-PHLEX/TYPEx/main.nf \
+        -c $PWD/TRACERx-PHLEX/TYPEx/conf/testdata.config \
+        --input_dir $PWD/results/deep-imcyto/$release/ \
+        --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+        --release $release \
+        --outDir "$PWD/results/TYPEx/$release/" \
+        --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
+        --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+        --deep_imcyto true --mccs true \
+        -profile singularity \
+        --wd "scratch" \
+        -resume
+
+Running indpendently of deep-imcyto
+--------------
 
 .. code-block:: bash
 
-	ml Nextflow/21.04.3
-	ml Singularity/3.6.4
-
-	# Set Nextflow singularity cache directory
-	# This folder is a symbolik link to a folder outside of the home directory, which has a limited quota
-	release='PHLEX_test'
-
-	export NXF_SINGULARITY_CACHEDIR=$PWD/.singularity/cache
-
-	[[ ! -d $NXF_SINGULARITY_CACHEDIR ]] &&
-	    mkdir $NXF_SINGULARITY_CACHEDIR
-	wDIR=$PWD
-
-	releaseDir="results/TYPEx/$release"
-	[[ ! -d $releaseDir ]] && mkdir -p $releaseDir
-
-	cd $releaseDir
-	nextflow run $wDIR/TYPEx/main.nf -profile singularity \
-	    -c $wDIR/TYPEx/nextflow.config \
-	    --inDir $wDIR/results/ \
-	    --sampleFile $wDIR/TYPEx/data/sample_data.tracerx.txt \
-	    --release $release \
-	    --outDir "$wDIR/results/TYPEx/$release/" \
-	    --wd "$wDIR/results/TYPEx/$release" \
-	    --paramsConfig "$wDIR/TYPEx/data/typing_params.json" \
-	    --annotationConfig "$wDIR/TYPEx/data/cell_type_annotation.p1.json" \
-	    --imcyto true --mccs true \
-	    -resume
-	cd ../../..
-
-
-
-Independent of deep-imcyto
-
-.. code-block:: bash
-    
-    nextflow run TYPEx/main.nf -profile singularity \
-	-c TYPEx/nextflow.config \
-	--inDir "$PWD/results/" \
-	--sampleFile "$PWD/TYPEx/data/sample_data.tracerx.txt" \
-	--release "TYPEx_test" \
-	--outDir "$PWD/results/TYPEx/$release/" \
-	--paramsConfig "$PWD/TYPEx/data/typing_params.json" \
-	--annotationConfig "PWD/TYPEx/data/cell_type_annotation.p1.json" \
-        --inputTable "$PWD/data/cell_objects.tracerx.txt"
-
+   release=TYPEx_test
+   nextflow run TYPEx/main.nf \
+   -c $PWD/TYPEx/conf/testdata.config \
+    -c TYPEx/nextflow.config \
+    --input_dir $PWD/results/ \
+    --release $release \
+    --input_table $PWD/TYPEx/data/cell_objects.tracerx.txt \
+    --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+    --outDir "$PWD/results/TYPEx/$release/" \
+    --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
+    --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+    -profile singularity \
+    --wd "scratch" \
+    -resume
 
 
 Input Files
 ==================
 
-The minimal input for TYPEx is a matrix of cell intensities for each protein and a file with cell definitions specific to the user’s antibody panel.
+*Required Inputs*
+
+- :bash:`cell_type_annotation.json` - a file with cell definitions specific to the user’s antibody panel (see :ref:`Cell type definitions`).
+    Specified with :bash:`--annotationConfig` parameter.
+- :bash:`sample_data.tracerx.txt`
+    A tab-delimited file with information for all images (see :ref:`Sample annotation table`).
+    Specified with :bash:`--sampleFile` parameter.
+- :bash:`inDir` for deep-imcyto input or :bash:`inputTable` for runs independent of deep-imcyto
+    Directory specified with :bash:`--inDir` parameter and input file specified with :bash:`--inputTable` parameter.
+    :bash:`--inputTable` is tab-delimited file with marker intensities and cell coordiate per cell object (see :ref:`Input table`).
+
+*Optional Inputs*
+
+- :bash:`typing_params.json` - a config file with information on the cell typing workflow.
+    A tab-delimited file with information for all images (see :ref:`Typing parameters config`).
+    Specified with :bash:`--paramsConfig` parameter.
+- :bash:`tissue_segmentation.json` - a file with information on tissue categories/annotation that can be overlaid to each cell object along with the cell type information. In the case of tissue compartments, e.g. Tumour and Stroma, a summary table will also be generated with quantifications per compartment.
+    Specified with :bash:`--overlayConfigFile` parameter.
+- :bash:`celltype_colors.json` - color settings for the user-defined cell types.
+    Specified with :bash:`--colorConfig` parameter.
+
+Input Parameters
+==================
+
+:bash:`release` - provide a unique identifier for the run [default: PHLEX_test]
+:bash:`panel` - provide a unique identifier for the panel [default: p1]
+:bash:`study` - provide a unique identifier for the study [default: tracerx]
+
+Several input paramters can be used to define the typing workflow:
+- :bash:`deep-imcyto` run the TYPEx multi-tiered approach [default: true]
+- :bash:`mccs` run TYPEx on deep-imcyto in MCCS mode when true and simple segmentation mode when false [default: true]
+
+- :bash:`tiered` run the TYPEx multi-tiered approach  [default: true]
+- :bash:`stratify_by_confidence` include the stratification by low and high confidence when true [default: true]
+- :bash:`sampled` run TYPEx on subsampled data with three iterations when true [default: false]
+- :bash:`clustered` perform clustering without any stratification [default: false]
+
+The following parameters refer to the typing approach:
+- :bash:`subtype_method` the clustering approach to be used in the last stratification step [default: FastPG]
+- :bash:`major_markers` the label of the major cell type definitions in :bash:`cell_type_annotation.json` [default: major_markers]
+- :bash:`subtype_markers` the label of the cell subtype definitions in :bash:`cell_type_annotation.json` [default: subtype_markers]
+- :bash:`mostFreqCellType` the most frequent cell type in the cohort if known in :bash:`cell_type_annotation.json` [default: None]
+    .. note:: The most frequent cell type is used to build the reference model by excluding this cell type. When it is not provided, the complete model wil be built, followed by the reference model. If provided, both will be executed in parallel. Parallel execution can make a difference in time, as these are the most time-consuming processes.
+
+.. _Cell type definitions:
+
+User-provided cell type definitions
+-----------------------------
+ 
+The cell-type definitions file :bash:`cell_type_annotation.json` includes a list of cell lineages and the corresponding marker proteins that together can be used to identify a cell lineage. When designing this file it is important to ensure that each cell in the cohort can be covered by these definitions. Some markers, such as CD45 and Vimentin, are expressed by multiple cell lineages. These shared proteins are used to infer a hierarchy of cell lineages, which is later considered for cell stratification and annotation. An example of a cell-type definitions file is shown below for TRACERx analyses, where we defined 13 major cell types targeted by our two antibody panels, while ensuring that each cell in the cohort can be covered by these definitions. 
 
 
-#. *Input table* - The input matrix has values that summarise the intensity of a protein per cell object, such as mean intensity, independently of the imaging modality or antibody tagging technique.
+.. _Input table:
+Input table
+-----------------------------
 
-================= ============ ===== ===== ========= ============ ============ ============
-  Cell Object ID    Image ID     X     Y      Area     Marker 1     ...          Marker N  
-================= ============ ===== ===== ========= ============ ============ ============
+The input matrix has values that summarise the intensity of a protein per cell object, such as mean intensity, independently of the imaging modality or antibody tagging technique.
 
-Area is optional and can be populated with NAs.
+================= ============ ===== ===== ============== ============ ============ ============
+  Cell Object ID    Image ID     X     Y     Area [opt].    Marker 1     ...          Marker N  
+================= ============ ===== ===== ============== ============ ============ ============
 
-#. *cell_type_annotation.json* The cell-type definitions file includes a list of cell lineages and the corresponding marker proteins that together can be used to identify a cell lineage. When designing this file it is important to ensure that each cell in the cohort can be covered by these definitions. Some markers, such as CD45 and Vimentin, are expressed by multiple cell lineages. These shared proteins are used to infer a hierarchy of cell lineages, which is later considered for cell stratification and annotation. An example of a cell-type definitions file is shown below for TRACERx analyses, where we defined 13 major cell types targeted by our two antibody panels, while ensuring that each cell in the cohort can be covered by these definitions. 
+.. _Typing parameters config:
+Typing parameters config
+-----------------------------
 
-#. *typing_params.json* - settings for which clustering approaches to use and which set of markers
+:bash: `typing_params.json` contains the settings for clustering approaches to be used, normalisation approaches, and filtering criteria.
 
+Key parameters that are often of interest are:
 * magnitude 
 As CellAssign was developed for single-cell sequencing read count data, the input protein intensity matrix should be rescaled to a range of 0 - 10^6 using the input parameter magnitude. 
 
 * batch_effects
 CellAssign also accounts for batch effects, which can be considered if provided in a sample-annotation table and specified as input parameters to TYPEx for batch correction.
 
-#. Table with sample annotations
+.. _Sample annotation table:
+Sample annotation table
+-----------------------------
+Provide the sample annotation table in the following format: 
 
 ============ ================== ======= ===================
   Image ID     Batch effect 1     ...     Batch effect N  
 ============ ================== ======= ===================
 
-Input paramters
-==================
-
-* clustering method <FastPG,Rphenograph,flowSOM>
-* run ID: panel name, imcyto run [opt], study name
-
-Optional
-* most frequent cell type - if provided the longest process will be run in parallel
-
-Within tissue_segmentation.json, where annotations of tissue can be overlaid and quantified.
-
-The workflow can be specified with tree logical variables:
-- stratify_by_confidence
-- clustering only - perform clusering without any stratifications
-- subsampling - perfom subsampling analysis of clustering tools
-
- 
+.. _Outputs:
 Outputs
 =============
+TYPEx outputs summary tables that can be readily interrogated for biological questions. 
+These include densities of identified cell phenotypes (cell_density_*.txt), a catalogue of the expressed proteins and combinations thereof (phenotypes.*.txt), quantified across the whole tissue area (summary_*.cell_stats.txt) or within each tissue compartment (categs_summary_*.cell_stats.txt).
 
-TYPEx outputs summary tables that can be readily interrogated for biological questions. These include densities of identified cell phenotypes, a catalogue of the expressed proteins and combinations thereof, quantified across the whole tissue area or within each tissue compartment. These outputs are generated by four analytical steps: cell stratification, detection of protein expression, and automated cell annotation, followed by a quantitative summary per tissue compartment.
+.. code-block:: bash
 
-All outputs are saved in the outputDirectory/summary folder.
-- cell objects
-- phenotypes
-- cell densities total and per tissue category
-
+        summary
+        ├── cell_density_*.txt
+        ├── cell_objects_*.txt
+        ├── phenotypes.*.txt          
+        ├── summary_*.cell_stats.txt
+        ├── categs_summary_*.cell_stats.txt
+       
 Troubleshooting
 =============
 
