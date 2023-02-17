@@ -16,11 +16,11 @@ process call_subsampled {
         script:
         """
                 export BASE_DIR=$baseDir
-				export PARAMS_CONF=${params.paramsConfig}
-				export ANN_CONF=${params.annotationConfig}
-				export COL_CONF=${params.colorConfig}
+				export PARAMS_CONF=${params.params_config}
+				export ANN_CONF=${params.annotation_config}
+				export COL_CONF=${params.color_config}
 				
-                typing.R --wDir ${params.outDir}  \
+                typing.R --wDir ${params.output_dir}  \
 						--nfDir ${nfDir} \
 						--method ${method}  \
                         --subset sampled \
@@ -29,7 +29,7 @@ process call_subsampled {
 						--panel ${params.panel} \
 						--regFile ${params.regFile} \
 						--iter ${iteration} \
-						--tissAreaDir "${params.outDir}/tissue_seg" \
+						--tissAreaDir "${params.output_dir}/tissue_seg" \
 					    --major_markers "${params.major_markers}"
         """
 }
@@ -50,9 +50,9 @@ process match_clusters {
 	script:
     """
         export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
 		match_clusters.R --inDir ${inDir} \
 			--method ${method} \
@@ -72,11 +72,11 @@ process plot_subsampled {
 	script:
     	"""
             export BASE_DIR=$baseDir
-			export PARAMS_CONF=${params.paramsConfig}
-			export ANN_CONF=${params.annotationConfig}
-			export COL_CONF=${params.colorConfig}
+			export PARAMS_CONF=${params.params_config}
+			export ANN_CONF=${params.annotation_config}
+			export COL_CONF=${params.color_config}
 			
-			matchedClusterStats.R --wDir "${params.outDir}/sampled/robustness" \
-				--outDir "${params.outDir}/sampled/robustness/plots"
+			matchedClusterStats.R --wDir "${params.output_dir}/sampled/robustness" \
+				--outDir "${params.output_dir}/sampled/robustness/plots"
 	    """
 }

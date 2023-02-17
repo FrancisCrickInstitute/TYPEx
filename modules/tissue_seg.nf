@@ -3,7 +3,7 @@ process preprocess_panck {
 
 	maxRetries 1
 
-	publishDir path: "${params.outDir}/composites/", 
+	publishDir path: "${params.output_dir}/composites/", 
 			   mode: params.publish_dir_mode, 
 			   overwrite: true
 
@@ -12,9 +12,9 @@ process preprocess_panck {
 
 	script:
 	"""
-		## Using params.inDir as an absolute path
+		## Using params.input_dir as an absolute path
 		ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/panck_filters.ijm" \
-			'rootDir=\"${params.imageDir}/\"'
+			'rootDir=\"${params.image_dir}/\"'
 	
 	"""
 }
@@ -24,7 +24,7 @@ process create_composites {
 
     label 'medium_mem'
 	
-	publishDir path:"${params.outDir}/composites/", 
+	publishDir path:"${params.output_dir}/composites/", 
 			   mode: params.publish_dir_mode, 
 			   overwrite: true
 
@@ -40,7 +40,7 @@ process create_composites {
 		# compositeDir has the output directory from the previous
 		ImageJ-linux64 --ij2 --headless \
 			--run "${baseDir}/bin/create_composites.ijm" \
-				'rootDir="${params.imageDir}/", panel=\"${params.panel}\", mcd=true, compositeDir=\"${params.outDir}/composites/\"'
+				'rootDir="${params.image_dir}/", panel=\"${params.panel}\", mcd=true, compositeDir=\"${params.output_dir}/composites/\"'
 
     """
 
@@ -48,24 +48,24 @@ process create_composites {
 
 process run_classifier {
 	
-	// publishDir path: "${params.outDir}/composites/probs/", 
+	// publishDir path: "${params.output_dir}/composites/probs/", 
 			//	  mode: params.publish_dir_mode, 
 				//  overwrite: true
 
 	input:
 		val files
 	output:
-		val params.outDir
+		val params.output_dir
 
 	script:
 	
 	"""
-		files=` find ${params.outDir}/composites/ -name *tiff `
+		files=` find ${params.output_dir}/composites/ -name *tiff `
 		echo $files
-		if [ -n "` find ${params.outDir}/composites/ -name *tiff`" ]; then
+		if [ -n "` find ${params.output_dir}/composites/ -name *tiff`" ]; then
 			/ilastik-release/run_ilastik.sh --headless \
 				--project=${params.tissue_seg_model} \
-				${params.outDir}/composites/*tiff
+				${params.output_dir}/composites/*tiff
 		else
 			echo 'No composite images for tissue segmentation created'
 		fi
@@ -78,7 +78,7 @@ process process_probs {
 	
 	maxRetries 1
 
-	publishDir path: "${params.outDir}/tissue_seg/", 
+	publishDir path: "${params.output_dir}/tissue_seg/", 
 			   mode: params.publish_dir_mode,
 			   overwrite: true
 
@@ -92,7 +92,7 @@ process process_probs {
 	
 		ImageJ-linux64 --ij2 --headless \
 			--run $baseDir/bin/tissueseg_postprocess.ijm \
-			'wDir=\"${params.outDir}/\"'
+			'wDir=\"${params.output_dir}/\"'
 		
     """	
 }
@@ -105,18 +105,18 @@ process ts_exporter {
 		val files
 
 	output:
-		val params.outDir
+		val params.output_dir
 		
 	script:
     """
 	
 		export BASE_DIR=$baseDir
-		export PARAMS_CONF=${params.paramsConfig}
-		export ANN_CONF=${params.annotationConfig}
-		export COL_CONF=${params.colorConfig}
+		export PARAMS_CONF=${params.params_config}
+		export ANN_CONF=${params.annotation_config}
+		export COL_CONF=${params.color_config}
 		
 		summarise_tissue_seg.R \
-			--tissAreaDir "${params.outDir}/tissue_seg" \
+			--tissAreaDir "${params.output_dir}/tissue_seg" \
 			--panel ${params.panel}
 			
     """
@@ -127,7 +127,7 @@ process mask_overlay {
 	maxRetries 1
     tag "post-process"
 	
-	publishDir "${params.outDir}/tissue_seg/",
+	publishDir "${params.output_dir}/tissue_seg/",
 				mode: params.publish_dir_mode,
 				overwrite: true
 
@@ -145,7 +145,7 @@ process mask_overlay {
 			
 		cell_objects_regional_info.py \
 			--maskDir ${maskDir} \
-			--tissueAreaDir "${params.outDir}/tissue_seg" \
+			--tissueAreaDir "${params.output_dir}/tissue_seg" \
 			--panel ${params.panel} \
 			--cellObjFile ${cellObjFile} \
 			--maskRegEx "${maskRegEx}" \
