@@ -176,7 +176,7 @@ workflow STRATIFY {
 		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
 		rawMasks=get_imcyto_raw_masks()
 		
-		if(params.mostFreqCellType != 'None') {
+		if(params.most_freq_celltype != 'None') {
 			tier_one_ref(
 				params.major_method,
 				'major',
