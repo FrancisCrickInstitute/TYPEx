@@ -82,9 +82,14 @@ def get_tissue_masks_config(overlayConfigFile) {
 	   
 	Channel.fromPath(overlayConfigFile) | 
 			flatMap { parse_json_file(it) } |
-			map { entry -> tuple(entry.value.tissueDir,  entry.value.maskRegEx, 
-				entry.value.annotationName, entry.value.imgNameRegExIndex,
-				entry.value.regionRegExIndex)}
+			map {
+			  entry -> tuple(
+			  entry.value.tissueDir,
+				entry.value.maskRegEx, 
+				entry.value.annotationName,
+				entry.value.imgNameRegExIndex,
+				entry.value.regionRegExIndex)
+			}
 }
 
 
