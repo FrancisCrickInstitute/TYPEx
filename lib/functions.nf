@@ -84,7 +84,7 @@ def get_tissue_masks_config(overlayConfigFile) {
 			flatMap { parse_json_file(it) } |
 			map {
 			  entry -> tuple(
-			  entry.value.tissueDir,
+			  	(! file(entry.value.tissueDir).exists() ? "${params.output_dir}/tissue_seg" : entry.value.tissueDir),
 				entry.value.maskRegEx, 
 				entry.value.annotationName,
 				entry.value.imgNameRegExIndex,
