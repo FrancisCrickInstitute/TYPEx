@@ -31,6 +31,12 @@ $header[$#header] =~ s/\n//;
 if($imcyto eq 'true')	{
 	@header = map {s/Intensity_//; $_} @header;
 	@header = map {s/Location_Center/LocationCenter/; $_} @header;
+	# simple segmentaiton
+	@header = map {s/mean_intensity/MeanIntensity/i; $_} @header;
+	@header = map {s/centroid-0/LocationCenter_X/; $_} @header;
+	@header = map {s/centroid-1/LocationCenter_Y/; $_} @header;
+	@header = map {s/label/ObjectNumber/; $_} @header;
+	@header = map {s/area/AreaShape_Area/; $_} @header;
 } else {
 	print('deep-imcyto independent run');
 	# Input format: "ObjectNumber"  "imagename"     "Center_X"       "Center_Y" 
