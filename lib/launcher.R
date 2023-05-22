@@ -30,10 +30,10 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   print(feature)
   colnames(inData)=colnames(inData) %>%
 	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Z]+_(.*)', '\\1', .) # remove metals
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) # remove metals
   columnNames=columnNames %>%
   	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Z]+_(.*)', '\\1', .) # remove metals
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) # remove metals
   columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
 
   if(! file.exists(inMatFile))	{
