@@ -5,7 +5,8 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		ids=with(inData, paste(ObjectNumber, basename(imagename)))
 
 	    colnames(inData)=colnames(inData) %>%
-	  		gsub(paste0(".*", feature, "_([^_]+).*"), "\\1", .)
+	  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+            	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
 			
 		pars[[method]]$run_id=runID
 		pars[[method]]$markers=pars$markers
