@@ -47,7 +47,10 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 		keep=colnames(inData)[indices[! is.na(indices)]]
 		cat("INFO: Column names matching the markers list:", keep, "\n",
 			file=f("{runID}.log"), append=T)
+		cat("INFO: Column names matching the markers list:", keep, "\n")
 	  columnNames=intersect(columnNames, keep)
+	  if(!length(columnNames))
+	  	stop("ERROR: no matches between the markers in cell type definitions and the columns in the cell objects table")
     }
 	cat("Columns:", columnNames, '\n')
 	
