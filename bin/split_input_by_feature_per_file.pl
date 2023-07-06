@@ -81,7 +81,7 @@ while(<IN>) {
 				$imageID=$columns[$imageID_col];
 			}
 			
-      for (my $i = 0; $i < $#columns; $i++) {
+      for (my $i = 0; $i <= $#columns; $i++) {
         next if($header[$i] =~ "Location_Max|Location_CenterMass");
         die "Duplicate IDs $core $features[$i] $markers[$i] $object $header[$i] \n"
           if exists $in_hash{$imageID}{$features[$i]}{$object}{$markers[$i]};
