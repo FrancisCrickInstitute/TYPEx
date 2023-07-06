@@ -17,9 +17,9 @@ First, clone the `TYPEX <https://github.com/FrancisCrickInstitute/TYPEx>`_ or th
 
     .. code-block:: bash
 
-        git clone git@github.com/FrancisCrickInstitute/TRACERx-PHLEX.git
+        git clone git@github.com:FrancisCrickInstitute/TRACERx-PHLEX.git
         
-        git clone git@github.com/FrancisCrickInstitute/TYPEx.git
+        git clone git@github.com:FrancisCrickInstitute/TYPEx.git
 
 Running on input generated with deep-imcyto
 --------------
