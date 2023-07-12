@@ -23,7 +23,7 @@ arg_parser=add(arg_parser, "--ref_markers", default="major_markers", help="Marke
 arg_parser=add(arg_parser, "--regFile", help="Marker lists")
 arg_parser=add(arg_parser, "--tissAreaDir", help="List with reassignments")
 
-args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
+args=argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
 pars=c(pars, args) 
 
 inDir=file.path(args$inDir, with(args, f(analysisPath)))
@@ -40,26 +40,26 @@ if(!length(resultFiles))
 
 for(file in resultFiles) {
 	
-	dfIn=data.table::fread(f("{inDir}/{file}"))
+	dfIn = data.table::fread(f("{inDir}/{file}"))
 	cat("Processing file", inDir, file, dim(dfIn), "\n")
-	fileOut=gsub(".clusters", ".cell_stats", file)
-    analysisID=file.path(outDir, gsub(".clusters.*", "", file))
+	fileOut = gsub(".clusters", ".cell_stats", file)
+    analysisID = file.path(outDir, gsub(".clusters.*", "", file))
 
 	# OUTPUTS
-	releaseOut=with(args, f("cell_objects_{run}_{panel}.txt"))
-	releaseFst=gsub(".txt", ".fst", releaseOut)
-	dpOut=f("{analysisID}.DP.txt")
-	positiveOut=f("{analysisID}.positivity.txt")
-	densityOut=f("{outDir}/cell_density_{args$panel}.txt")
-	densityCategsOut=f("{outDir}/cell_density_{args$panel}.categs.txt")
-	unassignedOut=f("{analysisID}.unassigned.txt")
+	releaseOut = with(args, f("cell_objects_{run}_{panel}.txt"))
+	releaseFst = gsub(".txt", ".fst", releaseOut)
+	dpOut = f("{analysisID}.DP.txt")
+	positiveOut = f("{analysisID}.positivity.txt")
+	densityOut = f("{outDir}/cell_density_{args$panel}.txt")
+	densityCategsOut = f("{outDir}/cell_density_{args$panel}.categs.txt")
+	unassignedOut = f("{analysisID}.unassigned.txt")
 
-	dfIn$OldCellType=dfIn$cellType
-	dfIn$OldMajorType=dfIn$majorType
-	dfIn$region=gsub('_.*', '', dfIn$region)
-    dfIn$clusterMajor=gsub(' [0-9]+$', '', dfIn$cluster)
+	dfIn$OldCellType = dfIn$cellType
+	dfIn$OldMajorType = dfIn$majorType
+	dfIn$region = gsub('_.*', '', dfIn$region)
+    dfIn$clusterMajor = gsub(' [0-9]+$', '', dfIn$cluster)
 	dfIn$majorType = gsub(' - Tissue Segmentation', '', dfIn$majorType)
-	dfIn$positive=gsub('pos:(.*) neg:', '\\1', dfIn$positive)
+	dfIn$positive = gsub('pos:(.*) neg:', '\\1', dfIn$positive)
 	
 	cellAssignFile=f("{inDir}/reassign.{args$panel}.{args$run}.txt")
 	if(file.exists(cellAssignFile)) {

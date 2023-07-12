@@ -149,7 +149,7 @@ workflow TIERED {
 		}
 		println "Exporter"
 		if(params.stratify_by_confidence) {
-				subtypes_exporter(subtype_methods, 
+			subtypes_exporter(subtype_methods, 
 				'subtypes',
 				params.subtype_markers,
 				params.major_markers,
@@ -276,4 +276,14 @@ workflow SUBSAMPLING {
 		//	"${params.output_dir}/nfData", 
 		//	call_cluster.out.collect()
 		//)
+}
+
+workflow SUBSAMPLING {
+	take: out
+	qc_select_images(
+		params.major_markers
+	)
+	qc_create_single_channel_images(
+			qc_select_images.out
+	)
 }

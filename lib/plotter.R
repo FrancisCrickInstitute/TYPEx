@@ -171,7 +171,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 				name = subset,
 				column_title = subset,
 				width=unit(nrow(clusterNormSub)/10, 'in'),
-				height=unit(ncol(clusterNormSub)/5, "cm"),
+				height=unit(ncol(clusterNormSub)/4, "cm"),
 				clustering_method_rows = "ward.D2",
 				clustering_method_columns = 'ward.D2',
 				clustering_distance_rows='spearman',

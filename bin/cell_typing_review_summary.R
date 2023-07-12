@@ -29,8 +29,8 @@ args=argparser::parse_args(arg_parser,
 	argv=commandArgs(trailingOnly=TRUE))
 args = c(args, pars)
 
-methods=c(args$major_method ,"csm")
-features=c('area', 'meanIntensity', 'probability')
+methods = c(args$major_method ,"csm")
+features = c('area', 'meanIntensity', 'probability')
 cellTypePattern = ".clusters.txt"
 
 quantileCut = 0.9
@@ -52,10 +52,11 @@ if(args$mostFreqCellType == 'None') {
 	args$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
 	if(args$mostFreqCellType == 'Smooth muscle cells')
 		args$dependentCell = 'aSMA+ cells'
+	print(args$mostFreqCellType)
 }
 
-abrv=strsplit(args$mostFreqCellType, split = '')[[1]][1:3] %>% 
-	tolower %>% paste0(., collapse = "")
+abrv = strsplit(args$mostFreqCellType, split = '')[[1]][1:3] %>% 
+		tolower %>% paste0(., collapse = "")
 ref_markers_list=paste1(args$major_markers, abrv)
 markerSets=c(args$major_markers, ref_markers_list)
 
@@ -172,7 +173,8 @@ if(! length(data)) {
 								! recast[[typedCols[2]]] %in% c(mostLikelyCellTypes[2], args$dependentCell)
 		
 	if(mostLikelyCellTypes[2] == mostLikelyCellTypes[1]) {
-		#	# If both models have the same most likley cell type, and we don't 
+		
+		#If both models have the same most likley cell type, and we don't 
 		# have other references for positive -> narrow down to higher expessed than the majority
 		mostFreqIndices = recast[[typedCols[2]]] == mostLikelyCellTypes[2]
 		# If any negative
@@ -335,12 +337,21 @@ if(! length(data)) {
 	
 	# Model on selected covariates
 	print('Creating model with')
-	print(table(dfFlt$control, dfFlt$cellType, dfFlt$markers))
+	print(with(dfFlt, table(control, cellType, markers)))
+	nrControls = length(unique(dfFlt$control[!is.na(dfFlt$control)]))
+	if(nrControls < 2)
+		stop('Cannot create a model with', nrControls, 'control values')
 	
+	nrInt = sum(is.na(dfFlt$meanIntensity))
+    if(nrInt > 0)
+        stop('Cannot create a model with', nrInt, 'cells with NAs for raw intensities')
+	write.table(dfFlt, file = 'test.txt', sep = '\t', quote = F, row.names = F)
 	#if(!all(recast[[csmCol]] == 'None')) {
-	model<-lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
+	model <- lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
 		                                (1|cellType)")), data=dfFlt, family=binomial)
-	predict=predict(model, newdata=dfFlt, type="response", allow.new.levels=T)
+	print(model)
+	stop()
+	predict=predict(model, newdata = dfFlt, type = "response", allow.new.levels =T)
 	ROCRpred <- ROCR::prediction(predict[! is.na(predict)], dfFlt$control[! is.na(predict)])
 	sensit=ROCR::performance(ROCRpred, 'sens')
 	specif=ROCR::performance(ROCRpred, 'spec')
