@@ -33,7 +33,7 @@ process qc_create_single_channel_images {
 
 		maxRetries 1
         
-		publishDir path: "${params.output_dir}/qc/", 
+		publishDir path: "${params.output_dir}/qc/${subset}_${ref_markers}_${method}/", 
 				   mode: params.publish_dir_mode, 
 				   overwrite: true
 				   
@@ -51,7 +51,7 @@ process qc_create_single_channel_images {
 		"""
 			## Using params.input_dir as an absolute path
 			ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/raw_image_by_file.ijm" \
-				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/qc/${subset}_${ref_markers}_${method}/overlay_examples.txt", outDir=\"${params.output_dir}/qc/${subset}_${ref_markers}_${method}/\"'
+				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/qc/${subset}_${ref_markers}_${method}/overlay_examples.txt"'
 		"""
 }
 
@@ -70,7 +70,7 @@ process qc_overlay {
 			export ANN_CONF=${params.annotation_config}
 			export COL_CONF=${params.color_config}
 			
-			matchedClusterStats.R \
+			plot_overlays.R \
 				--rawDir ${params.output_dir}/qc/${subset}_${ref_markers}_${method}/ \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
 				--outDir "${params.output_dir}/sampled/robustness/plots" \

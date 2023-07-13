@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+
+
 library(knitr)
 library(tibble)
 library(magrittr)
@@ -55,25 +58,5 @@ for(imagename in imagenames) {
 	  dev.off()
 	  browseURL(pngOut)
   
-	    # par(mar=c(0, 0, 0, 0))
-	    # for(subtype in unique(data$cluster[setdiff(1:nrow(data), positive)])) {
-	    #   rowSel=setdiff(which(data$cluster %in% subtype & data$imagename == imagename), positive)
-	    #   title=unique(data$positive[rowSel])
-	    #   pngOut=f("{outDir}/overlay_{marker}_{subtype}_{positive}_{imagename}.png")
-	    #   if(length(rowSel) < 10) next
-	    #   png(pngOut, width=dim(raw)[2], height=dim(raw)[1], units='px')
-	    #   plot_image_cell_overlay(cellData = data[rowSel, ], image = readPNG(file),
-	    #                         clusters = "cluster", legend = F)
-	    #   dev.off()
-	    # }
-  
-	      # tiffOut=gsub(".png", ".tiff", f("{outDir}/negative_{basename(files[idx])}"))
-	      # tiff(tiffOut, width=dim(r)[1], height=dim(r)[2], units='px')
-	      # plot(raw, axes=F, legend=F, col=colorRampPalette(c("white","black"))(100),
-	      #      maxpixels=dim(raw)[1] * dim(raw)[2])
-	      # plot(neg, legend=F, axes = F,
-	      #      maxpixels=dim(r)[1] * dim(r)[2], add = T, alpha=0.4,
-	      #      col=hcl.colors(length(positive)))
-	      # dev.off()
-	    }
-  }
+	}
+}

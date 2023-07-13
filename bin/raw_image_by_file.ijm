@@ -1,6 +1,5 @@
 #@String inDir
 #@String posFile
-#@String outDir
 
 setBatchMode("hide");
 
@@ -25,7 +24,7 @@ for (i=0; i < lines.length; i++) {
 	rename(imageInfo);
 	getMinAndMax(min, max);
 	autoAdjust();
-	saveAs("PNG", outDir + "/" + imageInfo + ".png");
+	saveAs("PNG", imageInfo + ".png");
 	run("Close All");
 }
 
