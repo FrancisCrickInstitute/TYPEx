@@ -19,6 +19,8 @@ include { exporter as subtypes_exporter; exporter as major_exporter;
 include { get_cell_files; get_imcyto_raw_masks; parse_json_file;
 			get_tissue_masks_config }  from '../lib/functions.nf'
 
+include { qc_select_images; qc_create_single_channel_images } from '../modules/qc.nf'
+
 /* -- INPUT TYPING PARAMETERS -- */
 subtype_methods = 
 	Channel.of(['FastPG']
@@ -75,7 +77,6 @@ workflow PREPROCESS {
 	main:
 		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
 		// if(cellFiles.size() > 0) {
-			cellFiles.combine(features).view()
 			format_input(cellFiles.combine(features))
 			collate_features(features, format_input.out.collect())
 		// }
@@ -132,6 +133,10 @@ workflow TIERED {
 					"${params.output_dir}/nfData",
 					STRATIFY.out
 				)
+			QC(tier_two.out,
+				"${params.subtype_markers}",
+				'subtypes',
+				subtype_methods)
 		} else {
 		
 			println 'Tier 2 w/o stratification'
@@ -234,7 +239,6 @@ workflow SUBSAMPLING {
 	main:
 		pars=iterations.combine(subsample_methods)
 				.combine(subsample_markers)
-		pars.view()
 		if(params.sampled || params.clustered) 	{
 			call_cluster(
 				subtype_methods, 
@@ -278,12 +282,23 @@ workflow SUBSAMPLING {
 		//)
 }
 
-workflow SUBSAMPLING {
+workflow QC {
+
 	take: out
-	qc_select_images(
-		params.major_markers
-	)
-	qc_create_single_channel_images(
+		  markers
+		  subset
+		  method
+	main:
+		qc_select_images(
+			markers, 
+			subset,
+			method,
+			out
+		)
+		qc_create_single_channel_images(
+			markers,
+			subset,
+			method,
 			qc_select_images.out
-	)
+		)
 }
