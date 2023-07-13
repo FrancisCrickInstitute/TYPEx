@@ -27,6 +27,7 @@ qcOut = f("{args$outDir}/overlay_examples.txt")
 
 densityFile = f("{args$inDir}/cell_density_{args$panel}.txt")
 dfIn = read.csv(densityFile, sep = '\t')
+ #dfIn$majorType[is.na(dfIn$majorType)] = dfIn$cellType[is.na(dfIn$majorType)]
 
 markerStats = marker_gene_list[[args$ref_markers]] %>% 
 	unlist %>% table
@@ -34,6 +35,10 @@ print(markerStats)
 
 selected = vector(mode = 'list')
 for(majorCellType in unique(dfIn$majorType)) {
+	
+	if(is.na(majorCellType)) 
+		next
+	
 	if(majorCellType %in% c('Unassigned', 'Ambiguous')) 
 		next
 	markers = get_celltype_markers(marker_gene_list[[args$ref_markers]], majorCellType)
