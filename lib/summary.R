@@ -203,12 +203,11 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 			dfExp=to_magnitude(dfExp, magnitude)
 
 		clusterNames$cluster=gsub('\\.', ' ', clusterNames$cluster)
-		print(head(clusterNames))
 		names=clusterNames$positive[match(clusters, clusterNames$cluster)]
 		names=gsub("up:(.*) down:.*", "\\1", names)
 		names=gsub("pos:(.*) neg:.*", "\\1", names)
 		names[is.na(names)] = ''
-		print(table(names))
+
 		getExpSummary=match.fun(fun)
 		hasUnderscore = grep("_", colnames(dfExp), value = T) 
 		summary = tapply(1:nrow(dfExp), names, function(subset) {
@@ -227,9 +226,6 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 				print(colnames(dfExp))
 				values=apply(dfExp[subset, ..cols], 1, getExpSummary)
 			}
-			print(length(subset))
-			print(head(values))
-			print(length(values))
 			names(values)=rownames(dfExp)[subset]
 			return(cbind(values))
 		})
