@@ -349,8 +349,6 @@ if(! length(data)) {
 	#if(!all(recast[[csmCol]] == 'None')) {
 	model <- lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
 		                                (1|cellType)")), data=dfFlt, family=binomial)
-	print(model)
-	stop()
 	predict=predict(model, newdata = dfFlt, type = "response", allow.new.levels =T)
 	ROCRpred <- ROCR::prediction(predict[! is.na(predict)], dfFlt$control[! is.na(predict)])
 	sensit=ROCR::performance(ROCRpred, 'sens')

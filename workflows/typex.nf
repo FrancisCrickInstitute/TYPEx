@@ -19,7 +19,7 @@ include { exporter as subtypes_exporter; exporter as major_exporter;
 include { get_cell_files; get_imcyto_raw_masks; parse_json_file;
 			get_tissue_masks_config }  from '../lib/functions.nf'
 
-include { qc_select_images; qc_create_single_channel_images } from '../modules/qc.nf'
+include { qc_select_images; qc_create_single_channel_images; qc_overlay } from '../modules/qc.nf'
 
 /* -- INPUT TYPING PARAMETERS -- */
 subtype_methods = 
@@ -301,4 +301,10 @@ workflow QC {
 			method,
 			qc_select_images.out
 		)
+		qc_overlay(
+			markers,
+			subset, 
+			method, 
+			qc_create_single_channel_images.out
+	)
 }

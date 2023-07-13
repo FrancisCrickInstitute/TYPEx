@@ -9,6 +9,7 @@ library(tiff)
 arg_parser=argparser::arg_parser("Select images for QC")
 add=argparser::add_argument
 arg_parser=add(arg_parser, arg="--rawDir", help="in")
+arg_parser=add(arg_parser, arg="--inDir", help="in")
 arg_parser=add(arg_parser, arg="--outDir", default = 'qc', help="in")
 arg_parser=add(arg_parser, arg="--posFile", default = 'qc', help="in")
 arg_parser=add(arg_parser, "--run", default="PHLEX_test", help="NextFlow run")
@@ -16,7 +17,7 @@ arg_parser=add(arg_parser, "--panel", default="p1", help="Panel of markers")
 
 
 releaseOut=with(args, f("cell_objects_{run}_{panel}.txt"))
-data = read.csv(releaseOut, sep = '\t')
+data = read.csv(file.path(args$inDir, releaseOut), sep = '\t')
 
 if(! dir.exists(args$outDir))
 	dir.create(args$outDir,  recursive = T)
