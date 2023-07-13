@@ -223,7 +223,6 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 					cols = strsplit(cluster, split = "_")[[1]]
 				}
 				cols = cols[cols %in% colnames(dfExp)]
-				print(colnames(dfExp))
 				values=apply(dfExp[subset, ..cols], 1, getExpSummary)
 			}
 			names(values)=rownames(dfExp)[subset]
