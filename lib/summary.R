@@ -214,14 +214,15 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 			cluster = names[subset[1]]
 			cat('Expression values for', cluster, '\n')
 			if(cluster == "") {
-				values=rep(NA, length(subset))
+				values = rep(NA, length(subset))
 			} else {
-				if(grepl(paste0(hasUnderscore, sep = "|"), cluster)) {
+				if(length(hasUnderscore) & grepl(paste0(hasUnderscore, sep = "|"), cluster)) {
 					cols = strsplit(cluster, split = paste0(c("_", hasUnderscore), sep = "|"))[[1]]
 					cols = c(cols, hasUnderscore)
 				} else {
 					cols = strsplit(cluster, split = "_")[[1]]
 				}
+				print(cols)
 				cols = cols[cols %in% colnames(dfExp)]
 				values=apply(dfExp[subset, ..cols], 1, getExpSummary)
 			}
