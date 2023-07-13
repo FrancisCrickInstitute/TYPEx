@@ -3,6 +3,10 @@ process qc_select_images {
 
 	input:
 		tuple val (ref_markers)
+		val subset
+		tuple val (method)
+		val typing
+
 	output:
 		val method
 	
@@ -14,9 +18,9 @@ process qc_select_images {
 		export COL_CONF=${params.color_config}
 		
         qc_select_images.R \
-			--inDir "${params.output_dir}/summary/" \
-			--outDir "${params.output_dir}/qc/" \
-			--ref_markers ${ref_markers}
+			--inDir "${params.output_dir}/summary/${subset}_${markers}_${method}/" \
+			--outDir "${params.output_dir}/qc/${subset}_${markers}_${method}/" \
+			--ref_markers ${params.major_markers}
 
     """
 }
@@ -33,6 +37,9 @@ process qc_create_single_channel_images {
 				   overwrite: true
 				   
 		input:
+			tuple val (ref_markers)
+        	val subset
+        	tuple val (method)
 			val selection
 			
 
@@ -43,7 +50,7 @@ process qc_create_single_channel_images {
 		"""
 			## Using params.input_dir as an absolute path
 			ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/raw_image_by_file.ijm" \
-				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/qc/overlay_examples.txt"'
+				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/qc/${subset}_${markers}_${method}/overlay_examples.txt"'
 		"""
 }
 
