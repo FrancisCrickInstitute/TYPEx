@@ -38,7 +38,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		positive[is.na(positive)] = 'pos: neg:'
 
 		print("Getting tissue category")
-		tissue_categs=get_tissue_category(
+		tissue_categs = get_tissue_category(
 			cellIDs = gsub(".txt", "", ids),
 			panel = pars$panel,
 			tissAreaDir=pars$tissAreaDir,
@@ -203,23 +203,35 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 			dfExp=to_magnitude(dfExp, magnitude)
 
 		clusterNames$cluster=gsub('\\.', ' ', clusterNames$cluster)
+		print(head(clusterNames))
 		names=clusterNames$positive[match(clusters, clusterNames$cluster)]
 		names=gsub("up:(.*) down:.*", "\\1", names)
 		names=gsub("pos:(.*) neg:.*", "\\1", names)
 		names[is.na(names)] = ''
+		print(table(names))
 		getExpSummary=match.fun(fun)
-		summary=tapply(1:nrow(dfExp), names, function(subset) {
-				cluster=names[subset[1]]
-				# cat('Expression values for', cluster, '\n')
-				if(cluster == "") {
-					values=rep(NA, length(subset))
+		hasUnderscore = grep("_", colnames(dfExp), value = T) 
+		summary = tapply(1:nrow(dfExp), names, function(subset) {
+			cluster = names[subset[1]]
+			cat('Expression values for', cluster, '\n')
+			if(cluster == "") {
+				values=rep(NA, length(subset))
+			} else {
+				if(grepl(paste0(hasUnderscore, sep = "|"), cluster)) {
+					cols = strsplit(cluster, split = paste0(c("_", hasUnderscore), sep = "|"))[[1]]
+					cols = c(cols, hasUnderscore)
 				} else {
-					cols=strsplit(cluster, split = "_")[[1]]
-					cols=cols[cols %in% colnames(dfExp)]
-					values=apply(dfExp[subset, ..cols], 1, getExpSummary)
+					cols = strsplit(cluster, split = "_")[[1]]
 				}
-				names(values)=rownames(dfExp)[subset]
-				return(cbind(values))
+				cols = cols[cols %in% colnames(dfExp)]
+				print(colnames(dfExp))
+				values=apply(dfExp[subset, ..cols], 1, getExpSummary)
+			}
+			print(length(subset))
+			print(head(values))
+			print(length(values))
+			names(values)=rownames(dfExp)[subset]
+			return(cbind(values))
 		})
 		summary=do.call(rbind, summary)
 		summary[match(rownames(dfExp), rownames(summary)), 1]
