@@ -133,10 +133,6 @@ workflow TIERED {
 					"${params.output_dir}/nfData",
 					STRATIFY.out
 				)
-			QC(tier_two.out,
-				"${params.subtype_markers}",
-				'subtypes',
-				subtype_methods)
 		} else {
 		
 			println 'Tier 2 w/o stratification'
@@ -159,6 +155,11 @@ workflow TIERED {
 				params.subtype_markers,
 				params.major_markers,
 				tier_two.out)
+			if(params.deep_imcyto)
+				QC(subtypes_exporter.out,
+                	"${params.subtype_markers}",
+               	    'subtypes',
+                	subtype_methods)
 		} else {
 			subtype_methods_nostrat = subtype_methods.map{ method -> [ "${method[0]}_FALSE" ]}
 			subtypes_exporter(
@@ -304,7 +305,8 @@ workflow QC {
 		qc_overlay(
 			markers,
 			subset, 
-			method, 
+			method,
+			params.mccs, 
 			qc_create_single_channel_images.out
 	)
 }

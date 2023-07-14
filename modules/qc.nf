@@ -42,7 +42,6 @@ process qc_create_single_channel_images {
         	val subset
         	tuple val (method)
 			val selection
-			
 
 		output:
 			path ("*")
@@ -61,6 +60,7 @@ process qc_overlay {
 		tuple val (ref_markers)
 		val subset
 		tuple val (method)
+		val mccs
 		val images
 
 	script:
@@ -72,10 +72,11 @@ process qc_overlay {
 			
 			plot_overlays.R \
 				--rawDir ${params.output_dir}/qc/${subset}_${ref_markers}_${method}/ \
+				--maskDir ${params.input_dir} --mccs ${mccs}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
-				--outDir "${params.output_dir}/sampled/robustness/plots" \
+				--outDir "${params.output_dir}/qc/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/qc/${subset}_${ref_markers}_${method}/overlay_examples.txt \
 				--panel ${params.panel} \
-				--run ${params.run}
+				--run ${params.release}
 	    """
 }
