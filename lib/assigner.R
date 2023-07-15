@@ -38,6 +38,11 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		}
 		mark$sizes=clusterSize[match(mark$cluster, names(clusterSize))]
 		mark=subset(mark, ! is.na(sizes))
+		if(! all(markers %in% colnames(mark))) {
+			print(markers)
+		   print(colnames(mark))
+			stop('The marker names defined for thresholding in typing_params.json are not in the cell objects file')
+		}
 
 		stats=lapply(breaks, function(x) {
 			pos=sapply(markers, function(m) {

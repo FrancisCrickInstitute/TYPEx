@@ -26,15 +26,21 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   columnNames=colnames(inData)
   if(grepl(feature, colnames(inData)))
 	  columnNames=grepv(feature, columnNames)
+  columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
 
-  print(feature)
+  metals = columnNames %>%
+    gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+	gsub('^([0-9]+)([A-Za-z]+)_.*', '\\2\\1', .)
+  metalPattern =paste0(metals, collapse = ".*|") %>%
+	paste0(., ".*")
   colnames(inData)=colnames(inData) %>%
 	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) # remove metals
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) %>%
+	gsub(metalPattern, '', .)
   columnNames=columnNames %>%
   	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) # remove metals
-  columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) %>%
+	gsub(metalPattern, '', .) # remove metals
 
   if(! file.exists(inMatFile))	{
     # Keep only numeric columns
@@ -58,10 +64,12 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
           file=f("{runID}.log"), append=T)
       rowsKeep=rowsKeep & areaData$AreaShape_Area[areaMatch] > pars$area_exclude
     }
+	cat('Area', sum(rowsKeep), '\n')
 
     # Exclude cells with intensity smaller or equal to pars$min_expression for all markers
     rowsKeep=apply(inData[, ..columnNames], 1, 
-		function(x) any(x > pars$min_expresssion))
+		function(x) any(x > pars$min_expresssion) & ! any(is.na(x)))
+	cat('Expression', sum(rowsKeep), '\n')
 
 	cat("INFO: Number of cells with intensity higher than", pars$min_expresssion, 
 		" for all markers of interest",
@@ -85,16 +93,16 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	  } else {
 	  	tma_values=apply(tma_values, 1, paste, collapse = '_')
   	  }
-	  print(unique(unique(tma_values[rowsKeep])))
-      if(length(unique(tma_values[rowsKeep])) > 1) {
+
+	  uniqueTMAvalues = unique(tma_values[!is.na(tma_values) & rowsKeep])
+	  print(uniqueTMAvalues)
+      if(length(uniqueTMAvalues) > 1) {
 		  print(head(tma_values))
 	  	
 		print("TMA values for batch effect correction")
-        print(table(tma_values[rowsKeep]))
-		print(head(tma_values))
-		print(class(rowsKeep))
       	rowsKeep=rowsKeep & ! is.na(tma_values)  # & !is.na(tissue_values)
-        pars[[method]]$X=model.matrix(~ 0 + tma_values[rowsKeep])   
+        pars[[method]]$X = model.matrix(~ 0 + tma_values[rowsKeep])   
+		cat('Batch', sum(rowsKeep), '\n')
       } else {
 		  cat('WARNING: Batch effects will not be calculated for',
 		  	"the probabilistic cellassign model\n",
@@ -109,12 +117,12 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	
     cat("Number of cells below intensity and area cutoffs", 
 		pars$markers, " is ", sum(! rowsKeep), "\n", append=T)
-
+	cat('Restricting to', sum(rowsKeep), 'rows and ', length(columnNames), 'columns\n')
 	inMat=inData[rowsKeep, ..columnNames]
 	
     colors=colors[rowsKeep]
 	stopifnot(ncol(inMat) & nrow(inMat))
-  	cat('INFO: range of values in the input matrix is ', range(inMat), 
+  	cat('INFO: range of values in the input matrix is ', range(inMat, na.rm = T), 
   	    	'using magnitude ', pars$magnitude, '\n')
 	
 	if(pars[[method]]$transformation != "none") {

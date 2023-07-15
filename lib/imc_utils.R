@@ -10,6 +10,8 @@ get_region_info <- function(panel, cellIDs, featurePattern, regFile) {
 
 	panel=gsub("_.*", "", panel)
 	print(regFile)
+	if(! file.exists(regFile))
+		stop('The sample annotation file does not exists --sample_file')
 	regData=read.delim(f(regFile), stringsAsFactors = F)
 	
 	# Specific for Tx where regData can have images from multiple panels

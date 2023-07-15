@@ -21,7 +21,7 @@ args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 pars=c(pars, args) 
 
 if(! dir.exists(args$outDir))
-	dir.create(args$outDir)
+	dir.create(args$outDir, recursive = T)
 qcOut = f("{args$outDir}/overlay_examples.txt")
 
 

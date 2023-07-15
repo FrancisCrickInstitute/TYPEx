@@ -74,7 +74,7 @@ for(imagename in imagenames) {
 	  par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D') 
 	  # par(mar=c(0, 0, 0, 0))
 	  plot(raw, axes = F, legend = F, 
-		  col = colorRampPalette(c("white", "black"))(120),
+		  col = colorRampPalette(c("white", "black"))(80),
 		  maxpixels = dim(raw)[1] * dim(raw)[2] * 10, 
 			xpd = T, frame = F, box = F, legend.mar = 0)
 	  plot(pos, legend=F, axes = F,
