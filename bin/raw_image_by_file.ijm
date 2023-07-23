@@ -9,15 +9,13 @@ lines = split(selectedImgs, '\n');
 for (i=0; i < lines.length; i++) {
 	
 	line = split(lines[i], "\t");
-	imageID = replace(line[0], "-", "/") + "/";
-	
-	print(line[0]);
 	marker=line[1];
 	marker = format_marker(marker);
 	fileID = marker + ".tiff";
-
-	imagePaths=getFiles(inDir, imageID + "full_stack/", fileID);
-	if(imagePaths.length == 0) continue;
+	imagePaths = getFiles(inDir, line[0], fileID);
+	print(imagePaths);
+	if(imagePaths.length == 0) 
+		continue;
 
 	open(imagePaths[0]);
 	imageInfo=marker + ".." + line[0] + ".." + line[2];
@@ -32,22 +30,32 @@ function getFiles(dir, imgID, extension) {
 
 	print(dir, imgID, extension);
 	result = newArray();
-	imgDir=dir + imgID;
-	
-	list = getFileList(imgDir);
-	print(list.length, imgDir);
-	for (i=0; i<list.length; i++) {
-		 	showProgress(i, list.length);
-		    if (endsWith(list[i], "/")) {
-		       files=getFiles("" + imgDir + list[i], extension);
-		       result=Array.concat(result, files);
-		    } else if(endsWith(list[i], extension)) {
-		    	newFile=imgDir + list[i];
-		    	print(newFile);
-		    	result=Array.concat(result, newFile);
-		    }
+
+	list = getFileList(dir);
+	for (i = 0; i < list.length; i++) {
+
+		print(list[i]);
+		showProgress(i, list.length);
+		dirName = replace(list[i], "\\/", "");
+		print(dirName);
+			
+		if (endsWith(list[i], "/")) {
+			dirIndex = indexOf(imgID, dirName);
+			if(endsWith(dirName, "full_stack"))
+				dirIndex = 0
+			if(dirIndex > -1) {
+				print(dir + list[i]);
+				print(list[i]);
+		    	getFiles("" + dir + "/" + list[i], imgID, extension);
+			}
 		}
-	return result;
+		if(endsWith(list[i], extension)) {
+				print(list[i]);
+		    	newFile = dir + list[i];
+		    	return(dir + list[i] + newFile);
+		}
+	}
+	return;
 }
 
 function automatedBrightnessAdjustment(image, limit, nBins, minThreshold, minThreshold)	{

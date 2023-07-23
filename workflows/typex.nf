@@ -17,16 +17,11 @@ include { call_subsampled; match_clusters; plot_subsampled }  from '../modules/r
 include { exporter as subtypes_exporter; exporter as major_exporter; 
 			plot_dr } from '../modules/release.nf'
 include { get_cell_files; get_imcyto_raw_masks; parse_json_file;
-			get_tissue_masks_config }  from '../lib/functions.nf'
+		get_tissue_seg_markeres; get_tissue_masks_config }  from '../lib/functions.nf'
 
 include { qc_select_images; qc_create_single_channel_images; qc_overlay } from '../modules/qc.nf'
 
 /* -- INPUT TYPING PARAMETERS -- */
-subtype_methods = 
-	Channel.of(['FastPG']
-				//['Rphenograph']
-				//['flowSOM']
-			  )
 subsample_methods =
 	Channel.of(
 			 ['FastPG'],
@@ -91,8 +86,9 @@ workflow TISSEG {
 	//////////////////////////////////////////////
 	
 	main:
-		preprocess_panck()
-		create_composites(preprocess_panck.out)
+		tissegMarkers = get_tissue_seg_markeres(params.overlay_config_file)	
+		preprocess_panck(tissegMarkers)
+		create_composites(preprocess_panck.out, tissegMarkers)
 		run_classifier(create_composites.out)
 		process_probs(run_classifier.out)
 		ts_exporter(process_probs.out)
@@ -125,7 +121,7 @@ workflow TIERED {
 	
 			/* --        TIER 2        -- */	
 			tier_two(
-					subtype_methods,
+					params.subtype_method,
 					'subtypes',
 					"${params.subtype_markers}",
 					"${params.major_markers}",
@@ -138,7 +134,7 @@ workflow TIERED {
 			println 'Tier 2 w/o stratification'
 			/* --        TIER 2        -- */
             tier_two(
-                    subtype_methods,
+                    params.subtype_method,
                     'subtypes',
                     "${params.subtype_markers}",
                     "${params.major_markers}",
@@ -150,7 +146,7 @@ workflow TIERED {
 		}
 		println "Exporter"
 		if(params.stratify_by_confidence) {
-			subtypes_exporter(subtype_methods, 
+			subtypes_exporter(params.subtype_method, 
 				'subtypes',
 				params.subtype_markers,
 				params.major_markers,
@@ -159,11 +155,11 @@ workflow TIERED {
 				QC(subtypes_exporter.out,
                 	"${params.subtype_markers}",
                	    'subtypes',
-                	subtype_methods)
+                	params.subtype_method)
 		} else {
-			subtype_methods_nostrat = subtype_methods.map{ method -> [ "${method[0]}_FALSE" ]}
+			params.subtype_method_nostrat = params.subtype_method.map{ method -> [ "${method[0]}_FALSE" ]}
 			subtypes_exporter(
-				subtype_methods_nostrat,
+				params.subtype_method_nostrat,
 				'subtypes',
 				params.subtype_markers,	
 				params.major_markers,				
@@ -204,7 +200,6 @@ workflow STRATIFY {
 			)
 		}
 		
-		
 		//if(params.imcyto) {
 		//	csm_submit(
 		//		rawMasks.combine(cellFiles, by: 0), 
@@ -220,6 +215,7 @@ workflow STRATIFY {
 		//		mask_overlay
 		//	)
 		//} else {
+		
 			build_strata_model(
 				tier_one, 
 				tier_one_ref.out,
@@ -242,7 +238,7 @@ workflow SUBSAMPLING {
 				.combine(subsample_markers)
 		if(params.sampled || params.clustered) 	{
 			call_cluster(
-				subtype_methods, 
+				params.subtype_method, 
 				"major",
 				params.annotate_markers,
 				params.annotate_markers,
@@ -252,7 +248,7 @@ workflow SUBSAMPLING {
 				out
 			)
 		 	major_exporter(
-				subtype_methods,
+				params.subtype_method,
 				'major',
 				params.annotate_markers,
 				params.annotate_markers,

@@ -27,33 +27,39 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   if(grepl(feature, colnames(inData)))
 	  columnNames=grepv(feature, columnNames)
   columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
-
+print(columnNames %>%
+    gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) )
   metals = columnNames %>%
     gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^([0-9]+)([A-Za-z]+)_.*', '\\2\\1', .)
-  metalPattern =paste0(metals, collapse = ".*|") %>%
+	gsub('^([0-9]+)([A-Za-z]{1,2}).*', '\\2\\1', .)
+  metalPattern =paste0(metals, collapse = ".*|\\.?") %>%
 	paste0(., ".*")
   colnames(inData)=colnames(inData) %>%
 	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) %>%
-	gsub(metalPattern, '', .)
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
   columnNames=columnNames %>%
   	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) %>%
-	gsub(metalPattern, '', .) # remove metals
-
+	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
+  print(any(metals %in% colnames(inData)))
+  if(! any(metals %in% colnames(inData))) {
+		print(metals[metals %in% colnames(inData)])
+		columnNames = columnNames %>%
+			 gsub(metalPattern, '', .) 
+		colnames(inData) = colnames(inData) %>%
+			gsub(metalPattern, '', .)
+  }
   if(! file.exists(inMatFile))	{
     # Keep only numeric columns
-    rowsKeep=rep(TRUE, nrow(inData))
+    rowsKeep = rep(TRUE, nrow(inData))
 
     if(! is.null(pars$markers) & pars$subset != subtypesDir) {
 		selectedMarkers=marker_gene_list[[pars$markers]] %>% 
 			unlist %>% unique
-		indices=match(selectedMarkers, colnames(inData))
-		keep=colnames(inData)[indices[! is.na(indices)]]
+		indices = match(selectedMarkers, colnames(inData))
+		keep = colnames(inData)[indices[! is.na(indices)]]
 		cat("INFO: Column names matching the markers list:", keep, "\n",
-			file=f("{runID}.log"), append=T)
-	  columnNames=intersect(columnNames, keep)
+			file = f("{runID}.log"), append=T)
+	  columnNames = intersect(columnNames, keep)
     }
 	cat("Columns:", columnNames, '\n')
 	
@@ -61,15 +67,16 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     if(! is.null(pars$area_exclude) & pars$area_exclude > 0) {
       cat("INFO: Number of cells with area smaller than", pars$area_exclude, "is",
           sum(areaData$AreaShape_Area[areaMatch] <= pars$area_exclude), "\n",
-          file=f("{runID}.log"), append=T)
-      rowsKeep=rowsKeep & areaData$AreaShape_Area[areaMatch] > pars$area_exclude
+          file = f("{runID}.log"), append = T)
+      rowsKeep = rowsKeep & areaData$AreaShape_Area[areaMatch] > pars$area_exclude
     }
 	cat('Area', sum(rowsKeep), '\n')
 
     # Exclude cells with intensity smaller or equal to pars$min_expression for all markers
     rowsKeep=apply(inData[, ..columnNames], 1, 
-		function(x) any(x > pars$min_expresssion) & ! any(is.na(x)))
-	cat('Expression', sum(rowsKeep), '\n')
+		function(x) any(x > pars$min_expresssion, na.rm = T))
+	cat('Rows kept after expression filter', sum(rowsKeep), '\n',
+		file=f("{runID}.log"), append=T)
 
 	cat("INFO: Number of cells with intensity higher than", pars$min_expresssion, 
 		" for all markers of interest",
@@ -115,14 +122,18 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     if(! dir.exists(dirname(runID)))
       dir.create(dirname(runID), recursive=T)
 	
-    cat("Number of cells below intensity and area cutoffs", 
+	# if multiple columns for the same marker due to manual mislabeling of marker names in the mcd file
+    if(any(duplicated(columnNames)))
+		print(columnNames)
+	cat("Number of cells below intensity and area cutoffs", 
 		pars$markers, " is ", sum(! rowsKeep), "\n", append=T)
 	cat('Restricting to', sum(rowsKeep), 'rows and ', length(columnNames), 'columns\n')
-	inMat=inData[rowsKeep, ..columnNames]
-	
+	inMat = inData[rowsKeep, ..columnNames]
+
     colors=colors[rowsKeep]
 	stopifnot(ncol(inMat) & nrow(inMat))
   	cat('INFO: range of values in the input matrix is ', range(inMat, na.rm = T), 
+		" median ", median(as.matrix(inMat), na.rm = T), " mean ", mean(as.matrix(inMat), na.rm = T),
   	    	'using magnitude ', pars$magnitude, '\n')
 	
 	if(pars[[method]]$transformation != "none") {
@@ -165,6 +176,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     }
   }
   cat('WARNING: range of transformed values is ', range(inMat),
+	' median ', median(as.matrix(inMat), na.rm = T), ' mean ', mean(as.matrix(inMat), na.rm = T),
   	'using magnitude ', pars$magnitude, '\n',
   	file = f('{runID}.log'), append = T)
   if(method %in% pars$visualisation_methods)
@@ -268,7 +280,7 @@ run_Rphenograph <- function(inMat, p, colors) {
             load(outCellFile)
             return(out)
           }
-          cat("\n", cluster, length(subset), "\n")
+          cat("\n", "Running Rphenograph on ", cluster, length(subset), "\n")
           # Minimum group size for clustering 
           # EDIT: if(length(subset) <= p[["k"]] * 150) return(NA)
 		  if(length(subset) - 2 < p[["k"]]) return(NA)	  
@@ -355,7 +367,7 @@ run_FastPG <- function(inMat, p, colors) {
             load(outCellFile)
             return(out)
           }
-          cat("\n", cluster, length(subset), "\n")
+          cat("\n", "Running FastPG on ", cluster, length(subset), "\n")
 		  
           # Minimum group size for clustering
           # EDIT: if(length(subset) <= p[["k"]] * 150 & nrow(inMat) > p[["k"]] * 500) return(NA)
@@ -479,7 +491,7 @@ run_flowSOM <- function(inMat, p, colors) {
           load(outCellFile)
           return(out)
         }
-        cat("\n", cluster, length(subset), "\n")
+        cat("\n", "Running FlowSOM on ", cluster, length(subset), "\n")
         if(length(subset) <= p[["xdim"]] * p[["ydim"]]) return(NA)
         obj=flowCore::flowFrame(as.matrix(inMat[subset, ]))
         input=FlowSOM::ReadInput(obj, scale=as.logical(p[["scale"]]))
@@ -603,21 +615,3 @@ run_umap <- function(inMat, p, colors)  {
   dev.off()
 } 
 
-# kmeans
-run_kmeans <- function(inMat, p, colors) {
-  out=stats::kmeans(inMat, centers=p[["centers"]])
-  pheatmap(apply(out$centers, 2, to_percentile))
-  return(out$cluster)
-}
-
-# RClusterpp - not tested
-run_rclusterpp <- function(inMat, p, colors) {
-  Rclusterpp.hclust(inMat, method=p[["method"]])
-}
-
-# immunoClust - not tested
-run_immunoClust <- function(inMat, p, colors) {
-  obj<-convert_mat2fcs(inMat)
-  out<-immunoClust::cell.process(obj, classify.all=p[["classify.all"]])
-  return(out@label)
-}

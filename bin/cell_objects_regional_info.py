@@ -61,20 +61,30 @@ if(len(maskList) > 0):
         tiff = pyplot.imread(mask)
 
         imgIndex=cellFrame['imagename'] == imagename
+
         dataTmp=cellFrame[imgIndex]
         
-        print(region, imagename)        
+        print(region, imagename)
+        print(dataTmp.shape)
         if(dataTmp.shape[0] == 0):
             continue
         
-        print(dataTmp.shape)
+        print(max(dataTmp["LocationCenter_X"]))
+        print(max(dataTmp["LocationCenter_Y"]))
+        print(tiff.shape)
         print(region, imagename)
-        
-        regions=[
-            tiff[int(np.round(y)), int(np.round(x))]
-                for x, y in zip(dataTmp['LocationCenter_X'], 
-                                dataTmp['LocationCenter_Y'])
-        ]
+        if(max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1]):
+            regions=[
+                tiff[int(np.round(x)), int(np.round(y))]
+                    for x, y in zip(dataTmp['LocationCenter_X'],
+                                    dataTmp['LocationCenter_Y'])
+            ]
+        elif(max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1]):
+	        regions=[
+    	        tiff[int(np.round(y)), int(np.round(x))]
+        	        for x, y in zip(dataTmp['LocationCenter_X'], 
+            	                    dataTmp['LocationCenter_Y'])
+        	]
         d = {'centerX':dataTmp['LocationCenter_X'],
              'centerY':dataTmp['LocationCenter_Y'],
              'ObjectNumber':dataTmp['ObjectNumber'],

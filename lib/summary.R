@@ -4,9 +4,18 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
   
 		ids=with(inData, paste(ObjectNumber, basename(imagename)))
 
+		metals = setdiff(colnames(inData), c('ObjectNumber', 'imagename')) %>%
+			gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+			gsub('^([0-9]+)([A-Za-z]{1,2}).*', '\\2\\1', .)
+		metalPattern =paste0(metals, collapse = ".*|\\.?") %>%
+			paste0(., ".*")
 	    colnames(inData)=colnames(inData) %>%
-	  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-            	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
+		  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
+    		gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) 
+
+		if(! any(metals %in% colnames(inData)))
+			colnames(inData)=colnames(inData) %>%
+    			gsub(metalPattern, '', .)
 			
 		pars[[method]]$run_id=runID
 		pars[[method]]$markers=pars$markers
@@ -16,8 +25,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 
 		print("Cell type assignment")
 		clusterNameFile=f("{runID}.clusterNames.txt")
-		
-		clusterNames=assign_cluster_positivity(
+		clusterNames = assign_cluster_positivity(
 			dfExp = inData[, ..columnNames], 
 			clusters=runOutput,
 			run=pars$run,
@@ -210,6 +218,7 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 
 		getExpSummary=match.fun(fun)
 		hasUnderscore = grep("_", colnames(dfExp), value = T) 
+		print(colnames(dfExp))
 		summary = tapply(1:nrow(dfExp), names, function(subset) {
 			cluster = names[subset[1]]
 			cat('Expression values for', cluster, '\n')
@@ -222,9 +231,9 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 				} else {
 					cols = strsplit(cluster, split = "_")[[1]]
 				}
-				print(cols)
 				cols = cols[cols %in% colnames(dfExp)]
-				values=apply(dfExp[subset, ..cols], 1, getExpSummary)
+				
+				values = apply(dfExp[subset, ..cols], 1, getExpSummary)
 			}
 			names(values)=rownames(dfExp)[subset]
 			return(cbind(values))

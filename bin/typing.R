@@ -58,8 +58,8 @@ arg_parser=add(arg_parser, "--stratify",
 arg_parser=add(arg_parser, "--mostFreqCellType",
 	default='None', help="file or NULL")	
 
-args=argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
-pars=c(pars, args)
+args = argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
+pars = c(pars, args)
 
 if(! pars$markers %in% names(marker_gene_list))
 	stop("Marker list -", pars$markers, "- not found")
@@ -69,48 +69,50 @@ if(file.exists(args$regFile)) {
 } else {
 	stop('Sample annotation file does not exist', args$regFile)
 }
+
 # If reference model called for stratification
 if(pars$stratify & pars$subset == majorDir) {
+	
 	if(args$mostFreqCellType == 'None') {
 		# get the most freq from the full model
 		
 		fullModelDir = file.path(args$wDir, with(pars, f(analysisPath)))
-		fullModelID=paste0(pars[[pars$method]], collapse="_")
-		fullModelFile=f("{fullModelDir}/{fullModelID}.clusters.fst")
-		fullData=fst::read.fst(fullModelFile)
-		cellStats=table(fullData$cellType)	
+		fullModelID = paste0(pars[[pars$method]], collapse="_")
+		fullModelFile = f("{fullModelDir}/{fullModelID}.clusters.fst")
+		fullData = fst::read.fst(fullModelFile)
+		cellStats = table(fullData$cellType)	
 		
 		pars$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
 
 	} 
-	abrv=strsplit(pars$mostFreqCellType, split = '')[[1]][1:3] %>% 
+	abrv = strsplit(pars$mostFreqCellType, split = '')[[1]][1:3] %>% 
 			tolower %>% paste0(., collapse = "")
-	ref_markers_list=paste1(pars$markers, abrv)
-	removedMarker= get_celltype_markers(marker_gene_list[[pars$markers]], 
+	ref_markers_list = paste1(pars$markers, abrv)
+	removedMarker = get_celltype_markers(marker_gene_list[[pars$markers]], 
 		pars$mostFreqCellType)
-	truncated_list=remove_node_marker(
-			marker_gene_list[[pars$markers]], pars$mostFreqCellType,
-			removedMarker)
+	truncated_list = remove_node_marker(
+		marker_gene_list[[pars$markers]], pars$mostFreqCellType,
+		removedMarker)
 	marker_gene_list[[ref_markers_list]] = truncated_list 
-	pars$markers=ref_markers_list
+	pars$markers = ref_markers_list
 }
 
 # Set output directory
 outDir=file.path(args$wDir, with(pars, f(analysisPath)))
 if(args$subset == sampledDir)
-	outDir=file.path(outDir, args$iter)
+	outDir = file.path(outDir, args$iter)
 
 if(! args$stratify & args$subset == subtypesDir)
-	outDir=paste(outDir, args$stratify, sep = "_")
+	outDir = paste(outDir, args$stratify, sep = "_")
 
 if(! dir.exists(outDir))
-  dir.create(outDir, recursive=T)
+  dir.create(outDir, recursive = T)
 
 # Path and prefix used for the files, uniquely identifying that run
-runID=file.path(outDir, paste1(pars[[pars$method]]))
+runID = file.path(outDir, paste1(pars[[pars$method]]))
 print(pars$method)
 write.table(x = data.frame(unlist(pars[[pars$method]])),
-	file=f("{runID}.log"), append = F)
+	file = f("{runID}.log"), append = F)
 cat("Output dir:", outDir, "\n")
 
 for(feature in pars$features) {
@@ -123,7 +125,7 @@ for(feature in pars$features) {
 	toResample=(args$subset == sampledDir | resample) &
 		! file.exists(f("{runID}.pars.yaml"))
 	
-	inData=load_files(
+	inData = load_files(
 		inDir=inDir,
 		resample=toResample,
 		resample_frac=pars[[pars$method]]$resample_frac,
@@ -131,49 +133,70 @@ for(feature in pars$features) {
 		col.exclude = pars$channels_exclude, 
 		resampleBy = args$resampleBy)
 		# run=pars$run; col.exclude = pars$channels_exclude
-		
 	start=Sys.time()
 	cat("Running", feature, pars$method, "\n")
 	
-	## Filter out excluded samples
+
+	## Filter out excluded samples based on metadata
 	if("useImage" %in% colnames(metaDf)) {
 	
-		imagenames=gsub(".txt", "", basename(inData$imagename))
-		excludeIDs=metaDf$imagename[
+		imagenames = gsub(".txt", "", basename(inData$imagename))
+		excludeIDs = metaDf$imagename[
 			which(metaDf$useImage == "exclude" &
 				metaDf$imagename %in% imagenames)]
-				inData=inData[! imagenames %in% excludeIDs, ]
+		inData=inData[! imagenames %in% excludeIDs, ]
 		cat("Kept cells", sum(! imagenames %in% excludeIDs), 
-			"out of", length(imagenames), '\n')
+			"out of", length(imagenames), '\n', 
+			file = f("{runID}.log"), append = T)
+		cat("Kept cells", sum(! imagenames %in% excludeIDs),
+				"out of", length(imagenames), '\n')
 	} else {
 		excludeIDs = c()
 	}
 
+	## Filter out excluded samples based on metadata
+	print("Getting mask annotations")
+	ids = with(inData, paste(ObjectNumber, basename(imagename)))
+	tissue_categs = get_tissue_category(
+            cellIDs     = gsub(".txt", "", ids),
+            panel       = pars$panel,
+            tissAreaDir = pars$tissAreaDir,
+            class       = "exclude"
+        )
+	excludeCellIDs = ids[ tissue_categs[[1]] != 0 & ! is.na(tissue_categs[[1]]) ]
 	print(nrow(inData))
-	
+	print(length(excludeCellIDs))
+	if(length(excludeCellIDs)) {
+		cat('INFO: Excluding ', length(excludeCellIDs), ' cells out of ', length(ids),
+			' based on user-provided images for masking\n', 
+			file = f("{runID}.log"), append = T)	
+		inData = subset(inData, ! ids  %in% excludeCellIDs)	
+	}
+
 	if(pars$method %in% c("MC", dimred_methods) | pars$subset == subtypesDir) {
-		refMethod=ifelse(
-					pars$subset == subtypesDir & ! pars$method %in% dimred_methods, 
-					"cellassign", 
-					pars[[pars$method]]$refMethod)
+		refMethod = ifelse(
+			pars$subset == subtypesDir & ! pars$method %in% dimred_methods,
+			"cellassign",
+			pars[[pars$method]]$refMethod)
 			
 			ref <- args; ref$method=refMethod
 			if(pars$method %in% dimred_methods) {
-				ref$subset=pars$subset
-				ref$markers=pars$markers
+				ref$subset = pars$subset
+				ref$markers = pars$markers
 			} else {
-				ref$subset=majorDir
-				ref$markers=pars$major_markers
+				ref$subset = majorDir
+				ref$markers = pars$major_markers
 			}
-		clustDir=file.path(args$wDir, with(ref, f(analysisPath)))
-		clustFile=paste0(pars[[refMethod]], collapse="_")
+		clustDir = file.path(args$wDir, with(ref, f(analysisPath)))
+		clustFile = paste0(pars[[refMethod]], collapse="_")
 
-		clustFile=f("{clustDir}/{clustFile}.clusters.txt")
+		clustFile = f("{clustDir}/{clustFile}.clusters.txt")
 		if(! file.exists(clustFile)) 
 			stop("File does not exist", clustFile, "\n")
 		cat("INFO: File with clusters:", clustFile, "\n",
-			file=f("{runID}.log"), append=T)
-		clustData=data.table::fread(clustFile, sep = "\t")		
+			file = f("{runID}.log"), append=T)
+		clustData = data.table::fread(clustFile, sep = "\t")
+		
 		if(pars$subset == subtypesDir) {
 			
 			rowSel=get_filtered_objects(clustData, 
@@ -223,13 +246,15 @@ for(feature in pars$features) {
 		nfDir=args$nfDir)
 
 	if(! pars$method %in% dimred_methods) {
-		out=summarise_output(inData=inData, 
-			method=pars$method, pars=pars,
-			runID=runID,
-			runOutput=results$runOutput,
-			columnNames=results$columnNames,
-			colors=clusters,
-			nfDir=args$nfDir)
+		out=summarise_output(
+			inData = inData, 
+			method = pars$method, 
+			pars = pars,
+			runID = runID,
+			runOutput = results$runOutput,
+			columnNames = results$columnNames,
+			colors = clusters,
+			nfDir = args$nfDir)
 	} else {
 		out=NA
 	}

@@ -1,7 +1,13 @@
 #@String panel
-#@Boolean mcd
 #@String rootDir
 #@String compositeDir
+#@String tumour
+#@String stroma
+#@String immune
+#@string auxStroma
+#@String dna
+#@Integer nrCategs
+
 
 // Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
 image="all";
@@ -9,44 +15,59 @@ image="all";
 directional='none';
 
 // Choose the NextFlow run iteration
-panck_threshold=15;
+f = File.open('panck_preprocessed_images.txt');
+panck_threshold = 15;
 
-
-if(panel == "p1" && mcd) {
-	immune_markers="image1=[Median of 152Sm_CD45.tiff] image2=[Median of 170Er_CD3.tiff] image3=[Median of 162Dy_CD8a.tiff] image4=[Median of 156Gd_CD4.tiff] image5=[-- None --]";
-	auxStromaMarkers='image1=[Median of 143Nd_vimentin.tiff] image2=[Median of 169Tm_collagen1.tiff] image3=[-- None --]';
-	tumour='image1=[164Dy_panCK.tiff] image2=[Median of 142Nd_CAM52.tiff]';
-	//stroma_images='image1=141Pr_aSMA.tiff image2=151Eu_CD31.tiff image3=[-- None --]';
-	stroma_images='image1=[Median of 141Pr_aSMA.tiff] image2=[Median of 151Eu_CD31.tiff] image3=auxStromaMrg image4=[-- None --]';
-	dna='image1=[Median of 191Ir_DNA1.tiff] image2=[Median of 193Ir_DNA2.tiff]';
-	nonstroma='image1=[Tumour] image2=SUM_DNA image3=[-- None --]';
-} else if (panel == 'p2' && mcd) {
-	immune_markers="image1=[Median of 152Sm_CD45.tiff] image2=[Median of 170Er_CD3.tiff] image3=[Median of 162Dy_CD8a.tiff] image5=[Median of 169Tm_CD206.tiff] image6=[Median of 161Dy_CD20.tiff] image7=[Median of 149Sm_CD11b.tiff] image8=[Median of 158Gd_CD79a.tiff] image9=[Median of 147Sm_CD163.tiff] image10=[Median of 146Nd_CD16.tiff] image11=[Median of 159Tb_CD68.tiff] image12=[Median of 144Sm_CD14.tiff] image13=[Median of 156Gd_CD4.tiff] image14=[-- None --]";
-	auxStroma='Median of 175Lu_panactin.tiff';
-	stroma_images='image1=[Median of 151Eu_CD31.tiff] image2=auxStromaMrg image3=[-- None --]';
-	tumour='image1=[164Dy_panCK.tiff] image2=[Median of 142Nd_CAM52.tiff]';
-	dna='image1=[Median of 191Ir_DNA1.tiff] image2=[Median of 193Ir_DNA2.tiff]';
-	//nonstroma='image1=[SUM_Immune] image2=[Tumour] image3=SUM_DNA image4=[-- None --]';
-	nonstroma='image1=[Tumour] image2=SUM_DNA image3=[-- None --]';
-} else if(panel == "p1") {
-	immune_markers="[Median of 152Sm_CD45Sm152Di.tiff] image2=[Median of 170Er_CD3Er170Di.tiff] image3=[Median of 162Dy_CD8aDy162Di.tiff] image4=[Median of 156Gd_CD4Gd156Di.tiff] image5=[-- None --]";
-	auxStromaMarkers='image1=[Median of 143Nd_vimentin.tiff] image2=[Median of 169Tm_collagen1.tiff] image3=[-- None --]';
-	stroma_images='image1=[Median of 141Pr_aSMA.tiff] image2=[Median of 151Eu_CD31.tiff] image3=auxStromaMrg image4=[-- None --]';
-	dna='image1=[Median of 191Ir_DNA1Ir191Di.tiff] image2=[Median of 193Ir_DNA2Ir193Di.tiff]';
-	tumour='image1=[164Dy_panCKDy164Di.tiff] image2=[Median of 142Nd_CAM52Nd142Di.tiff]';
-	//nonstroma='image1=[SUM_Immune] image2=[Tumour] image3=SUM_DNA image4=[-- None --]';
-	nonstroma='image1=[Tumour] image2=SUM_DNA image3=[-- None --]';
-} else if(panel == "p2") {
-	dna='image1=[Median of 191Ir_DNA1Ir191Di.tiff] image2=[Median of 193Ir_DNA2Ir193Di.tiff]';
-	immune_markers="image1=[Median of 152Sm_CD45Sm152Di.tiff] image2=[Median of 170Er_CD3Er170Di.tiff] image3=[Median of 162Dy_CD8aDy162Di.tiff] image5=[Median of 156Gd_CD4Gd156Di.tiff] image6=[Median of 161Dy_CD20Dy161Di.tiff] image7=[Median of 149Sm_CD11bSm149Di.tiff] image8=[Median of 158Gd_CD79aGd158Di.tiff] image9=[Median of 147Sm_CD163Sm147Di.tiff] image10=[Median of 146Nd_CD16Nd146Di.tiff] image11=[Median of 159Tb_CD68Tb159Di.tiff] image12=[Median of 144Sm_CD14.tiff] image13=[Median of 156Gd_CD4Gd156Di.tiff] image14=[-- None --]";
-	auxStroma='Median of 175Lu_panactinLu175Di.tiff';
-	tumour='image1=[164Dy_panCKDy164Di.tiff] image2=[Median of 142Nd_CAM52Nd142Di.tiff]';
-	stroma_images='image1=[Median of 151Eu_CD31Eu151Di.tiff] image2=auxStromaMrg image3=[-- None --]';
-	//nonstroma='image1=[SUM_Immune] image2=[Tumour] image3=SUM_DNA image4=[-- None --]';
-	nonstroma='image1=[Tumour] image2=SUM_DNA image3=[-- None --]';
+// DNA
+dnaList = split(dna, "=|,");
+dnaMarkers = "";
+for (m = 1; m < dnaList.length; m++) {
+	dnaMarkers = dnaMarkers + "image" + m + "=[Median of " + dnaList[m] + "] ";
 }
+dnaMarkers = dnaMarkers + "image" + dnaList.length + "=[-- None --]";
+print(dnaMarkers)
 
-f = File.open('panck_range.txt');
+// Tumour
+tumourList = split(tumour, "=|,");
+tumourMarkers = "";
+for (m = 1; m < tumourList.length; m++) {
+    tumourMarkers = tumourMarkers + "image" + m + "=[Median of " + tumourList[m] + "] ";
+}
+tumourMarkers = tumourMarkers + "image" + tumourList.length + "=[-- None --]";
+print(tumourMarkers)
+
+// Immune
+immuneList = split(immune, "=|,");
+immuneMarkers = "";
+for (m = 1; m < immuneList.length; m++) {
+    immuneMarkers = immuneMarkers + "image" + m + "=[Median of " + immuneList[m] + "] ";
+}
+immuneMarkers = immuneMarkers + "image" + immuneList.length + "=[-- None --]";
+print(immuneMarkers)
+
+
+// Stroma
+stromaList = split(stroma, "=|,");
+stromaMarkers = "";
+for (m = 1; m < stromaList.length; m++) {
+    stromaMarkers = stromaMarkers + "image" + m + "=[Median of " + stromaList[m] + "] ";
+}
+stromaMarkers = stromaMarkers + "image" + stromaList.length + "=auxStromaMrg image" + 
+	( stromaList.length + 1 ) + "=[-- None --]";
+print(stromaMarkers)
+
+
+// AUX Stroma
+auxStromaList = split(auxStroma, "=|,");
+auxStromaMarkers = "";
+if(auxStromaList.length > 1) {
+	for (m = 1; m < auxStromaList.length; m++) {
+    	auxStromaMarkers = auxStromaMarkers + "image" + m + "=[Median of " + auxStromaList[m] + "] ";
+	}
+	auxStromaMarkers = auxStromaMarkers + "image" + auxStromaList.length + "=[-- None --]";
+	print(auxStromaMarkers)
+}
+nonstroma='image1=[Tumour,image2=SUM_DNA image3=[-- None --]';
 
 setBatchMode(true);
 runs=getFileList(rootDir);
@@ -136,14 +157,14 @@ for (k = 0; k< runs.length;  k++)	{
 			}
 			print(newPanel);
 			// DNA Sum
-			run("Concatenate...", " title=DNA open " + dna);
+			run("Concatenate...", " title=DNA open " + dnaMarkers);
 			run("Z Project...", "projection=[Sum Slices]");
 			run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 			autoAdjust();
 			run("Enhance Contrast", "saturated=0.35");
 
 			if(newPanel) {
-				run("Concatenate...", " title=Test open " + tumour);
+				run("Concatenate...", " title=Test open " + tumourMarkers);
 				run("Z Project...", "projection=[Sum Slices]");
 				rename('Tumour');
 				autoAdjust();
@@ -180,7 +201,7 @@ for (k = 0; k< runs.length;  k++)	{
 			}
 		
 			// Immune sum
-			run("Concatenate...", "  title=Immune open " + immune_markers);
+			run("Concatenate...", "  title=Immune open " + immuneMarkers);
 			run("Z Project...", "projection=[Sum Slices]");
 			run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 			print('Immune');
@@ -204,9 +225,9 @@ for (k = 0; k< runs.length;  k++)	{
 			run("Median (3D)");
             rename('auxStromaMrg');
 			autoAdjust();
-			print(stroma_images);
+			print(stromaMarkers);
 
-            run("Concatenate...", "  title=Stroma open " + stroma_images);
+            run("Concatenate...", "  title=Stroma open " + stromaMarkers);
             run("Z Project...", "projection=[Sum Slices]");
 
 			run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");

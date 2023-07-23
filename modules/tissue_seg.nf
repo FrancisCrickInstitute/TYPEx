@@ -7,6 +7,9 @@ process preprocess_panck {
 			   mode: params.publish_dir_mode, 
 			   overwrite: true
 
+	input:
+		tuple val(tumour), val(stroma), val(auxStroma)
+
 	output:
 		path ("*")
 
@@ -14,7 +17,7 @@ process preprocess_panck {
 	"""
 		## Using params.input_dir as an absolute path
 		ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/panck_filters.ijm" \
-			'rootDir=\"${params.image_dir}/\"'
+			'rootDir=\"${params.image_dir}/\", tumour=\"${tumour}\"'
 	
 	"""
 }
@@ -30,6 +33,7 @@ process create_composites {
 
 	input:
 		val files
+		tuple val(tumour), val(immune), val(stroma), val(auxStroma), val(dna)
 
 	output:
 		path ("*")
@@ -40,7 +44,7 @@ process create_composites {
 		# compositeDir has the output directory from the previous
 		ImageJ-linux64 --ij2 --headless \
 			--run "${baseDir}/bin/create_composites.ijm" \
-				'rootDir="${params.image_dir}/", panel=\"${params.panel}\", mcd=true, compositeDir=\"${params.output_dir}/composites/\"'
+				'rootDir="${params.image_dir}/", panel=\"${params.panel}\", compositeDir=\"${params.output_dir}/composites/\", tumour=\"${tumour}\", immune=\"${immune}\", stroma=\"${stroma}\", auxStroma=\"${auxStroma}\", dna=\"${dna}\"'
 
     """
 

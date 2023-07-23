@@ -178,7 +178,7 @@ for(file in resultFiles) {
   cat("Removing the following images with less than", minNrCells, ' cells\n')
   selectedImages=cellCountAssigned$imagename[cellCountAssigned$totalCellCount > minNrCells]
   cellCountStats=dfStats[, .(totalCellCount=sum(cellCount)), by = imagename]
-  dfStats[, cellPercentage := cellCount / cellCountStats$totalCellCount[match(imagename, cellCountStats$imagename)] ]
+  dfStats[, cellPercentage := cellCount / cellCountStats$totalCellCount[match(imagename, cellCountStats$imagename)] * 100 ]
   cell_stats[['F']] = dfStats
   
   if(! is.null(regionArea)) {

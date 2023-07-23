@@ -10,8 +10,9 @@ library(plyr)
 
 arg_parser=argparser::arg_parser("Summarize typing results")
 add=argparser::add_argument
-arg_parser=add(arg_parser, "--regFile", 
-		help='File with image annotations')
+arg_parser=add(arg_parser, arg="--regFile", 
+		default='data/sample_file.txt',
+        help='File with image annotations')
 arg_parser=add(arg_parser, arg="--wDir", help="output")
 arg_parser=add(arg_parser, arg="--cellReviewDir", 
 	help=paste("review"))
@@ -33,12 +34,10 @@ methods = c(args$major_method ,"csm")
 features = c('area', 'meanIntensity', 'probability')
 cellTypePattern = ".clusters.txt"
 
-quantileCut = 0.9
-positiveCut = 0.4
 
 csmCol = f("cellType_csm_{args$major_markers}")
 regionCol = f("region_{args$major_method}_{args$major_markers}")
-print(args$mostFreqCellType)
+print(f("Most frequent cell type {args$mostFreqCellType}"))
 if(args$mostFreqCellType == 'None') {
 	# get the most freq from the full model
 	fullPath = analysisPath %>%
@@ -52,7 +51,7 @@ if(args$mostFreqCellType == 'None') {
 	args$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
 	if(args$mostFreqCellType == 'Smooth muscle cells')
 		args$dependentCell = 'aSMA+ cells'
-	print(args$mostFreqCellType)
+	print(f("Most frequent cell type {args$mostFreqCellType}"))
 }
 
 abrv = strsplit(args$mostFreqCellType, split = '')[[1]][1:3] %>% 
@@ -98,7 +97,7 @@ for(markers in markerSets) {
 	
 	# Only keep CD3+CD4+ T cells as a positive control for CD4 T cells
     tmp$CD3 = get_marker_frequency(marker = 'CD3', data = tmp, column='positive')
-    tmp$cellType[tmp$cellType == 'CD4 T cells' & grepl('\\-', tmp$CD3)] = NA
+    tmp$cellType[tmp$cellType == 'CD4 T cells' & grepl('CD3\\-', tmp$CD3)] = NA
     data[[paste1(method, markers)]] = 
 		data.table::as.data.table(cbind(tmp, method=method, markers=markers))
   }
@@ -114,13 +113,13 @@ if(! length(data)) {
 				cellType = NA, positive = '', method = 'csm',
 				markers=args$major_markers)
 	}
-	mrg=data.table::rbindlist(data, use.names = T, fill = T)
+	mrg = data.table::rbindlist(data, use.names = T, fill = T)
 	# Exclude unassigned, esp from csm, so that there are not considered as false negatives
 	mrg = mrg[!mrg$cellType %in% c('Excluded', 'Unassigned'), ]
 	mrg$cellID = with(mrg, paste(object, imagename))
 	mrg$centerX = round(mrg$centerX, 2)
 	mrg$centerY = round(mrg$centerY, 2)
-	
+
 	# tranform for plotting
 	for(feature in grepv("Intensity", features))
 		mrg[, (feature) := lapply(.SD, 
@@ -136,8 +135,6 @@ if(! length(data)) {
 		recast[[csmCol]] = 'None'
 	# Those in csm that do not have any associated raw masks
 	recast[is.na(recast[, markerSets[2]]), markerSets[2]] = 'None'
-	recast$cellIDTest = gsub('-roi_p.*', '', recast$cellID)
-	print(head(recast$cellIDTest))
 	
 	imagenames=unique(recast$imagename)
 	
@@ -163,7 +160,7 @@ if(! length(data)) {
 								
 	table(recast[[typedCols[2]]][! recast[[typedCols[1]]] %in% refCellTypes]) %>% 
 		sort %>% print
-	negative=recast$cellID[negativeIndices]
+	negative = recast$cellID[negativeIndices]
 	cat('Negative CellIDs: ', length(negative), '\n')
 		
 	posIndices = recast[[typedCols[2]]] == recast[[typedCols[1]]]
@@ -171,10 +168,11 @@ if(! length(data)) {
 		recast[[typedCols[2]]] %in% c(args$dependentCell, mostLikelyCellTypes[2])
 	negativeExcludedIndices = recast[[typedCols[1]]] %in% args$mostFreqCellType &
 								! recast[[typedCols[2]]] %in% c(mostLikelyCellTypes[2], args$dependentCell)
-		
+	
 	if(mostLikelyCellTypes[2] == mostLikelyCellTypes[1]) {
 		
 		#If both models have the same most likley cell type, and we don't 
+		quantileCut = 0.9
 		# have other references for positive -> narrow down to higher expessed than the majority
 		mostFreqIndices = recast[[typedCols[2]]] == mostLikelyCellTypes[2]
 		# If any negative
@@ -183,8 +181,7 @@ if(! length(data)) {
 		# If most frequent celltypes are equal and there are differences
 		negCutoff = quantile(recast[[intensityColNameRef]][mostFreqNeg], quantileCut, na.rm = T)
 
-		cat('Most likely cell type in reference model equals",
-			"the most likely cell type in full model\n', negCutoff, '\n')
+		cat('Most likely cell type in reference model equals the most likely cell type in full model\n', negCutoff, '\n')
 		
 		pdfOut=f("{out}/MostFrequentCellTypesSame.{analysisID}.pdf")
 		pdf(pdfOut, width = 5, height = 4)
@@ -196,98 +193,141 @@ if(! length(data)) {
 		abline(h = negCutoff, lty = 2)
 		dev.off()
 		
-		posIndices=posIndices & (recast[[typedCols[2]]] != mostLikelyCellTypes[2] |
+		posIndices = posIndices & (recast[[typedCols[2]]] != mostLikelyCellTypes[2] |
 								recast[[typedCols[2]]] == mostLikelyCellTypes[2] &
 								recast[[intensityColNameFull]] > negCutoff)
 	}
-		
 	positive=recast$cellID[which(posIndices)]
 	cat('Positive CellIDs: ', length(positive), '\n')
 	if(regionCol %in% colnames(recast))
 		positive = union(positive,
 			  			recast$cellID[which(recast[[regionCol]] == "Tumour" &
-									  grepl("Epithelial cells|tumour cells", 
+									  grepl("Epithelial cells|tumour cells|Epithelium", 
 									  		recast[[typedCols[2]]], ignore.case = T))])
-											
-		if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
+	colorCol = typedCols[1]
+	if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
 			
-			mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
-			
-			qCut = quantile(recast[[intensityColNameRef]][mostFreqIndices], quantileCut, na.rm = T)
-			nCut = quantile(recast[[intensityColNameFull]][mostFreqIndices], positiveCut, na.rm = T)
-			qCutoff = min(qCut, nCut)
-						 
-			cols = palette$cellTypeColors
-			pdfOut=f("{out}/MostFrequentExcluded.{analysisID}.pdf")
-			pdf(pdfOut, width = 6, height = 4)
-			g <- ggplot(recast, aes_string(intensityColNameFull, intensityColNameRef))
-			plot = g + geom_point(aes_string(color = typedCols[1]), size = 0.01) + 
-				scale_color_manual(values = cols[names(cols) %in% recast[[typedCols[1]]]]) +
-				theme_classic() +
-				geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
-				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-				geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
-				geom_hline(aes(yintercept = nCut), linetype= 'dotted')
-			print(plot)
-			g <- ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
-			plot = g + geom_point(aes(color = typedCols[1]), size = 0.01) + 
-				theme_classic() +
-				geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
-				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-				geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
-				geom_hline(aes(yintercept = nCut), linetype= 'dotted')
-			print(plot)
-			dev.off()
-			
-			cat('Most likely cell type in full model equals the",
-				"excluded cell type in the reference model\n',
-				"considering mean intensities: ", nCut, '\n')
+		mostFreqIndices=recast[[typedCols[1]]] == mostLikelyCellTypes[1]
+		intensityChange = with(recast, get(intensityColNameFull) - get(intensityColNameRef))
+		negativeCutoff = mean(intensityChange, na.rm = T) + sd(intensityChange, na.rm = T)
+		print(negativeCutoff)
 
+		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
+        nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
+		cat(qCut, nCut, '\n')
+						 
+		cols = palette$cellTypeColors
+		pdfOut=f("{out}/MostFrequentExcluded.{analysisID}.pdf")
+			pdf(pdfOut, width = 6, height = 4)
+			g <- ggplot(droplevels(recast), aes_string(intensityColNameFull, intensityColNameRef))
+			plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
+				theme_classic() +
+				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+				geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+				ggtitle(mostLikelyCellTypes[1]) +
+				theme(legend.text = element_text(size = 5))
+			print(plot)
+			df = recast[mostFreqIndices, ] %>% droplevels
+			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+			plot = g + geom_point(aes_string(color = typedCols[2]), size = 0.01) + 
+				theme_classic() +
+				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+				ggtitle(mostLikelyCellTypes[1]) +
+				geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+				theme(legend.text = element_text(size = 5), legend.title = element_blank())
+			print(plot)
+			df = recast[mostFreqIndices, ] %>% droplevels
+			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+            plot = g + geom_point(aes(color = get(intensityColNameFull) - get(intensityColNameRef) > negativeCutoff), size = 0.01) +
+                theme_classic() +
+                geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+                geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+				ggtitle(mostLikelyCellTypes[1]) +
+				theme(legend.text = element_text(size = 5), legend.title = element_blank())
+            print(plot)
+			
+			df = recast[mostFreqIndices, ] %>% droplevels
+			df$equal = df[[typedCols[2]]] != mostLikelyCellTypes[2]
+			g <- ggplot(df, aes(get(intensityColNameFull) - get(intensityColNameRef)))
+            plot = g + geom_density(aes(color = equal), size = 0.01) +
+                theme_classic() +
+				geom_vline(aes(xintercept = negativeCutoff), linetype = 'dashed') +
+				ggtitle(mostLikelyCellTypes[1]) +
+                theme(legend.text = element_text(size = 5), legend.title = element_blank())
+            print(plot)
+			dev.off()
+			cat("Most likely cell type in full model equals the excluded cell type in the reference model considering mean intensities: >", nCut, '\n', sep = ' ')
+			print(table(recast[[intensityColNameRef]] <= nCut))
+			
 			positiveExcludedIndices = positiveExcludedIndices &
-				recast[[intensityColNameFull]] > nCut &
-				recast[[intensityColNameRef]] < qCutoff
+					recast[[intensityColNameFull]] > nCut &
+                    recast[[intensityColNameRef]] < qCut
 		}
 		for(missedCellType in undefinedFullTypes) {
 			
+			print(missedCellType)
+			# positiveCut 0.4, quantileCut .9
 			mostFreqIndices = recast[[typedCols[1]]] == missedCellType
-			qCut = quantile(recast[[intensityColNameRef]][mostFreqIndices], quantileCut, na.rm = T)
-			nCut = quantile(recast[[intensityColNameFull]][mostFreqIndices], positiveCut, na.rm = T)
-			qCutoff = min(qCut, nCut)
+			intensityChange = with(recast, get(intensityColNameFull) - get(intensityColNameRef))
+	        negativeCutoff = mean(intensityChange, na.rm = T) + sd(intensityChange, na.rm = T)
+    	    print(negativeCutoff)
+
+			qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
+    	    nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
 				
-				cols = palette$cellTypeColors
-				pdfOut = f("{out}/Missing.{missedCellType}.{analysisID}.pdf")
+			cols = palette$cellTypeColors
+			pdfOut = f("{out}/Missing.{missedCellType}.{analysisID}.pdf")
 				pdf(pdfOut, width = 6, height = 4)
 				g <- ggplot(recast, aes_string(intensityColNameFull, intensityColNameRef))
-				plot = g + geom_point(aes_string(color = typedCols[1]), size = 0.01) + 
-					scale_color_manual(values = cols[names(cols) %in% recast[[typedCols[1]]]]) +
+				plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
 					theme_classic() +
 					geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
 					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
 					geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
+					ggtitle(missedCellType) +
+					geom_hline(aes(yintercept = nCut), linetype= 'dotted') +
+					theme(legend.text = element_text(size = 5))
+				print(plot)
+
+				g <- ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
+				plot = g + geom_point(aes_string(color = typedCols[2]), size = 0.01) + 
+					theme_classic() +
+					geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
+					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+					geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
+					ggtitle(missedCellType) +
+					theme(legend.text = element_text(size = 5)) +
 					geom_hline(aes(yintercept = nCut), linetype= 'dotted')
 				print(plot)
-				g <- ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
-				plot = g + geom_point(aes(color = typedCols[1]), size = 0.01) + 
+				
+				print('Intensity')
+				df = recast[mostFreqIndices, ] %>% droplevels
+				print(range(df[[intensityColNameFull]], na.rm = T))
+				print(head(df))
+				print(range(df[[intensityColNameRef]], na.rm = T))
+				df$color = df[[intensityColNameFull]] - df[[intensityColNameRef]] > negativeCutoff
+				print(table(df$color))
+				g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+				plot = g + geom_point(aes(color = get(intensityColNameFull) - get(intensityColNameRef) > negativeCutoff), size = 0.01) +
 					theme_classic() +
-					geom_vline(aes(xintercept = qCut), linetype= 'dashed') +
 					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-					geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
-					geom_hline(aes(yintercept = nCut), linetype= 'dotted')
+					geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+					ggtitle(missedCellType) +
+					theme(legend.text = element_text(size = 5), legend.title = element_blank())
 				print(plot)
 				dev.off()
-			
+
 				cat('Missing cell type in ref model ', missedCellType,
-					'considering mean intensities: ', nCut, '\n')
+					'considering mean intensities: ', nCut, '\n', sep = ' ')
 
 				positiveExcludedIndices=positiveExcludedIndices |
 					recast[[typedCols[1]]] %in% missedCellType &
-					recast[[intensityColNameFull]] > nCut &
-				    recast[[intensityColNameRef]] < qCutoff
-				
+					recast[[intensityColNameFull]] > nCut & 
+					recast[[intensityColNameRef]] < qCut
+
 				negativeExcludedIndices = negativeExcludedIndices | 
 						recast[[typedCols[1]]] %in% missedCellType &
-							recast[[intensityColNameFull]] < qCutoff
-					
+							recast[[intensityColNameFull]] < qCut
 		}
 		
 		positiveExcluded=recast$cellID[positiveExcludedIndices]
@@ -296,7 +336,6 @@ if(! length(data)) {
 		negativeExcluded=recast$cellID[negativeExcludedIndices]
 		cat('Neg mostFreqCellType CellIDs: ', length(negativeExcluded), '\n')
  	}
-
 	totalExcludedCell=mrg$markers==args$major_markers & 
 		mrg$method == args$major_method &
 		! is.na(mrg$probability) &
@@ -320,10 +359,11 @@ if(! length(data)) {
 	mrg$control[totalExcludedCell]="undetermined"
 	mrg$control[negExcludedIndices]="negative"
 	mrg$control[posExcludedIndices]="positive"
+	mrg$cellType[posExcludedIndices] %>% table
 		
 	# Predict positive and negative cell objects
 	controlCellIDs=mrg$control %in% c("positive", "negative") &
-	  mrg$markers==ref_markers_list & mrg$method == args$major_method &
+	  mrg$markers == ref_markers_list & mrg$method == args$major_method &
 	  !is.na(mrg$probability)
 	cat('Control CellIDs', length(controlCellIDs), '\n')
 	cat('Positive mostFreqCellType CellIDs: ', length(posExcludedIndices), '\n')
@@ -334,7 +374,8 @@ if(! length(data)) {
 	
 	dfFlt=mrg[controlCellIDs | posExcludedIndices | negExcludedIndices, ]
 	dfFlt$control=sapply(dfFlt$control == "positive", sum)
-	
+
+	print(with(dfFlt, table(control, cellType, markers)))	
 	# Model on selected covariates
 	print('Creating model with')
 	print(with(dfFlt, table(control, cellType, markers)))
@@ -346,7 +387,6 @@ if(! length(data)) {
     if(nrInt > 0)
         stop('Cannot create a model with', nrInt, 'cells with NAs for raw intensities')
 	write.table(dfFlt, file = 'test.txt', sep = '\t', quote = F, row.names = F)
-	#if(!all(recast[[csmCol]] == 'None')) {
 	model <- lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
 		                                (1|cellType)")), data=dfFlt, family=binomial)
 	predict=predict(model, newdata = dfFlt, type = "response", allow.new.levels =T)
@@ -455,7 +495,6 @@ if(! length(data)) {
 		  next
 	  }
 		 
-	  # dfMrg=dfMrg[dfMrg$cellType!= args$mostFreqCellType, ]
 	  cat(feature, nrow(dfMrg), "\n")
 	  cellTypeStats=table(dfMrg$cellType)
 	  g <- ggplot(dfMrg)
@@ -465,7 +504,6 @@ if(! length(data)) {
 	          legend.position="top") +
 	    guides(fill=guide_legend(nrow=length(unique(mrg$method)))) +
 	    xlab(NULL)
-	    # facet_grid(method ~ markers, scale="free_x") 
 	    if(feature=="Probability")
 	        plot = plot + geom_hline(aes(yintercept=0.5), linetype="dashed", color="grey")
 	    if(feature == "area")

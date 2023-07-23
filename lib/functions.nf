@@ -81,7 +81,7 @@ def get_tissue_masks_config(overlayConfigFile) {
 	   and/or produced with the workflow TISSEG */
 	   
 	Channel.fromPath(overlayConfigFile) | 
-			flatMap { parse_json_file(it) } |
+			flatMap { parse_json_file(it).masks } |
 			map {
 			  entry -> tuple(
 				(! file(entry.value.tissueDir).exists() ? "${params.output_dir}/tissue_seg" : entry.value.tissueDir),
@@ -92,5 +92,12 @@ def get_tissue_masks_config(overlayConfigFile) {
 			}
 }
 
+def get_tissue_seg_markeres(overlayConfigFile) {
+
+   entry =	Channel.fromPath(overlayConfigFile) |
+      			flatMap { parse_json_file(it).markers } | collect(flat: true)
+	println(entry)
+	entry.view()
+}
 
 

@@ -286,12 +286,11 @@ assign_cluster_positivity <- function(dfExp, clusters, panel, run, runID,
 			data.frame(cluster=rep(NA, length(clusters)), 
 					   name=rep(NA, length(clusters)))
 		)
-		
+	head(dfExp)	%>% print
 	if(! is.null(magnitude)) {
 		cat('Magnitude transformation ', magnitude, '\n')
 		dfExp=to_magnitude(dfExp, magnitude)
 	}
-	
 	if(log2) 
 	  dfExp=log2(dfExp + .1)
 	clusterSize=table(clusters)

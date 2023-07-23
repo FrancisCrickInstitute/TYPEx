@@ -247,9 +247,9 @@ get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
 		data$regionID = abs(data$regionID - 255)/255
 	
 	tmp = subset(data, regionID > 0 & region != "Background")
-	categs=tmp[, lapply(.SD, paste1), .SDcols="region", by=c("imagename", "ObjectNumber")]
+	categs = tmp[, lapply(.SD, paste1), .SDcols="region", by=c("imagename", "ObjectNumber")]
 	
-	wideDf=data.table::dcast(data, imagename + ObjectNumber + centerX + centerY ~ region, value.var="regionID")
+	wideDf = data.table::dcast(data, imagename + ObjectNumber + centerX + centerY ~ region, value.var="regionID")
 	if(nrow(categs) > 0 & class == 'regional') {
 		wideDf=categs[wideDf, on = .(imagename=imagename, ObjectNumber= ObjectNumber)]
 	} else {
@@ -262,7 +262,7 @@ get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
 		}
 	}
 	ind = match(cellIDs, with(wideDf, paste(ObjectNumber, imagename)))
-	categories=c(names(table(data$region)), "region")
+	categories = c(names(table(data$region)), "region")
 	cbind(wideDf[ind, categories, with=F])
 }
 
@@ -446,16 +446,16 @@ summary_table <- function(inDf) {
     stats$marker=marker
     stats
   })
-  posStatsList=do.call(rbind, posStatsList)
-  posStats=reshape2::dcast(data = posStatsList, formula = imagename + cellID ~ marker,
+  posStatsList = do.call(rbind, posStatsList)
+  posStats = reshape2::dcast(data = posStatsList, formula = imagename + cellID ~ marker,
                            value.var =  "cellDensity")
-  markerColSel=colnames(posStats) %in% markers
+  markerColSel = colnames(posStats) %in% markers
   colnames(posStats)[markerColSel] = paste0('cellDensity_', colnames(posStats)[markerColSel])
-  typeMatch=match(with(typeStats, paste(imagename, cellID)), with(posStats, paste(imagename, cellID)))
-  typeStats$majorType=gsub(':.*', "", typeStats$cellID)
-  typeStats$cellType=gsub('^[^:]+:', "", typeStats$cellID)
-  typeStats=typeStats[, c('imagename', 'majorType', 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
-  typeStats=cbind(typeStats, posStats[typeMatch, markerColSel])
+  typeMatch = match(with(typeStats, paste(imagename, cellID)), with(posStats, paste(imagename, cellID)))
+  typeStats$majorType = gsub(':.*', "", typeStats$cellID)
+  typeStats$cellType = gsub('^[^:]+:', "", typeStats$cellID)
+  typeStats = typeStats[, c('imagename', 'majorType', 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
+  typeStats = cbind(typeStats, posStats[typeMatch, markerColSel])
   typeStats[is.na(typeStats)] = 0
   return(typeStats)
 }

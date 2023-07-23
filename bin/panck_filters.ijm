@@ -1,18 +1,27 @@
 #@String rootDir
+#@String tumour
 
-// Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
 image="all";
-// Choose whether to apply directional filter ("direct") or "none"
 directional='none';
-// Choose the NextFlow run iteration
-
 panck_thres=15
+f = File.open('panck_preprocessed_images.txt');
 
 setBatchMode(true);
-runs=getFileList(rootDir);
+runs = getFileList(rootDir);
 print(runs.length + ' images in ' + rootDir);
 
-f = File.open('panck_range.txt');
+print(tumour);
+tumourMarkers = split(tumour, "=|,");
+panckID = "";
+for (m = 0; m < tumourMarkers.length; m++) {
+	index = indexOf(tumourMarkers[m], "panCK");
+	if(index != -1)
+		panckID = tumourMarkers[m];
+}
+if(panckID == "") {
+	print("No panck tumour marker"); 
+	exit;
+}
 
 for (k=0; k < runs.length; k++)	{
 	
@@ -53,18 +62,8 @@ for (k=0; k < runs.length; k++)	{
 				if(stacks[m] != "full_stack/")
 					continue;
 				
-				if(File.isDirectory(imgDir)) {
-					imgList=getFileList(imgDir);
-					for ( i=0; i<imgList.length; i++ ) {
-					   	if(imgList[i] == '142Nd_CAM52.tiff' || imgList[i] == '142Nd_CAM52Nd142Di.tiff')
-						newPanel=1;
-						
-					}
-				}
-
-				if(newPanel == 1) continue;
-				open(imgDir + "164Dy_panCK.tiff");
-				selectWindow("164Dy_panCK.tiff");
+				open(imgDir + panckID);
+				selectWindow(panckID);
 
 				autoAdjust();
 				getMinAndMax(min, max);
@@ -100,6 +99,7 @@ function autoAdjust() {
          * Damien Guimond
          * 20120516
          * Acknowledgements: Kota Miura
+		 * Edits: Mihaela A.
          */
 	aggregateMax=5000;
 	aggregateMin=15;

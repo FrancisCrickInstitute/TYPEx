@@ -13,7 +13,7 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
 		load(fileOut)
 		return(pos)
 	}
-	upDfConf=upDfConf[grep('summary', rownames(upDfConf), invert = T), ]
+	upDfConf = upDfConf[grep('summary', rownames(upDfConf), invert = T), ]
 	print(colnames(upDfConf))
 
 
@@ -36,7 +36,7 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
 			return(positive)
 		}	
 		positive=vector(mode='list')
-		flt=data.frame(cbind(marker = upDfConf[[marker]],
+		flt = data.frame(cbind(marker = upDfConf[[marker]],
 				cluster = gsub(f("^(.*).{effect_field}.*$"), "\\1", rownames(upDfConf)),
 				cluster2 = gsub(f("^.*.{effect_field}.(.*)$"), "\\1", rownames(upDfConf))),
 				stringsAsFactors = F,
@@ -106,18 +106,21 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
 
 plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 
-	plotDir=f("{runID}_plots")
-	if(!dir.exists(plotDir))
+	plotDir = f("{runID}_plots")
+	if(! dir.exists(plotDir))
 		dir.create(plotDir)
 	print('Plotting heatmap')
-	heatmapData=f('{plotDir}/heatmap.RData')
+	heatmapData = f('{plotDir}/heatmap.RData')
 	save(dfExp, clusters, runID, labels, file=heatmapData)
-	clusterSize=table(clusters) %>% as.data.frame
+	clusterSize = table(clusters) %>% as.data.frame
 
-    clusterSummary<-sapply(colnames(dfExp), function(x) {
-      tapply(t(dfExp[[x]]), as.factor(clusters), mean)
+    clusterSummary <- sapply(colnames(dfExp), function(x) {
+      tapply(t(dfExp[[x]]), as.factor(clusters), mean, na.rm = T)
     })
-	clusterSummary[clusterSummary == 0]=min(clusterSummary[clusterSummary > 0])
+	print(clusterSummary)
+	minValue = min(clusterSummary[clusterSummary > 0], na.rm = T)
+	clusterSummary[clusterSummary == 0] = minValue
+	clusterSummary[is.nan(clusterSummary) | is.na(clusterSummary)] = minValue 
 
     clusterNorm=apply(clusterSummary, 2, to_zscore)
     density_scale=pretty(c(-2, 2))
@@ -140,7 +143,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 			
 			cat('Plotting subset of clusters: ', subset, runID, sampledDir, '\n')
 			clusterNormSub = clusterNorm
-			clusterSizeSub=clusterSize
+			clusterSizeSub = clusterSize
 			
 			if(subset != 'all') {
 				clusterNormSub = clusterNorm[celltypes == subset, ]
@@ -148,9 +151,8 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 					next
 				if(! nrow(clusterNormSub))
 					next
-				selectedCols=apply(clusterNormSub, 2, 
-					function(x) length(unique(x)) > 1)
-				clusterNormSub=subset(clusterNormSub, select=selectedCols)
+				selectedCols = apply(clusterNormSub, 2, function(x) length(unique(x)) > 1)
+				clusterNormSub = subset(clusterNormSub, select=selectedCols)
 				clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
 			}
 			
@@ -189,10 +191,10 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 		print(unit(ncol(clusterSummary)/5, "cm"))
     	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 
 			gsub('up:(.*) down:', '\\1', .)
-		markers=sapply(labels$positive,
-			function(x) strsplit(x, split='_')[[1]]) %>% unlist %>% unique
+		print(labels$positive)
 		clusterLabels=rownames(clusterNormSub)
-		markers=colnames(clusterSummary)[row_order(heat)]
+		print(clusterLabels)
+		markers = colnames(clusterSummary)[row_order(heat)]
 	    binMat=sapply(clusterLabels, function(cluster) {
     	  positive=labels$positive[labels$cluster == cluster] %>%
 		  						strsplit(split = '_') %>% unlist
@@ -200,7 +202,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
     	})
 		binMat=as.data.frame(binMat)
     	colnames(binMat) = clusterLabels
-	    rownames(binMat) = markers
+	    #rownames(binMat) = markers
 			
 		labelMatch = match(clusterSizeSub$clusters, labels$cluster)
     	clusterSizeSub$label = labels$positive[labelMatch]
@@ -340,24 +342,23 @@ plot_binary <- function(labels, runID, clusters_order=NULL, markers_order=NULL) 
 plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
 	
 	plotDir=f("{runID}_plots")
-	if(!dir.exists(plotDir))
+	if(! dir.exists(plotDir))
 		dir.create(plotDir)
 	
 	if(! is.null(magnitude))
 		dfExp=to_magnitude(dfExp, magnitude)
 	
-	# TODO: e.g. no positivity but with majorType doesn't end up in clusterNames
 	if(! all(clusters %in% clusterNames$cluster)) {
 		print('WARNING: Not all clusters have been annotated based on positivity')
 		dfExp = dfExp[clusters %in% clusterNames$cluster, ]
 		clusters = clusters[clusters %in% clusterNames$cluster]
 	}
-	clusterCount=length(unique(clusters))
+	clusterCount = length(unique(clusters))
 	clusterNames$up = gsub("pos:(.*) neg:.*", "\\1", clusterNames$cellType)
-	positive=clusterNames$up[match(clusters, clusterNames$positive)]
-	up=paste(clusters, positive)
-	dfExpMag=dfExp + 1
-	medianVal=apply(dfExpMag, 2, median)
+	positive = clusterNames$up[match(clusters, clusterNames$positive)]
+	up = paste(clusters, positive)
+	dfExpMag = dfExp + 1
+	medianVal = apply(dfExpMag, 2, median, na.rm = T)
 	pdf(file=f("{plotDir}/inMat.per_cluster.pdf"), 
 		width =  7 + round(clusterCount / 60),
 		height=5 + round(clusterCount / 60))
@@ -365,12 +366,12 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
 	for(.row in 1:nrow(clusterNames)) {
 		cat(".")
 		indices=which(clusters == clusterNames$cluster[.row])
-		inFlt=dfExpMag[indices, ]
+		inFlt = dfExpMag[indices, ]
 		boxplot(inFlt, outline=FALSE,
 			main = with(clusterNames, f("cluster:{cluster[.row]}\n",
 							gsub("_", "+", gsub('pos:(.*)neg:', "\\1", positive[.row])), "\n")),
 			ylab=paste0("n=", length(indices), " cells"),  cex.main=1, las=1,
-			ylim=c(min(dfExpMag), max(dfExpMag)), cex.lab.x=1, xaxt='n', log='y')
+			ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)), cex.lab.x=1, xaxt='n', log='y')
 		points(medianVal, pch = 23, col='red')
 		axis(side=1, 1:ncol(inFlt), colnames(inFlt), las = 2, srt=45)
 	}
@@ -382,16 +383,16 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
 	# par(mfrow=c(2, 2))
 	for(cellMarker in colnames(dfExpMag)) {
 		cat(".")
-		values=dfExpMag[[cellMarker]]
-		clNamesOrder=names(table(clusters))
+		values = dfExpMag[[cellMarker]]
+		clNamesOrder = names(table(clusters))
 
-		cols=get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
-		cols=cols[match(clNamesOrder, clusterNames$cluster)]
+		cols = get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
+		cols = cols[match(clNamesOrder, clusterNames$cluster)]
 
-		cols=sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
+		cols = sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
 		boxplot(values ~ clusters, col=cols, las=1, cex.lab = 0.4,
 			cex.main=2, varwidth=F, outline=F,  log = "y", xaxt='n',
-			xlab="", ylab = "", ylim=c(min(dfExpMag), max(dfExpMag)),
+			xlab="", ylab = "", ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)),
 			main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"),
 									  paste0("n=", length(indices), " cells")),)
 		axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=45)

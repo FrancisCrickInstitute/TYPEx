@@ -1,16 +1,32 @@
 {
-	"tisseg":{
-		"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/results/TYPEx/tissue_seg/labels/",
-		"annotationName":"regional",
-		"maskRegEx":"labeled_regions_(.*)_(P[12].*).tiff",
-		"imgNameRegExIndex":"\\2",
-		"regionRegExIndex":"\\1"
+	"masks":{
+			"tisseg":{
+				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/results/TYPEx/tissue_seg/labels/",
+				"annotationName":"regional",
+				"maskRegEx":"labeled_regions_(.*)_(P[12].*).tiff",
+				"imgNameRegExIndex":"\\2",
+				"regionRegExIndex":"\\1"
+			},
+			"vessels":{
+				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/TRACERx-PHLEX/data/vessel/",
+				"annotationName":"vessels",
+				"maskRegEx":"(.*roi_[0-9]*)_(.*)-binary_mask.png",
+				"imgNameRegExIndex":"\\1",
+				"regionRegExIndex":"\\2"
+			},
+			"exclude_mask":{
+				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/zoe/config/artefact_masks/",
+				"annotationName":"exclude",
+				"maskRegEx":"(.*-roi_[0-9]*)_(.*).tif",
+				"imgNameRegExIndex":"\\1",
+				"regionRegExIndex":"\\2"		
+			}
 	},
-	"vessels":{
-		"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/TRACERx-PHLEX/data/vessel/",
-		"annotationName":"vessels",
-		"maskRegEx":"(.*roi_[0-9]*)_(.*)-binary_mask.png",
-		"imgNameRegExIndex":"\\1",
-		"regionRegExIndex":"\\2"
+	"markers":{
+		"tumour":"164Dy_panCK.tiff",
+		"immune":"152Sm_CD45,170Er_CD3.tiff,162Dy_CD8a.tiff,156Gd_CD4.tiff",
+		"stroma":"141Pr_aSMA.tiff,151Eu_CD31.tiff",
+		"auxstroma":"143Nd_vimentin.tiff,169Tm_collagen1.tiff",
+		"dna":"191Ir_DNA1.tiff,193Ir_DNA2.tiff"
 	}
 }
