@@ -351,26 +351,21 @@ review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssi
   # I a major type is assigned but the cell type is from another brach, reassign to major
   # consider markers that are epxressed by different cell types e.g. CD16 in T cells, CD38 in T cells
   # if in the same branch, assign to subtype (lowest level)
-  # CD56_CD79a_panactin_VISTA is assigned to  Lymphocytes
   positivity=gsub('pos:(.*) neg:', '\\1', positivity)
   print(cellAssignFile)
+  
   if(! file.exists(cellAssignFile)) {
     return(cellTypes)
   }
   
-  guide=read.delim(cellAssignFile, stringsAsFactors = F)
-  guide=subset(guide, !is.na(newCellType) & !is.na(newMajorType))
-  ind=match(paste(cellTypes, majorTypes, positivity),
+  guide = read.delim(cellAssignFile, stringsAsFactors = F)
+  guide = subset(guide, !is.na(newCellType) & !is.na(newMajorType))
+  ind = match(paste(cellTypes, majorTypes, positivity),
          with(guide, paste(OldCellType, OldMajorType, positive)))
-  if(!all(is.na(ind))) {
-    cellTypes[!is.na(ind)] = guide$newCellType[ind[!is.na(ind)]]
-  }
-  cellTypes=gsub('^CD4$', 'CD4 T cells', cellTypes)
-  cellTypes=gsub('^CD8$', 'CD8 T cells', cellTypes)
-  cellTypes=gsub('^T cells$', 'T cells - Other', cellTypes)
-  cellTypes=gsub('^Leukocytes$', 'Leukocytes - Other', cellTypes)
-  cellTypes=gsub('^Smooth muscle cells$', 'Myofibroblasts', cellTypes)
-  cellTypes[grepl('^Epithelial cells Region$', cellTypes)] = 'Epithelial cells'
+  if(! all(is.na(ind)))
+    cellTypes[! is.na(ind)] = guide$newCellType[ind[! is.na(ind)]]
+  cellTypes=gsub(' - Other', '', cellTypes)
+  cellTypes[grepl('^Epithelial cells - Tissue.*', cellTypes)] = 'Epithelial cells'
   return(cellTypes)
 }
 
@@ -387,7 +382,7 @@ review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
 	  ind=match(paste(cellTypes, majorTypes, positivity),
 	         with(guide, paste(OldCellType, OldMajorType, positive)))
 	  if(!all(is.na(ind))) {
-	    majorTypes[! is.na(ind)] = guide$newMajorType[ind[!is.na(ind)]]
+	    majorTypes[! is.na(ind)] = guide$newMajorType[ind[! is.na(ind)]] 
 	  }
   }
   ambiguousIndices = grepl('Ambiguous|Unassigned', majorTypes) & 
@@ -410,7 +405,7 @@ review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
 	  	  majorReview[x]
 	    })
 	}
-	majorTypes[grepl('^Epithelial cells Region$', majorTypes)] = 'Epithelial cells'
+	majorTypes[grepl('^Epithelial cells - Tissue.*', majorTypes)] = 'Epithelial cells'
 	
 	return(majorTypes)
 }

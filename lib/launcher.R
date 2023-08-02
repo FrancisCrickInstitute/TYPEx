@@ -26,8 +26,8 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   columnNames=colnames(inData)
   if(grepl(feature, colnames(inData)))
 	  columnNames=grepv(feature, columnNames)
-  columnNames =setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
-print(columnNames %>%
+  columnNames = setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
+  print(columnNames %>%
     gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) )
   metals = columnNames %>%
     gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
@@ -48,6 +48,13 @@ print(columnNames %>%
 		colnames(inData) = colnames(inData) %>%
 			gsub(metalPattern, '', .)
   }
+
+   cat('INFO: range of values in the input matrix is ', 
+		range(inData[, ..columnNames], na.rm = T),
+        " median ", median(as.matrix(inData[, ..columnNames]), na.rm = T), 
+		" mean ", mean(as.matrix(inData[, ..columnNames]), na.rm = T),
+            'using magnitude ', pars$magnitude, '\n')
+
   if(! file.exists(inMatFile))	{
     # Keep only numeric columns
     rowsKeep = rep(TRUE, nrow(inData))

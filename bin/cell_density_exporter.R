@@ -243,17 +243,16 @@ for(file in resultFiles) {
                       cellDensity = dfStatsMrg$cellDensity,
                       cellType    = dfStatsMrg$cellType,
                       dfMarker,
-                      majorType   = dfStatsMrg$majorType, 
 					  stringsAsFactors = F)
   dfMarkMelt=reshape2::melt(dfMarker, 
-	  id.vars=c("imagename", "majorType", "cellCount", "cellDensity"))
+	  id.vars=c("imagename", "cellCount", "cellDensity"))
   dfMarkStats=ddply(dfMarkMelt, 
 	  .(imagename, variable, value), summarise,
       count=sum(cellCount, na.rm = T),
-      density = sum(cellDensity, na.rm = T))
+      density = sum(cellDensity))
   write.tab(dfMarkStats[grep('\\+$', dfMarkStats$value), ], file=positiveOut)
 	
-  if(nrow(dfStatsMrg) >0 ) fst::write.fst(dfStatsMrg, path=f("{inDir}/{fileFst}"))
+  if(nrow(dfStatsMrg) >0 ) fst::write.fst(dfStatsMrg, path=f("{outDir}/{fileFst}"))
   cat("Output saved in", f("{inDir}/{fileFst}"), "\n")
   
 }

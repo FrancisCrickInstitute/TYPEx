@@ -19,7 +19,8 @@ include { exporter as subtypes_exporter; exporter as major_exporter;
 include { get_cell_files; get_imcyto_raw_masks; parse_json_file;
 		get_tissue_seg_markeres; get_tissue_masks_config }  from '../lib/functions.nf'
 
-include { qc_select_images; qc_create_single_channel_images; qc_overlay } from '../modules/qc.nf'
+include { qc_select_images; qc_create_single_channel_images; qc_overlay;
+	 	qc_intensity_heatmap} from '../modules/qc.nf'
 
 /* -- INPUT TYPING PARAMETERS -- */
 subsample_methods =
@@ -151,11 +152,10 @@ workflow TIERED {
 				params.subtype_markers,
 				params.major_markers,
 				tier_two.out)
-			if(params.deep_imcyto)
-				QC(subtypes_exporter.out,
-                	"${params.subtype_markers}",
-               	    'subtypes',
-                	params.subtype_method)
+			QC(subtypes_exporter.out,
+				"${params.subtype_markers}",
+				'subtypes',
+                params.subtype_method)
 		} else {
 			params.subtype_method_nostrat = params.subtype_method.map{ method -> [ "${method[0]}_FALSE" ]}
 			subtypes_exporter(
@@ -286,23 +286,32 @@ workflow QC {
 		  subset
 		  method
 	main:
-		qc_select_images(
-			markers, 
-			subset,
-			method,
-			out
-		)
-		qc_create_single_channel_images(
-			markers,
-			subset,
-			method,
-			qc_select_images.out
-		)
-		qc_overlay(
+	
+		if(file(params.image_dir).isDirectory())	{
+				qc_select_images(
+					markers, 
+					subset,
+					method,
+					out
+				)
+				qc_create_single_channel_images(
+					markers,
+					subset,
+					method,
+					qc_select_images.out
+				)
+				qc_overlay(
+					markers,
+					subset, 
+					method,
+					params.mccs, 
+					qc_create_single_channel_images.out
+			)
+		}
+		qc_intensity_heatmap(
 			markers,
 			subset, 
 			method,
-			params.mccs, 
-			qc_create_single_channel_images.out
-	)
+			out
+		)
 }

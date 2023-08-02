@@ -12,9 +12,12 @@ print(runs.length + ' images in ' + rootDir);
 
 print(tumour);
 tumourMarkers = split(tumour, "=|,");
+print(tumourMarkers[0]);
+print(tumourMarkers.length);
 panckID = "";
-for (m = 0; m < tumourMarkers.length; m++) {
+for (m = 1; m < tumourMarkers.length; m++) {
 	index = indexOf(tumourMarkers[m], "panCK");
+	print(tumourMarkers[m]);
 	if(index != -1)
 		panckID = tumourMarkers[m];
 }
@@ -22,45 +25,49 @@ if(panckID == "") {
 	print("No panck tumour marker"); 
 	exit;
 }
+print(panckID);
 
 for (k=0; k < runs.length; k++)	{
 	
-	runDir=rootDir + runs[k];
-	slideDirList=getFileList(runDir);
+	runDir = rootDir + runs[k];
+	print(runDir);
+	roiList = getFileList(runDir);
 
-	for (h = 0; h < slideDirList.length; h++) {
-		roiList=getFileList(runDir + slideDirList[h]);
-
-		for (j = 0; j < roiList.length; j++) {
+	for (j = 0; j < roiList.length; j++) {
 		
-			tma=replace(slideDirList[h],  "/", "");
-			roi=replace(roiList[j], "/", "");
-			imgName=tma + "-" + roi;
+			tma = replace(runs[k],  "/", "");
+			roi = replace(roiList[j], "/", "");
+			imgName = tma + "-" + roi;
+			print(imgName);
+			print(imgName);
 
 			if(image != "all" && imgName != image)
 				continue;
-			stacks=getFileList(runDir+slideDirList[h]+ roiList[j]);
+			stacks = getFileList(runDir + roiList[j]);
 
-			if(stacks.length==0) continue;
-			fileOut='panckf_' + imgName + '.tif'; 
+			if(stacks.length == 0) {
+				print("Stack is empty");
+				continue;
+			}
+			fileOut = 'panckf_' + imgName + '.tif'; 
 
 			if(File.exists(fileOut)) {
 				print('File exists', fileOut);
 				continue;
 			}
 
-			newPanel=0;
 			for (m = 0; m < stacks.length; m++)	{
-				if(! endsWith(stacks[m], "full_stack/")) continue;
+				print(stacks[m]);
+				if(! endsWith(stacks[m], "full_stack/")) 
+                	continue;
 				
-				imgDir=runDir + slideDirList[h] + roiList[j] + stacks[m];
+				imgDir = runDir + roiList[j] + "/" + stacks[m];
+				print('imgDir');
 				print(imgDir);
-				if(stacks.length==0) {
+				if(stacks.length == 0) {
 					print("ERROR: empty stack " + stacks[m] + "\n");
 					exit;
 				}
-				if(stacks[m] != "full_stack/")
-					continue;
 				
 				open(imgDir + panckID);
 				selectWindow(panckID);
@@ -85,7 +92,6 @@ for (k=0; k < runs.length; k++)	{
 				saveAs('Tiff', 'panckf_' + imgName);
 				run("Close All");
 			}
-		}
 	}
 }
 

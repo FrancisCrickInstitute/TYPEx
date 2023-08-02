@@ -45,15 +45,15 @@ for (m = 1; m < immuneList.length; m++) {
 immuneMarkers = immuneMarkers + "image" + immuneList.length + "=[-- None --]";
 print(immuneMarkers)
 
-
 // Stroma
 stromaList = split(stroma, "=|,");
 stromaMarkers = "";
 for (m = 1; m < stromaList.length; m++) {
     stromaMarkers = stromaMarkers + "image" + m + "=[Median of " + stromaList[m] + "] ";
 }
-stromaMarkers = stromaMarkers + "image" + stromaList.length + "=auxStromaMrg image" + 
-	( stromaList.length + 1 ) + "=[-- None --]";
+stromaMrgMarkers = stromaMarkers + "image" + stromaList.length + "=auxStromaMrg image" +
+    ( stromaList.length + 1 ) + "=[-- None --]";
+stromaMarkers = stromaMarkers + "image" + ( stromaList.length + 1 ) + "=[-- None --]";
 print(stromaMarkers)
 
 
@@ -65,7 +65,7 @@ if(auxStromaList.length > 1) {
     	auxStromaMarkers = auxStromaMarkers + "image" + m + "=[Median of " + auxStromaList[m] + "] ";
 	}
 	auxStromaMarkers = auxStromaMarkers + "image" + auxStromaList.length + "=[-- None --]";
-	print(auxStromaMarkers)
+	print(auxStromaMarkers);
 }
 nonstroma='image1=[Tumour,image2=SUM_DNA image3=[-- None --]';
 
@@ -100,7 +100,8 @@ for (k = 0; k< runs.length;  k++)	{
 		newPanel=0;
 		for (m = 0; m < stacks.length; m++)	{
 	
-			if(! endsWith(stacks[m], "full_stack/")) continue;
+			if(! endsWith(stacks[m], "full_stack/")) 
+				continue;
 			
 			print('Stack: ', stacks[m]);
 			
@@ -109,8 +110,6 @@ for (k = 0; k< runs.length;  k++)	{
 				print("ERROR: empty stack " + stacks[m] + "\n");
 				exit;
 			}
-			if(stacks[m] != "full_stack/")
-				continue;
 			fileOut = tma + "-" + roi + ".tiff";
 		    if(File.exists(fileOut)) {
 				print('File exists', fileOut);
@@ -143,15 +142,14 @@ for (k = 0; k< runs.length;  k++)	{
 						
 						continue;
 						
-					open( imgDir + imgList[i] );
-				   	if(imgList[i] == '142Nd_CAM52.tiff' || imgList[i] == '142Nd_CAM52Nd142Di.tiff')
-						newPanel=1;
-					print(imgList[i]);
+					open(imgDir + imgList[i]);
 					autoAdjust();
 
-					if(imgList[i] != '164Dy_panCK.tiff') { 
-						run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
-						run("Median (3D)");
+					for(m = 0; m < tumourList.length; m++) {
+						if(imgList[i] != tumourList[m])	{ 
+							run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
+							run("Median (3D)");
+						}
 					}
 				}
 			}
@@ -162,13 +160,19 @@ for (k = 0; k< runs.length;  k++)	{
 			run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 			autoAdjust();
 			run("Enhance Contrast", "saturated=0.35");
+		//	saveAs("PNG",tma + "-" + roi +  "dna.png");
 
-			if(newPanel) {
+			print(tumourList.length);
+			// Tumour
+			if(tumourList.length > 2 || indexOf(tumourMarkers, "164Dy_panCK.tiff") == -1) {
+				print("Concatenate tumour");
+				print(tumourMarkers);
 				run("Concatenate...", " title=Test open " + tumourMarkers);
 				run("Z Project...", "projection=[Sum Slices]");
 				rename('Tumour');
 				autoAdjust();
 			} else {
+				print("Processing panCK");
 				selectWindow("164Dy_panCK.tiff");
 				autoAdjust();
 				getMinAndMax(min, max);
@@ -176,16 +180,16 @@ for (k = 0; k< runs.length;  k++)	{
 				if(max < panck_threshold) {
 					open(compositeDir + 'panckf_' + imgName + '.tif');
 					print('panckf_' + imgName  + '.tif');
-				} else {
-					run("Median (3D)");
 				}
+				print("Enhance");
 				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
-				singleMarkerImg="Tumour";
-				rename(singleMarkerImg);
+				rename('Tumour');
 			}
+		//	saveAs("PNG", tma + "-" + roi + "tumour.png");
 
 			// Stroma
-			if(panel == 'p1') {
+			//if(panel == 'p1') {
+			if(auxStromaMarkers != "") {
 				run("Concatenate...", "  title=Nonsp open " + auxStromaMarkers);
 				run("Z Project...", "projection=[Sum Slices]");
 				run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
@@ -194,11 +198,11 @@ for (k = 0; k< runs.length;  k++)	{
 				autoAdjust();
 				run("Enhance Contrast", "saturated=0.35");
 				rename('auxStroma');
-				print('Aux Stroma');
-			} else {
-				selectWindow(auxStroma);
-				rename('auxStroma');
 			}
+			//} else {
+			//	selectWindow(auxStroma);
+			//	rename('auxStroma');
+			//}
 		
 			// Immune sum
 			run("Concatenate...", "  title=Immune open " + immuneMarkers);
@@ -211,34 +215,39 @@ for (k = 0; k< runs.length;  k++)	{
 			run("Concatenate...", "  title=NonStroma keep open " + nonstroma); 
 			run("Z Project...", "projection=[Sum Slices]");
 
-			// Max to generate a tumour mask - considering nuclei are not in it
-			run("Median (3D)");
-            setAutoThreshold("Triangle dark");
-            run("Convert to Mask");
-			run("Morphological Filters", "operation=Closing element=Square radius=1");
-            run("Invert");
-			run("32-bit");
-			run("Calculator Plus", "i1=Median-Closing i2=Median-Closing operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0");
-            run("Calculator Plus", "i1=auxStroma i2=Median-Closing operation=[Multiply: i2 = (i1*i2) x k1 + k2] k1=1 k2=0 create");
+			if(auxStromaMarkers != "") {
+				// Max to generate a tumour mask - considering nuclei are not in it
+				run("Median (3D)");
+        	    setAutoThreshold("Triangle dark");
+            	run("Convert to Mask");
+				run("Morphological Filters", "operation=Closing element=Square radius=1");
+    	        run("Invert");
+				run("32-bit");
+				run("Calculator Plus", "i1=Median-Closing i2=Median-Closing operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0");
+        	    run("Calculator Plus", "i1=auxStroma i2=Median-Closing operation=[Multiply: i2 = (i1*i2) x k1 + k2] k1=1 k2=0 create");
 
-            selectWindow("Result");
-			run("Median (3D)");
-            rename('auxStromaMrg');
-			autoAdjust();
-			print(stromaMarkers);
-
-            run("Concatenate...", "  title=Stroma open " + stromaMarkers);
+            	selectWindow("Result");
+				run("Median (3D)");
+    	        rename('auxStromaMrg');
+				autoAdjust();
+				print(stromaMrgMarkers);
+	            run("Concatenate...", "  title=Stroma open " + stromaMrgMarkers);
+			} else {
+				 run("Concatenate...", "  title=Stroma open " + stromaMarkers);
+			}
             run("Z Project...", "projection=[Sum Slices]");
 
 			run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
 			run("Median (3D)");
 			autoAdjust();
 			rename('Stroma_Only');
+			// saveAs("PNG", tma + "-" + roi + "stroma.png");
 
 			run("Concatenate...", "  title=StromaStack open image1=SUM_Immune image2=[Stroma_Only] image3=[-- None --]");
 			run("Z Project...", "projection=[Sum Slices]");
 			rename("Stroma_merge");
 			autoAdjust();
+//			saveAs("PNG", tma + "-" + roi + "stroma_merg.png");
 
 			run("Enhance Contrast", "saturated=0.35");
 			run("Merge Channels...", "c3=SUM_DNA c7=Tumour c6=Stroma_merge create");

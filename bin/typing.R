@@ -56,7 +56,7 @@ arg_parser=add(arg_parser, arg="--celltypeModelFile",
 arg_parser=add(arg_parser, "--stratify", 
 	default=T, help="file or NULL")
 arg_parser=add(arg_parser, "--mostFreqCellType",
-	default='None', help="file or NULL")	
+	default='None', help="file or NULL")
 
 args = argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
 pars = c(pars, args)
@@ -233,6 +233,7 @@ for(feature in pars$features) {
 		paste(table(clusters), names(table(clusters)), collapse = ":", sep = ":"), "\n", sep = "\n", 
 		file=f("{runID}.log"), append=T)
 	print(table(clusters))
+
 
 	# Running analysis
 	results=run_method(

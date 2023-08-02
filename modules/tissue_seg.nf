@@ -51,6 +51,8 @@ process create_composites {
 }
 
 process run_classifier {
+
+	label "s"
 	
 	// publishDir path: "${params.output_dir}/composites/probs/", 
 			//	  mode: params.publish_dir_mode, 
@@ -64,9 +66,9 @@ process run_classifier {
 	script:
 	
 	"""
-		files=` find ${params.output_dir}/composites/ -name *tiff `
+		files=` find ${params.output_dir}/composites/ -name "*tiff" `
 		echo $files
-		if [ -n "` find ${params.output_dir}/composites/ -name *tiff`" ]; then
+		if [ -n "` find ${params.output_dir}/composites/ -name "*tiff" `" ]; then
 			/ilastik-release/run_ilastik.sh --headless \
 				--project=${params.tissue_seg_model} \
 				${params.output_dir}/composites/*tiff

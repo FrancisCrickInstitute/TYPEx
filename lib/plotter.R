@@ -41,13 +41,13 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
 				cluster2 = gsub(f("^.*.{effect_field}.(.*)$"), "\\1", rownames(upDfConf))),
 				stringsAsFactors = F,
 				check.names = F)
-		flt$marker=flt$marker %>% as.character %>% as.numeric
-		flt$cluster=flt$cluster %>% gsub('^x', '', ., ignore.case=T)
-		flt$cluster2=flt$cluster2 %>% gsub('\\.', ' ', .)
-		flt$confidence='High'
+		flt$marker = flt$marker %>% as.character %>% as.numeric
+		flt$cluster = flt$cluster %>% gsub('^x', '', ., ignore.case=T)
+		flt$cluster2 = flt$cluster2 %>% gsub('\\.', ' ', .)
+		flt$confidence = 'High'
 		flt$confidence[grepl('^Excluded', flt$cluster2)] = 'Low'
-		flt$cellType=gsub("\\ [0-9]+", "", flt$cluster)
-		nrLowConfClusters=flt$cluster[grepl('^Excluded', flt$cluster)] %>%
+		flt$cellType = gsub("\\ [0-9]+", "", flt$cluster)
+		nrLowConfClusters = flt$cluster[grepl('^Excluded', flt$cluster)] %>%
 			unique %>% length
 		
 		pdf(pdfOut, width=6, height = 6)
@@ -166,12 +166,13 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 				col = circlize::colorRamp2(density_scale, 
 						rev(brewer.pal(name = "RdBu", length(density_scale)))),
 				row_title_gp = gpar(fontsize=12),
-				row_title_rot=0,
+				row_title_rot=90,
 				border = "grey85",
 				row_labels = gsub(".*:", "", colnames(clusterNormSub)),
 				column_title_gp = gpar(fontsize=8),
 				name = subset,
 				column_title = subset,
+				row_title = "Mean raw pixel intensity",
 				width=unit(nrow(clusterNormSub)/10, 'in'),
 				height=unit(ncol(clusterNormSub)/4, "cm"),
 				clustering_method_rows = "ward.D2",
@@ -243,6 +244,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
         	                        bottom_annotation = row_ha,
     	                            row_title_gp = gpar(fontsize = 10),
 	                                column_title = NULL,
+									row_title = 'Positivity',
                     	            rect_gp=gpar(col='grey85'),
                 	                column_title_gp = gpar(fontsize = 10),
             	                    row_names_gp = gpar(fontsize = 7),
@@ -265,6 +267,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 				cat('Skipping binary plot for ', subset, '\n')
 			}
 		}
+		dev.off()
 
 		clusterSize$cellType=labels$cellType[match(clusterSize$clusters, labels$cluster)]
 		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))    
@@ -287,25 +290,28 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 			
 		cellOrder = order(match(stats$cellType, names(cellTypeColors)))
 		stats$cellType = factor(stats$cellType, levels = unique(stats$cellType[cellOrder]))
+		pdfOut = f("{plotDir}/cell_types_pie_chart.pdf")
+		pdf(pdfOut, useDingbats = F, height = 5, width = 5)
 	    g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
     	plot = g + geom_bar(stat="identity", position =  'fill', color = 'grey40', alpha = 0.8) + 
-	      cowplot::theme_cowplot() +coord_polar(theta="y", start=0, direction=-1) + 
-    	  theme(axis.line=element_blank(), 
+	      cowplot::theme_cowplot() +
+		  coord_polar(theta = "y", start = 0, direction = -1) + 
+    	  theme(axis.line = element_blank(), 
         	    strip.background = element_blank(),
-            	axis.text=element_blank(),
-	            axis.ticks=element_blank()) +
+            	axis.text = element_blank(),
+	            axis.ticks = element_blank()) +
     	  xlab("") + ylab("") +
 	      scale_y_continuous(labels=function(x) {
     	    paste0(x * 100, "%")
 	      }) +  # facet_wrap(. ~ confidence + cellassign_cluster, nrow= 2) +
-		scale_fill_manual(values=cellTypeColors)
+		scale_fill_manual(values = cellTypeColors)
 	    print(plot)
     	dev.off()
 	
 	print('Plotted heatmap')
-    clusters_order=rownames(clusterSummary)[row_order(heat)]
-    markers_order=colnames(clusterSummary)[column_order(heat)]
-    return(list(cluster=clusters_order, marker=markers_order))
+    clusters_order = rownames(clusterSummary)[row_order(heat)]
+    markers_order = colnames(clusterSummary)[column_order(heat)]
+    return(list(cluster = clusters_order, marker = markers_order))
 }
 
 plot_binary <- function(labels, runID, clusters_order=NULL, markers_order=NULL) {
@@ -339,46 +345,49 @@ plot_binary <- function(labels, runID, clusters_order=NULL, markers_order=NULL) 
   dev.off()
 }
 
-plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
+plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, plotDir = 'plots') {
 	
-	plotDir=f("{runID}_plots")
 	if(! dir.exists(plotDir))
 		dir.create(plotDir)
 	
+	dfExp = subset(dfExp, select = which(! colnames(dfExp) %in% c('imagename', 'ObjectNumber')))
 	if(! is.null(magnitude))
-		dfExp=to_magnitude(dfExp, magnitude)
+		dfExp = to_magnitude(dfExp, magnitude)
 	
 	if(! all(clusters %in% clusterNames$cluster)) {
 		print('WARNING: Not all clusters have been annotated based on positivity')
 		dfExp = dfExp[clusters %in% clusterNames$cluster, ]
 		clusters = clusters[clusters %in% clusterNames$cluster]
 	}
-	clusterCount = length(unique(clusters))
-	clusterNames$up = gsub("pos:(.*) neg:.*", "\\1", clusterNames$cellType)
-	positive = clusterNames$up[match(clusters, clusterNames$positive)]
-	up = paste(clusters, positive)
+	positive = clusterNames$positive[match(clusters, clusterNames$cluster)]
+	clusterCount = length(unique(paste(clusters, positive)))
+	cat('Number of clusters', clusterCount, '\n')
+
 	dfExpMag = dfExp + 1
+	
 	medianVal = apply(dfExpMag, 2, median, na.rm = T)
-	pdf(file=f("{plotDir}/inMat.per_cluster.pdf"), 
+	cat("Median intensity", medianVal, '\n')
+	pdf(file=f("{plotDir}/raw_intensities.per_cluster.pdf"), 
 		width =  7 + round(clusterCount / 60),
 		height=5 + round(clusterCount / 60))
 	par(mfrow=c(2, 2))
 	for(.row in 1:nrow(clusterNames)) {
 		cat(".")
-		indices=which(clusters == clusterNames$cluster[.row])
+		indices=which(clusters == clusterNames$cluster[.row] & positive == clusterNames$positive[.row])
 		inFlt = dfExpMag[indices, ]
 		boxplot(inFlt, outline=FALSE,
 			main = with(clusterNames, f("cluster:{cluster[.row]}\n",
 							gsub("_", "+", gsub('pos:(.*)neg:', "\\1", positive[.row])), "\n")),
-			ylab=paste0("n=", length(indices), " cells"),  cex.main=1, las=1,
-			ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)), cex.lab.x=1, xaxt='n', log='y')
+			ylab=paste0("n=", length(indices), " cells"),  cex.main=.5, las=1,
+			ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)), cex.lab.x=.5, xaxt='n', log='y')
 		points(medianVal, pch = 23, col='red')
 		axis(side=1, 1:ncol(inFlt), colnames(inFlt), las = 2, srt=45)
 	}
 	cat("\n")
 	dev.off()
-  
-	pdf(file=f("{plotDir}/inMat.per_cell.pdf"), width=7 + round(clusterCount / 60),
+    print("Plotted raw intensity per cluster")
+	
+	pdf(file=f("{plotDir}/raw_intensities.per_marker.pdf"), width=7 + round(clusterCount / 60),
 		height=4 + round(clusterCount / 60))
 	# par(mfrow=c(2, 2))
 	for(cellMarker in colnames(dfExpMag)) {
@@ -400,4 +409,6 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL) {
   }
   cat("\n")
   dev.off()
+  print("Plotted raw intensity per marker")
+  
 }

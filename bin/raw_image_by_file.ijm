@@ -1,8 +1,12 @@
 #@String inDir
 #@String posFile
+#@String outDir
 
 setBatchMode("hide");
 
+if(File.isDirectory(outDir) == 0)
+	File.makeDirectory(outDir); 
+print("Opening " + posFile);
 selectedImgs = File.openAsString(posFile);
 lines = split(selectedImgs, '\n');
 
@@ -11,9 +15,8 @@ for (i=0; i < lines.length; i++) {
 	line = split(lines[i], "\t");
 	marker=line[1];
 	marker = format_marker(marker);
-	fileID = marker + ".tiff";
-	imagePaths = getFiles(inDir, line[0], fileID);
-	print(imagePaths);
+	imagePaths = getFiles(inDir, line[0], marker, ".tiff");
+	print(imagePaths.length);
 	if(imagePaths.length == 0) 
 		continue;
 
@@ -22,40 +25,38 @@ for (i=0; i < lines.length; i++) {
 	rename(imageInfo);
 	getMinAndMax(min, max);
 	autoAdjust();
-	saveAs("PNG", imageInfo + ".png");
+	saveAs("PNG", outDir + "/" + imageInfo + ".png");
 	run("Close All");
 }
 
-function getFiles(dir, imgID, extension) {
+function getFiles(dir, imgID, marker, extension) {
 
-	print(dir, imgID, extension);
+	print(dir, imgID, marker, extension);
 	result = newArray();
 
 	list = getFileList(dir);
 	for (i = 0; i < list.length; i++) {
 
-		print(list[i]);
 		showProgress(i, list.length);
 		dirName = replace(list[i], "\\/", "");
-		print(dirName);
 			
 		if (endsWith(list[i], "/")) {
+
 			dirIndex = indexOf(imgID, dirName);
 			if(endsWith(dirName, "full_stack"))
-				dirIndex = 0
+				dirIndex = 0;
 			if(dirIndex > -1) {
-				print(dir + list[i]);
-				print(list[i]);
-		    	getFiles("" + dir + "/" + list[i], imgID, extension);
+		    	files = getFiles("" + dir + "/" + list[i], imgID, marker, extension);
+				result=Array.concat(result, files);
 			}
 		}
 		if(endsWith(list[i], extension)) {
-				print(list[i]);
-		    	newFile = dir + list[i];
-		    	return(dir + list[i] + newFile);
+			index = indexOf(list[i], marker + ".");
+			if(index == -1) continue;
+			result=Array.concat(result, dir + list[i]);
 		}
 	}
-	return;
+	return result;
 }
 
 function automatedBrightnessAdjustment(image, limit, nBins, minThreshold, minThreshold)	{

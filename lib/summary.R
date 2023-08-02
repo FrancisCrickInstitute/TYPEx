@@ -156,8 +156,10 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 	  plot_expression(
 		  dfExp = inData[, ..columnNames],
 		  clusters = runOutput,
-		  clusterNames, pars[[method]],
-		  magnitude = pars$magnitude
+		  clusterNames, 
+		  pars[[method]],
+		  magnitude = pars$magnitude,
+		  plotDir = f("{runID}_plots")
 	  )
 	  
 	  print("Wrapping up in data frame")
