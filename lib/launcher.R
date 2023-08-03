@@ -27,8 +27,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   if(grepl(feature, colnames(inData)))
 	  columnNames=grepv(feature, columnNames)
   columnNames = setdiff(columnNames, c(pars$channels_exclude, "ObjectNumber", "imagename"))
-  print(columnNames %>%
-    gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) )
+
   metals = columnNames %>%
     gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
 	gsub('^([0-9]+)([A-Za-z]{1,2}).*', '\\2\\1', .)

@@ -39,8 +39,6 @@ process qc_create_single_channel_images {
         	tuple val (method)
 			val selection
 
-		output:
-			path ("*")
 
 		script:
 		"""
@@ -72,7 +70,7 @@ process qc_overlay {
 				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/ \
 				--maskDir ${params.input_dir} --mccs ${mccs}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
-				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/" \
+				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/overlay_examples.txt \
 				--panel ${params.panel} \
 				--run ${params.release}
@@ -87,8 +85,6 @@ process qc_intensity_heatmap {
 		tuple val (method)
 		val typing
 		
-	output:
-		path ("*")
 
 	script:
     	"""

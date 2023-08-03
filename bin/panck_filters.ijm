@@ -83,7 +83,15 @@ for (k=0; k < runs.length; k++)	{
 					run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
 					run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
 				} else {
-					run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
+					run("Duplicate...", "title=TumourDupl");
+					run("Morphological Filters", "operation=[Dilation] element=Square radius=20");
+					rename("ProcessNoise");
+					run("Calculator Plus", "i1=Tumour i2=ProcessNoise operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0 create");
+					close("ProcessNoise");
+					close("Tumour");
+					close("TumourDupl");
+					autoAdjust();
+					//run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
 				}
 				run('Median (3D)');
 				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");

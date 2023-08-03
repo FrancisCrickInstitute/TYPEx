@@ -293,7 +293,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 		pdfOut = f("{plotDir}/cell_types_pie_chart.pdf")
 		pdf(pdfOut, useDingbats = F, height = 5, width = 5)
 	    g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
-    	plot = g + geom_bar(stat="identity", position =  'fill', color = 'grey40', alpha = 0.8) + 
+    	plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha = 0.8) + 
 	      cowplot::theme_cowplot() +
 		  coord_polar(theta = "y", start = 0, direction = -1) + 
     	  theme(axis.line = element_blank(), 

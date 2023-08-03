@@ -50,13 +50,13 @@ cellTypeColors = sapply(celltypes, function(type) {
   return('grey')
 })
 print(cellTypeColors)
-pngOut = f("{imgMapDir}/legend.png")
-png(pngOut, width = 300, height = length(cellTypeColors)*30, units = 'px')
-par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D')
-plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, type = "n")
+pdfOut = f("{imgMapDir}/legend.pdf")
+#png(pngOut, width = 300, height = length(cellTypeColors) * 30, units = 'px')
+pdf(pdfOut)
+plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, xpd = F, type = "n")
 legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
-			pch = 21, box.lty=0, title = "Cell subtypes", cex = 1)
-dev.off()	
+			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
+dev.off()
 
 for(imagename in imagenames) {
 
@@ -79,40 +79,39 @@ for(imagename in imagenames) {
 	for(cellType in celltypes) {
 	  objects = dataFlt$object[dataFlt$cellType == cellType]
 	  color = palette$cellTypeColors[[cellType]]
-	  if(is.na(color))
+	  if(is.null(color))
 		  color = 'grey'
 	  typeMat[typeMat %in% objects] = color
 	}
-	print(head(typeMat))
-	print(class(typeMat))
 
-
-	
 	pngOut = f("{imgMapDir}/types_{imagename}.png")
 	png(pngOut, width = dim(typeMat)[1], height = dim(typeMat)[2], units = 'px')
-	par(omi=c(0,0,0,0), mgp=c(0,0,0), mar = c(0,0,0,0), family = 'D')
+	par(omi=c(0,0,0,0), mgp=c(0,0,0), mar = c(0, 0, 0, 0), family = 'D')
 	plot(typeMat, legend=F, axes = F,
 	   maxpixels=dim(r)[2] * dim(r)[1], alpha=1,
 	   col=cellTypeColors, xpd = T)
 	dev.off()
 	
 }
+print(f('Cell type maps saved in {imgMapDir}'))
 
-qcDf = read.csv(args$posFile, sep = '\t')
+qcDf = read.csv(args$posFile, sep = '\t', header = F)
 imagenames = unique(qcDf[, 1])
-print(imagenames)
 
 for(imagename in imagenames) {
+	
+	print(f("Outline overlays for {imagename}"))
 	dataFlt = data[data$imagename == imagename, ]
 	outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
 		pattern = '.*nuclear_mask_nuclear_dilation.tiff', 
 		full.name = T, recursive = T)
+	print(outlineImg)
+	print(file.exists(outlineImg))
 	if(args$mccs)
 		outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
   					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
 	outlineImg = grep(gsub('-',  '.', imagename), outlineImg, value = T)
-  	print(outlineImg)
-  	print(file.exists(outlineImg))
+  	
   	r <- raster::raster(outlineImg)
  
 	markersList = unique(qcDf[qcDf[, 1] == imagename, 2])
@@ -135,7 +134,7 @@ for(imagename in imagenames) {
 	  pos = r
 	  pos[! pos %in% data$object[positive]] = NA
 	
-	  pngOut = f("{args$outDir}/outlines_{basename(file)}")
+	  pngOut = f("{args$rawDir}/outlines_{basename(file)}")
 	  # if(file.exists(pngOut)) next
 	  png(pngOut, width=dim(raw)[1], height=dim(raw)[2], units = 'px')
 	  par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D') 
@@ -147,4 +146,5 @@ for(imagename in imagenames) {
 	       maxpixels=dim(r)[2] * dim(r)[1] * 10, add = T, alpha=0.4,
 	       col=hcl.colors(length(positive)), xpd = T, type = 'n')
 	  dev.off()
+  }
 }

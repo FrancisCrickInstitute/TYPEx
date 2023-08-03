@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+options(warn = -1)
 library(scales)
 library(plyr)
 library(data.table)
@@ -32,13 +33,30 @@ expFile = with(args,list.files( f('{inDir}/features/MeanIntensity/'),
 			pattern = f('{panel}_MeanIntensity_.*.fst'), full.names = T))
 cat('Loading', expFile, '\n')
 expDf = fst::read.fst(expFile)
-colnames(expDf) = gsub(pars$features, "", colnames(expDf)) %>%
-					gsub("^_(.*)", '\\1', .)
+					
+# FORMAT NAMES
+metals = colnames(expDf) %>% 
+			gsub(paste0(".*", pars$features, "_?_(.*)"), "\\1", .) %>%
+			gsub('^([0-9]+)([A-Za-z]{1,2}).*', '\\2\\1', .)
+
+metalPattern =paste0(metals, collapse = ".*|\\.?") %>%
+				paste0(., ".*")
+
+colnames(expDf) = colnames(expDf) %>%
+				gsub(paste0(".*", pars$features, "_?_(.*)"), "\\1", .) %>%
+				gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
+if(! any(metals %in% colnames(expDf))) {
+	print(metals[metals %in% colnames(expDf)])
+	colnames(expDf) = colnames(expDf) %>%
+						gsub(metalPattern, '', .)
+}
+print(head(expDf))
+
 
 summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}'))
 outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/plots"))
 
-if(!dir.exists(outDir))
+if(! dir.exists(outDir))
 	dir.create(outDir, recursive = T)
 
 print(summaryDir)
@@ -46,12 +64,6 @@ cellObjectsFile = list.files(summaryDir,
 				pattern = f("cell_objects_.*{args$panel}.fst"),
 				full.names = T)
  cellObjectsDf = fst::read.fst(cellObjectsFile)
-				
-#cellObjectsFile= "/nemo/lab/swantonc/working/angelom/phlex/hubmap_b004e/config/annotated_objects.b004.txt"
-#cat('Loading', cellObjectsFile, '\n')
-#cellObjectsDf = read.csv(cellObjectsFile, sep = '\t')
-#cellObjectsDf$majorType = cellObjectsDf$cell_type_A
-#cellObjectsDf$positive = cellObjectsDf$majorType
 
 markers = setdiff(colnames(expDf), c('ObjectNumber', 'imagename'))
 
@@ -62,21 +74,43 @@ positive = cellObjectsDf$positive[densMatch]
 cellTypeStats = ddply(cellObjectsDf, .(cellType, positive, majorType), summarise, 
 					count = length(cellType))
 
-cellTypeColors = rep('grey', length(unique(cellTypes)))
-names(cellTypeColors) = unique(cellTypes)
+cellTypeList = get_celltypes(marker_gene_list[[args$markers]]) %>%
+						gsub(' - Other', '', .)
+cellTypeList = intersect(cellTypeList, cellTypes)
+cellTypeList = c(cellTypeList, 'Ambiguous', 'Unassigned')
+print(cellTypeList)
+
+cellTypeColors = rep('grey', length(cellTypeList))
+names(cellTypeColors) = cellTypeList
 paletteMatch = match(names(cellTypeColors), names(palette$cellTypeColors))
 cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is.na(paletteMatch)]]
 print(cellTypeColors)
-
-cellTypeList = get_celltypes(marker_gene_list[[args$markers]]) %>%
-						gsub(' - Other', '', .)
-cellTypeList = c(cellTypeList, 'Ambiguous', 'Unassigned')
-print(cellTypeList)
 
 markersList = sapply(cellTypeList, function(celltype) {
 	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
 }) %>% unlist %>%  unique
 print(markersList)					
+
+stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
+stats$cellType = factor(stats$cellType, levels = cellTypeList)
+pdfOut = f("{outDir}/cell_types_pie_chart.pdf")
+pdf(pdfOut, useDingbats = F, height = 5, width = 5)
+g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
+plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha = 1) + 
+  cowplot::theme_cowplot() +
+  coord_polar(theta = "y", start = 0, direction = -1) + 
+  theme(axis.line = element_blank(), 
+	    strip.background = element_blank(),
+    	axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  xlab("") + ylab("") +
+  scale_y_continuous(labels=function(x) {
+    paste0(x * 100, "%")
+  }) +
+  scale_fill_manual(values = cellTypeColors[match(names(cellTypeColors), cellTypeList)])
+print(plot)
+dev.off()
+
 
 
 posDir = f("{outDir}/scatter")
@@ -167,8 +201,6 @@ if(max(abs(clusterNorm)) < 3) {
   colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 3, 4, 6, 8, 9, 10)]
 }
 
-
-
 subsets = "all"
 pdfOut = f("{outDir}/intensity_heatmap.pdf")
 pdf(pdfOut, useDingbats = F, height = 10, width = 10)
@@ -209,13 +241,13 @@ for(cellSubset in subsets) {
     column_title_gp = gpar(fontsize = 10),
     row_names_gp = gpar(fontsize = 7),
     column_title = paste(args$panel),
-    width = unit(ncol(clusterNormSub)/10, 'in'),
+    width = unit(length(markersList)/10, 'in'),
     height = unit(nrow(clusterNormSub)/10, "in"),
     clustering_method_rows = "ward.D2",
     # left_annotation = row_ha,
     heatmap_legend_param = list(title = "Median intensity\n[z-score]",
-                                ncol=1, nrow=4,by_row=T,
-                                direction='vertical', fontsize=8),
+                                ncol=1, nrow=4, by_row=T,
+                                direction='horizontal', fontsize=8),
     show_heatmap_legend = T,
     column_names_gp = gpar(fontsize = 8, angle=90))
   ht = draw(heat)
@@ -240,11 +272,10 @@ for(cellSubset in subsets) {
                                 column_names_gp = gpar(fontsize = 8),
                                 border = "grey85",
                                 na_col = 'white',
-                                width = unit(ncol(clusterNormSub)/10, 'in'), 
+                                width = unit(length(markersList)/10, 'in'), 
                                 height = unit(nrow(clusterNormSub)/10, "in"),
-                                col = colorRampPalette(rev(brewer.pal(name = "RdBu", 5)[-c(2, 4, 5)]))(100))
-								#, heatmap_legend_param = list(title = "Expressed marker", direction = 'horizontal', fontsize = 8)
-								draw(bin)
+                                col = colorRampPalette(rev(brewer.pal(name = "RdBu", 5)[-c(2, 4, 5)]))(100),
+								heatmap_legend_param = list(title = "Expressed marker", direction = 'horizontal', fontsize = 8))
     ht_list=heat %v% bin
 	print("Drawing ht_list")
 	ht_list=draw(ht_list)
@@ -432,4 +463,7 @@ cellTypeStats$cluster = cellTypeStats$cellType
 print(table(cellTypeStats$cluster))
 print(table(cellTypes[! cellTypes %in% cellTypeStats$cluster]))
 plot_expression(expDf, cellTypes, cellTypeStats, pars[[args$method]], plotDir = f("{outDir}/raw"))
+
+
+
 

@@ -8,7 +8,7 @@ process preprocess_panck {
 			   overwrite: true
 
 	input:
-		tuple val(tumour), val(stroma), val(auxStroma)
+		tuple val(tumour), val(immune), val(stroma), val(auxStroma), val(dna)
 
 	output:
 		path ("*")
