@@ -193,7 +193,7 @@ clusterPositive = sapply(rownames(clusterNorm), function(x) {
 clusterSize = ddply(cellObjectsDf, .(cellType), summarise, 
                    Freq = length(object))
 
-if(max(abs(clusterNorm)) < 3) {
+if(max(abs(clusterNorm), na.rm = T) < 3) {
   density_scale = pretty(c(-2, 2))
   colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 4, 6, 8, 10)]
 } else {

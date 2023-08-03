@@ -5,7 +5,7 @@ process exporter {
 	
 	publishDir path: "${params.output_dir}/summary/", 
 			   mode: params.publish_dir_mode, 
-			   overwrite: true
+			   overwrite: false
 	
     input:
         tuple val(method)
