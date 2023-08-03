@@ -53,7 +53,8 @@ print(cellTypeColors)
 pdfOut = f("{imgMapDir}/legend.pdf")
 #png(pngOut, width = 300, height = length(cellTypeColors) * 30, units = 'px')
 pdf(pdfOut)
-plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, xpd = F, type = "n")
+plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, 
+	xpd = F, type = "n", xaxt = 'n', yaxt='n')
 legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
 			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
 dev.off()
@@ -68,7 +69,7 @@ for(imagename in imagenames) {
 	if(args$mccs)
 		outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
   					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
-	outlineImg = grep(gsub('-',  '.', imagename), outlineImg, value = T)
+	outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
   	print(outlineImg)
   	print(file.exists(outlineImg))
   	r <- raster::raster(outlineImg)
