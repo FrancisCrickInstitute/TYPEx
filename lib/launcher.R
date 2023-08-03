@@ -86,7 +86,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 
 	cat("INFO: Number of cells with intensity higher than", pars$min_expresssion, 
 		" for all markers of interest",
-        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
+        sum(rowsKeep), "\n", file=f("{runID}.log"), append=T)
     
     # Include batches for cellassign; # rows must match cov matrix
     if(method == "cellassign") {

@@ -20,7 +20,7 @@ if($imcyto eq 'false') {
 print $delim, "\n";
 print 'File ', $inFile, "\n";
   
-$core =~ s/.*segmentation.(.*).Cells.csv/$1/;
+$core =~ s/.*segmentation.(.*).Cells.csv/$1/i;
 print "core ", $core, "\n";
 
 $core =~ s/\//-/;
@@ -62,11 +62,12 @@ if($imcyto eq 'true')	{
 my @features = @header;
 map {s/_.*//; $_} @features;
 my @markers = @header;
-map { $_=~s/^[_]+//; $_}  @markers;
+map { $_ =~ s/^[_]+//; $_}  @markers;
 map {s/^.*_([^_]+)_c1$/$1/; $_} @markers;
+print join(",", @markers), '\n';
 my ($object_col) = grep { $header[$_] eq "ObjectNumber" } (0 .. $#header);
 my ($imageID_col) = grep { $header[$_] eq "imagename" } (0 .. $#header);
-# print join("\t", $object_col, $imageID_col, "\n");
+print join("\t", $object_col, $imageID_col, "\n");
 print join(",", @header, "\n");
 
 my (%in_hash, %markers);
@@ -100,8 +101,8 @@ foreach my $imageID (keys %in_hash) {
     # %in_hash
 
 		if(! -d $feature) {
-        mkdir($feature);
-    }
+        	mkdir($feature);
+    	}
 		my @columns = keys %{ $markers{$feature}};
 		my $fileOut = join("/", $feature, "$imageID.txt");
 		open OUT, ">". $fileOut or die "Could not open $fileOut:$!\n";

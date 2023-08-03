@@ -16,7 +16,7 @@ directional='none';
 
 // Choose the NextFlow run iteration
 f = File.open('panck_preprocessed_images.txt');
-panck_threshold = 15;
+panck_threshold = 20;
 
 // DNA
 dnaList = split(dna, "=|,");

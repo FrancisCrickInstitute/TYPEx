@@ -34,6 +34,7 @@ methods = c(args$major_method ,"csm")
 features = c('area', 'meanIntensity', 'probability')
 cellTypePattern = ".clusters.txt"
 
+
 csmCol = f("cellType_csm_{args$major_markers}")
 regionCol = f("region_{args$major_method}_{args$major_markers}")
 print(f("Most frequent cell type {args$mostFreqCellType}"))
@@ -76,6 +77,7 @@ if(! dir.exists(out))
 if(! dir.exists(visDir))
 	dir.create(visDir, recursive = T)
 
+log=f("{out}/{analysisID}.log")
 print('Merging files')
 data=vector(mode="list")
 
@@ -145,6 +147,7 @@ if(! length(data)) {
 		names(refStats)[order(refStats, decreasing = T)][1]
 	)
 	print(mostLikelyCellTypes)
+	cat(mostLikelyCellTypes, '\n', file = log, append = F)
 	
 	# No cell-specific raw masks to be used to define positive controls
 	refCellTypes=unique(recast[[typedCols[2]]])
@@ -217,6 +220,7 @@ if(! length(data)) {
 		#negativeCutoff = mean(intensityChange[intensityFullNonzero], na.rm = T) +
         #                       sd(intensityChange[intensityFullNonzero], na.rm = T)
 		print(negativeCutoff)
+		cat("Negative cutoff", negativeCutoff, '\n', file = log, append = F)
         
         nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & intensityRefNonzero & mostFreqIndices], na.rm = T)
 		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
@@ -280,6 +284,7 @@ if(! length(data)) {
 		for(missedCellType in undefinedFullTypes) {
 			
 			print(missedCellType)
+			cat("Missed cell type", missedCellType, '\n', file = log, append = T)
 			# positiveCut 0.4, quantileCut .9
 			mostFreqIndices = recast[[typedCols[1]]] == missedCellType & ! is.na(recast[[typedCols[1]]])
 			intensityChange = with(recast, get(intensityColNameFull) - get(intensityColNameRef))
@@ -288,6 +293,7 @@ if(! length(data)) {
         	negativeCutoff = mean(intensityChange[intensityFullNonzero], na.rm = T) +
                            		sd(intensityChange[intensityFullNonzero], na.rm = T)
         	print(negativeCutoff)
+			cat("Negative cutoff", negativeCutoff, '\n', file = log, append = T)
 
 	        nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & intensityRefNonzero & mostFreqIndices], na.rm = T)
     	    qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
@@ -317,9 +323,6 @@ if(! length(data)) {
 				
 				print('Intensity')
 				df = recast[mostFreqIndices, ] %>% droplevels
-				print(range(df[[intensityColNameFull]], na.rm = T))
-				print(head(df))
-				print(range(df[[intensityColNameRef]], na.rm = T))
 				df$color = df[[intensityColNameFull]] - df[[intensityColNameRef]] > negativeCutoff
 				print(table(df$color))
 				g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
@@ -405,6 +408,8 @@ if(! length(data)) {
 	# Model on selected covariates
 	print('Creating model with')
 	print(with(dfFlt, table(control, cellType, markers)))
+	cat('Creating model with', '\n', file = log, append = T)
+	cat(with(dfFlt, table(control, cellType, markers)), '\n', file = log, append = T)
 	nrControls = length(unique(dfFlt$control[!is.na(dfFlt$control)]))
 	if(nrControls < 2)
 		stop('Cannot create a model with', nrControls, 'control values')
