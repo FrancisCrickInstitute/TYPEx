@@ -39,6 +39,8 @@ process qc_create_single_channel_images {
         	tuple val (method)
 			val selection
 
+		output:
+			val method
 
 		script:
 		"""
