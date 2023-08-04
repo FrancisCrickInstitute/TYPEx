@@ -354,7 +354,7 @@ for(marker in majorMarkers) {
   pdf(pdfOut, height = 8, width = 8)
   sub = subset(cmbDF, variable == marker)
   sub = droplevels(sub)
-  sub$cellType = factor(sub$cellType, levels = cellTypeList)
+  sub$cellType = factor(sub$cellType, levels = c(cellTypeList, setdiff(unique(sub$cellType), cellTypeList)))
     if(! marker %in% sub$variable) next
     if(all(is.na(sub[sub$variable == marker, "panel"])))
       next

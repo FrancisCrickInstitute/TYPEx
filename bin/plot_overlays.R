@@ -86,7 +86,7 @@ for(imagename in imagenames) {
 	}
 
 	pngOut = f("{imgMapDir}/types_{imagename}.png")
-	png(pngOut, width = dim(typeMat)[1], height = dim(typeMat)[2], units = 'px')
+	png(pngOut, width = dim(typeMat)[2], height = dim(typeMat)[1], units = 'px')
 	par(omi=c(0,0,0,0), mgp=c(0,0,0), mar = c(0, 0, 0, 0), family = 'D')
 	plot(typeMat, legend=F, axes = F,
 	   maxpixels=dim(r)[2] * dim(r)[1], alpha=1,
@@ -137,7 +137,7 @@ for(imagename in imagenames) {
 	
 	  pngOut = f("{args$rawDir}/outlines_{basename(file)}")
 	  # if(file.exists(pngOut)) next
-	  png(pngOut, width=dim(raw)[1], height=dim(raw)[2], units = 'px')
+	  png(pngOut, width=dim(raw)[2], height=dim(raw)[1], units = 'px')
 	  par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D') 
 	  plot(raw, axes = F, legend = F, 
 		  col = colorRampPalette(c("white", "black"))(80),
