@@ -97,7 +97,6 @@ for (k = 0; k< runs.length;  k++)	{
 			print('Stack size is 0. Skipping');
 			continue;
 		}
-		newPanel=0;
 		for (m = 0; m < stacks.length; m++)	{
 	
 			if(! endsWith(stacks[m], "full_stack/")) 
@@ -116,30 +115,15 @@ for (k = 0; k< runs.length;  k++)	{
 				 continue;	
 			}
 			if(File.isDirectory(imgDir)) {
+			
 				imgList=getFileList(imgDir);
 
 				for ( i=0; i<imgList.length; i++ ) {
-					if(imgList[i] == '131Xe.tiff' || imgList[i] == '80ArAr.tiff' || imgList[i] == '100Ru_ruthenium.tiff' || 
-						imgList[i] == '100Ru.tiff' || imgList[i] == '134Xe.tiff' || 
-						imgList[i] == '141Pr_CD38.tiff' || imgList[i] == '143Nd_MCT4.tiff' ||
-						imgList[i] == '148Nd_KIR2DL3.tiff' || imgList[i] == '150Nd_PDL1.tiff' ||
-						imgList[i] == '163Dy_CD103.tiff' || imgList[i] == '173Yb_MHCII.tiff' || 
-						imgList[i] ==  '153Eu_LAG3.tiff' || imgList[i] == '172Yb_CD56.tiff' ||
-						imgList[i] == '154Sm_TIM3.tiff' || imgList[i] == '155Gd_IDO.tiff' ||
-						imgList[i] == '176Yb_CAIX.tiff'  || imgList[i] == '165Ho_PD1.tiff' ||
-						imgList[i] == '166Er_CLEC9a.tiff' || imgList[i] == '167Er_GZMB.tiff' || 
-						imgList[i] == '160Gd_VISTA.tiff' || imgList[i] == '168Er_CD73.tiff' ||
-						imgList[i] == '168Er_Ki67.tiff' || imgList[i] == '176Yb_TCF1.tiff' || 
-						imgList[i] == '173Yb_B2M.tiff' || imgList[i] == '174Yb_pSTAT1.tiff' || 
-						imgList[i] == '175Lu_CD25.tiff' || imgList[i] == '166Er_CD45RA.tiff' ||
-						imgList[i] == '158Gd_CXCL12.tiff' || imgList[i] == '159Tb_CXCR4.tiff' ||
-						imgList[i] == '161Dy_CD39.tiff' || imgList[i] == '160Gd_GITR.tiff' ||
-						imgList[i] == '155Gd_FOXP3.tiff' || imgList[i] == '149Sm_GATA3.tiff' ||
-						imgList[i] == '144Sm_CD57.tiff' || imgList[i] == '171Yb_CD27.tiff' ||
-						imgList[i] == '142Nd_CCR7.tiff' || imgList[i] == '172Yb_CASP3.tiff' ||
-						imgList[i] == '145Nd_CTLA4.tiff' || imgList[i] == '146Nd_FAP1.tiff' ||
-						imgList[i] == '147Sm_CXCR6.tiff' || imgList[i] == '148Nd_ICOS.tiff')
-						
+					if(indexOf(tumour, imgList[i]) == -1 &&
+						indexOf(immune, imgList[i]) == -1 &&
+						indexOf(stroma, imgList[i]) == -1 &&
+						indexOf(auxStroma, imgList[i]) == -1 &&
+						indexOf(dna, imgList[i]) == -1)
 						continue;
 						
 					open(imgDir + imgList[i]);
@@ -153,7 +137,6 @@ for (k = 0; k< runs.length;  k++)	{
 					}
 				}
 			}
-			print(newPanel);
 			// DNA Sum
 			run("Concatenate...", " title=DNA open " + dnaMarkers);
 			run("Z Project...", "projection=[Sum Slices]");
@@ -164,7 +147,7 @@ for (k = 0; k< runs.length;  k++)	{
 
 			print(tumourList.length);
 			// Tumour
-			if(tumourList.length > 2 || indexOf(tumourMarkers, "164Dy_panCK.tiff") == -1) {
+			if(tumourList.length > 2 || indexOf(tumourMarkers, "panCK") == -1) {
 				print("Concatenate tumour");
 				print(tumourMarkers);
 				run("Concatenate...", " title=Test open " + tumourMarkers);
@@ -173,11 +156,19 @@ for (k = 0; k< runs.length;  k++)	{
 				autoAdjust();
 			} else {
 				print("Processing panCK");
-				selectWindow("164Dy_panCK.tiff");
+				panckID = "";
+				for (m = 1; m < tumourList.length; m++) {
+					index = indexOf(tumourList[m], "panCK");
+					print(tumourList[m]);
+					if(index != -1)
+						panckID = tumourList[m];
+				}
+				selectWindow(panckID);
 				autoAdjust();
 				getMinAndMax(min, max);
 				print(imgName, 'Tumour', min, max);
 				if(max < panck_threshold) {
+					print("Opening " + compositeDir + 'panckf_' + imgName + '.tif');
 					open(compositeDir + 'panckf_' + imgName + '.tif');
 					print('panckf_' + imgName  + '.tif');
 				}

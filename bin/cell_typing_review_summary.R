@@ -412,11 +412,13 @@ if(! length(data)) {
 	cat(with(dfFlt, table(control, cellType, markers)), '\n', file = log, append = T)
 	nrControls = length(unique(dfFlt$control[!is.na(dfFlt$control)]))
 	if(nrControls < 2)
-		stop('Cannot create a model with', nrControls, 'control values')
+		stop('Cannot create a model with', nrControls, 'control values.')
 	
 	nrInt = sum(is.na(dfFlt$meanIntensity))
     if(nrInt > 0)
-        stop('Cannot create a model with', nrInt, 'cells with NAs for raw intensities ', table(dfFlt$cellType[is.na(dfFlt$meanIntensity)]))
+        stop('Cannot create a model with', nrInt, 'cells with NAs for raw intensities ', 
+			table(dfFlt$cellType[is.na(dfFlt$meanIntensity)]), 
+			'. Please make sure the same definition of the cell type has not changed from the first run or use a new folder as output.')
 	write.table(dfFlt, file = 'test.txt', sep = '\t', quote = F, row.names = F)
 	model <- lme4::glmer(as.formula(f("control ~ probability + meanIntensity +
 		                                (1|cellType)")), data=dfFlt, family=binomial)

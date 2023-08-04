@@ -116,6 +116,7 @@ for(imagename in imagenames) {
   	r <- raster::raster(outlineImg)
  
 	markersList = unique(qcDf[qcDf[, 1] == imagename, 2])
+	
 	for(marker in markersList) {
 
 	  print(marker)

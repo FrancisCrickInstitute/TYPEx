@@ -25,7 +25,6 @@ arg_parser=add(arg_parser, "--panel", default="p1", help="Panel of markers")
 arg_parser=add(arg_parser, "--markers", default="subtype_markers", help="Marker lists.R")
 arg_parser=add(arg_parser, "--regFile", help="Marker lists")
 arg_parser=add(arg_parser, "--ref_markers", default="major_markers", help="Marker lists.R")
-arg_parser=add(arg_parser, "--bg_color", default="white", help="Marker lists.R")
 
 args = argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
 
@@ -52,7 +51,6 @@ if(! any(metals %in% colnames(expDf))) {
 }
 print(head(expDf))
 
-
 summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}'))
 outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/plots"))
 
@@ -74,8 +72,8 @@ positive = cellObjectsDf$positive[densMatch]
 cellTypeStats = ddply(cellObjectsDf, .(cellType, positive, majorType), summarise, 
 					count = length(cellType))
 
-cellTypeList = get_celltypes(marker_gene_list[[args$markers]]) %>%
-						gsub(' - Other', '', .)
+cellTypeList = get_celltypes(marker_gene_list[[args$markers]])
+cellTypeList = unique(cellTypeList, gsub(' - Other', '', cellTypeList))
 cellTypeList = intersect(cellTypeList, cellTypes)
 cellTypeList = c(cellTypeList, 'Ambiguous', 'Unassigned')
 print(cellTypeList)
@@ -107,7 +105,7 @@ plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha 
   scale_y_continuous(labels=function(x) {
     paste0(x * 100, "%")
   }) +
-  scale_fill_manual(values = cellTypeColors[match(names(cellTypeColors), cellTypeList)])
+  scale_fill_manual(values = cellTypeColors[match( names(cellTypeColors), cellTypeList)])
 print(plot)
 dev.off()
 
@@ -124,6 +122,9 @@ legend("left", pt.bg = unlist(cellTypeColors), legend = names(cellTypeColors),
 			pch = 22, box.lty=0, title = "Cell subtypes", cex = 1.5)
 dev.off()	
 
+bgColor = "black"
+if(cellTypeColors["Ambiguous"] == 'black') 
+	bgColor = 'white'
 imagenames = unique(cellObjectsDf$imagename)
 for(image in imagenames) {
     cat("Plotting scatter plot of cell types for ", image, '\n')
@@ -154,11 +155,11 @@ for(image in imagenames) {
 		guides(color = "none") +
 		scale_color_manual(values = cellTypeColors) +
 		theme(legend.position = 'right',
-		      legend.background = element_rect(fill=args$bg_color),
+		      legend.background = element_rect(fill=bgColor),
 		      axis.line = element_blank(), axis.ticks = element_blank(), 
 		      axis.text = element_blank(), axis.title = element_blank(),
-		      panel.background = element_rect(fill = args$bg_color, colour = NA),
-		      plot.background = element_rect(fill = args$bg_color, colour = NA),
+		      panel.background = element_rect(fill = bgColor, colour = NA),
+		      plot.background = element_rect(fill = bgColor, colour = NA),
 		      plot.title = element_text(color = "white"),
 		      panel.grid = element_blank(),
 		      panel.spacing = unit(0, "in"),
@@ -201,14 +202,10 @@ if(max(abs(clusterNorm), na.rm = T) < 3) {
   colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 3, 4, 6, 8, 9, 10)]
 }
 
-subsets = "all"
 pdfOut = f("{outDir}/intensity_heatmap.pdf")
 pdf(pdfOut, useDingbats = F, height = 10, width = 10)
-for(cellSubset in subsets) {
   
   clusterNormSub = clusterNorm[rownames(clusterNorm) != 'Excluded', ]
-  if(cellSubset != 'all')
-    clusterNormSub = clusterNorm[rownames(clusterNorm) == cellSubset, ]
   if(is.null(nrow(clusterNormSub))) next
  
   rowOrder = order(match(rownames(clusterNormSub), cellTypeList))
@@ -218,14 +215,14 @@ for(cellSubset in subsets) {
   
   
   row_ha = HeatmapAnnotation(
-    "# Cells [log10]" = anno_barplot(border = F, 
-                             x = log10(clusterSizeSub$Freq),
+    "# Cells [log2]" = anno_barplot(border = F, 
+                             x = log2(clusterSizeSub$Freq),
                              gp = gpar(fill = '#0571B0', col='transparent',
-                                     fontsize = 8, title = expression("# Cells"))),
+							 fontsize = 8, title = expression("# Cells"))),
     cellType = rownames(clusterNormSub),
     which = 'row',
     gp = gpar(col = "grey50"),
-   col = list(cellType = unlist(cellTypeColors)))
+	col = list(cellType = unlist(cellTypeColors)))
 
   heat = ComplexHeatmap::Heatmap(
     clusterNormSub[, colnames(clusterNormSub) %in% markersList],
@@ -298,14 +295,13 @@ for(cellSubset in subsets) {
     width = unit(ncol(clusterNormSub)/10, 'in'), 
     height = unit(nrow(clusterNormSub)/10, "in"), 
     clustering_method_rows = "ward.D2",
-    # left_annotation = row_ha,
+    left_annotation = row_ha,
     heatmap_legend_param = list(title = "Median intensity\n[z-score]",
                                 ncol=1, nrow=4,by_row=T, 
                                 direction='horizontal', fontsize=8),
     show_heatmap_legend=T,
     column_names_gp = gpar(fontsize = 8, angle=90))
   full = draw(full)
-}
 dev.off()
 
 exp = setDT(expDf)
@@ -322,6 +318,8 @@ if(! dir.exists(typeDir))
   	dir.create(typeDir)
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 for(marker in majorMarkers) {
+	
+	cat("Intensity violin plots for ", marker, '\n')
 
   markerCols = intersect(colnames(exp), markers)
   avg = exp[, lapply(.SD, median), 

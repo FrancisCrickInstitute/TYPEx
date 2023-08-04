@@ -62,7 +62,7 @@ for(file in resultFiles) {
 	dfIn$positive = gsub('pos:(.*) neg:', '\\1', dfIn$positive)
 	
 	cellAssignFile=f("{inDir}/reassign.{args$panel}.{args$run}.txt")
-	if(file.exists(cellAssignFile)) {
+	#if(file.exists(cellAssignFile)) {
 
 		dfIn$majorType=review_major_by_cellType(
 			cellTypes = dfIn$OldCellType,
@@ -77,7 +77,7 @@ for(file in resultFiles) {
 			majorTypes = dfIn$OldMajorType,
 			positivity = dfIn$positive,
 			cellAssignFile=cellAssignFile)
-	}
+	#}
 	
 	phenoStatsDf=ddply(dfIn, 
 		.(positive, OldMajorType, OldCellType, majorType, cellType),
