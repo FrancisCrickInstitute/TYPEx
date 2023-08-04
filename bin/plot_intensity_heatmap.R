@@ -49,7 +49,6 @@ if(! any(metals %in% colnames(expDf))) {
 	colnames(expDf) = colnames(expDf) %>%
 						gsub(metalPattern, '', .)
 }
-print(head(expDf))
 
 summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}'))
 outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/plots"))
@@ -61,7 +60,7 @@ print(summaryDir)
 cellObjectsFile = list.files(summaryDir, 
 				pattern = f("cell_objects_.*{args$panel}.fst"),
 				full.names = T)
- cellObjectsDf = fst::read.fst(cellObjectsFile)
+cellObjectsDf = fst::read.fst(cellObjectsFile)
 
 markers = setdiff(colnames(expDf), c('ObjectNumber', 'imagename'))
 
@@ -69,20 +68,15 @@ densMatch = match(with(expDf, paste(imagename, ObjectNumber)),
                   with(cellObjectsDf, paste(imagename, object)))
 cellTypes = cellObjectsDf$cellType[densMatch]
 positive = cellObjectsDf$positive[densMatch]
-cellTypeStats = ddply(cellObjectsDf, .(cellType, positive, majorType), summarise, 
-					count = length(cellType))
+
 
 cellTypeList = get_celltypes(marker_gene_list[[args$markers]])
-cellTypeList = unique(cellTypeList, gsub(' - Other', '', cellTypeList))
-cellTypeList = intersect(cellTypeList, cellTypes)
-cellTypeList = c(cellTypeList, 'Ambiguous', 'Unassigned')
-print(cellTypeList)
+cellTypeList = c(cellTypeList, cellTypes) %>% unique
 
 cellTypeColors = rep('grey', length(cellTypeList))
 names(cellTypeColors) = cellTypeList
 paletteMatch = match(names(cellTypeColors), names(palette$cellTypeColors))
 cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is.na(paletteMatch)]]
-print(cellTypeColors)
 
 markersList = sapply(cellTypeList, function(celltype) {
 	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
@@ -116,7 +110,7 @@ if(! dir.exists(posDir))
 	dir.create(posDir) 
 pngOut = f("{posDir}/legend.png")
 png(pngOut, width = 300, height = length(cellTypeColors)*30, units = 'px')
-par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D')
+par(omi = c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D')
 plot(1:length(cellTypeColors), rep(2, length(cellTypeColors)), axes = F, type = "n")
 legend("left", pt.bg = unlist(cellTypeColors), legend = names(cellTypeColors),
 			pch = 22, box.lty=0, title = "Cell subtypes", cex = 1.5)
@@ -212,17 +206,6 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
   colOrder = order(match(colnames(clusterNormSub), markersList))
   clusterNormSub = clusterNormSub[rowOrder, colOrder]
   clusterSizeSub = clusterSize[rowOrder, ]
-  
-  
-  row_ha = HeatmapAnnotation(
-    "# Cells [log2]" = anno_barplot(border = F, 
-                             x = log2(clusterSizeSub$Freq),
-                             gp = gpar(fill = '#0571B0', col='transparent',
-							 fontsize = 8, title = expression("# Cells"))),
-    cellType = rownames(clusterNormSub),
-    which = 'row',
-    gp = gpar(col = "grey50"),
-	col = list(cellType = unlist(cellTypeColors)))
 
   heat = ComplexHeatmap::Heatmap(
     clusterNormSub[, colnames(clusterNormSub) %in% markersList],
@@ -278,6 +261,16 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
 	ht_list=draw(ht_list)
     print('Binary')
   }
+  row_ha = HeatmapAnnotation(
+    "# Cells [log2]" = anno_barplot(border = F, 
+                             x = log2(clusterSizeSub$Freq),
+                             gp = gpar(fill = '#0571B0', col='transparent',
+							 fontsize = 8, title = expression("# Cells"))),
+    cellType = rownames(clusterNormSub),
+    which = 'row',
+    gp = gpar(col = "grey50"),
+	col = list(cellType = unlist(cellTypeColors)))
+	
   full = ComplexHeatmap::Heatmap(
     clusterNormSub,
 	na_col = "grey90",
@@ -302,6 +295,7 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
     show_heatmap_legend=T,
     column_names_gp = gpar(fontsize = 8, angle=90))
   full = draw(full)
+  print("Full map")
 dev.off()
 
 exp = setDT(expDf)
@@ -456,12 +450,14 @@ for(marker in majorMarkers) {
   dev.off()
 }
 
+cellTypeStats = ddply(cellObjectsDf, .(cellType, positive, majorType), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$majorType
+cellTypeStats$cluster = cellTypeStats$positive
+clusters = cellObjectsDf$positive[densMatch]
 
-cellTypeStats$cluster = cellTypeStats$cellType
-print(table(cellTypeStats$cluster))
-print(table(cellTypes[! cellTypes %in% cellTypeStats$cluster]))
-plot_expression(expDf, cellTypes, cellTypeStats, pars[[args$method]], plotDir = f("{outDir}/raw"))
-
-
+plot_heatmap(expDf, clusters, "", cellTypeStats, 
+	plotDir = f("{outDir}/raw"), plotPos = T)
+plot_expression(expDf, clusters, cellTypeStats, pars[[args$method]], plotDir = f("{outDir}/raw"))
 
 

@@ -104,9 +104,8 @@ plot_overlaps <- function(upDfConf, clusterLabels, runID, fdr = 0.05, effect_fie
 	return(pos)
 }
 
-plot_heatmap <- function(dfExp, clusters,  runID, labels) {
+plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plotPos = F) {
 
-	plotDir = f("{runID}_plots")
 	if(! dir.exists(plotDir))
 		dir.create(plotDir)
 	print('Plotting heatmap')
@@ -117,7 +116,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
     clusterSummary <- sapply(colnames(dfExp), function(x) {
       tapply(t(dfExp[[x]]), as.factor(clusters), mean, na.rm = T)
     })
-	print(clusterSummary)
+	#print(clusterSummary)
 	minValue = min(clusterSummary[clusterSummary > 0], na.rm = T)
 	clusterSummary[clusterSummary == 0] = minValue
 	clusterSummary[is.nan(clusterSummary) | is.na(clusterSummary)] = minValue 
@@ -141,40 +140,39 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 	
 	for(subset in subsets) {
 			
-			cat('Plotting subset of clusters: ', subset, runID, sampledDir, '\n')
+			cat('Plotting subset of clusters: ', subset, runID, '\n')
 			clusterNormSub = clusterNorm
 			clusterSizeSub = clusterSize
 			
 			if(subset != 'all') {
 				clusterNormSub = clusterNorm[celltypes == subset, ]
-				if(is.null(nrow(clusterNormSub)))
-					next
-				if(! nrow(clusterNormSub))
-					next
-				selectedCols = apply(clusterNormSub, 2, function(x) length(unique(x)) > 1)
-				clusterNormSub = subset(clusterNormSub, select=selectedCols)
-				clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
 			}
-			
+			if(is.null(nrow(clusterNormSub)))
+				next
+			if(! nrow(clusterNormSub))
+				next
+			selectedCols = apply(clusterNormSub, 2, function(x) length(unique(x)) > 1)
+			clusterNormSub = subset(clusterNormSub, select=selectedCols)
+			clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
 			if(is.null(nrow(clusterNormSub)))
 				next
 			
-			apply(clusterNormSub, 2, function(x) length(unique(x))) %>% print
-			
-			heat=ComplexHeatmap::Heatmap(t(clusterNormSub),
+			# apply(clusterNormSub, 2, function(x) length(unique(x))) %>% print
+			rowLabels = gsub(".*:", "", colnames(clusterNormSub))
+			heat = ComplexHeatmap::Heatmap(t(clusterNormSub),
 				na_col = "grey90",
 				col = circlize::colorRamp2(density_scale, 
 						rev(brewer.pal(name = "RdBu", length(density_scale)))),
 				row_title_gp = gpar(fontsize=12),
 				row_title_rot=90,
 				border = "grey85",
-				row_labels = gsub(".*:", "", colnames(clusterNormSub)),
+				row_labels = rowLabels,
 				column_title_gp = gpar(fontsize=8),
 				name = subset,
 				column_title = subset,
 				row_title = "Mean raw pixel intensity",
-				width=unit(nrow(clusterNormSub)/10, 'in'),
-				height=unit(ncol(clusterNormSub)/4, "cm"),
+				width = unit(nrow(clusterNormSub)/10, 'in'),
+				height = unit(ncol(clusterNormSub)/4, "cm"),
 				clustering_method_rows = "ward.D2",
 				clustering_method_columns = 'ward.D2',
 				clustering_distance_rows='spearman',
@@ -184,35 +182,31 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 				direction='horizontal', fontsize=8),
 				row_names_gp = gpar(fontsize = 8),
 				show_heatmap_legend=T,
-				column_names_gp = gpar(fontsize = 8, angle=90))
-
+				column_names_gp = gpar(fontsize = 8, angle = 90))
 		print(heat)
 
 		print(unit(nrow(clusterSummary)/10, 'in'))
 		print(unit(ncol(clusterSummary)/5, "cm"))
     	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 
 			gsub('up:(.*) down:', '\\1', .)
-		print(labels$positive)
 		clusterLabels=rownames(clusterNormSub)
-		print(clusterLabels)
 		markers = colnames(clusterSummary)[row_order(heat)]
-	    binMat=sapply(clusterLabels, function(cluster) {
+	    binMat = sapply(clusterLabels, function(cluster) {
     	  positive=labels$positive[labels$cluster == cluster] %>%
 		  						strsplit(split = '_') %>% unlist
 	      sapply(markers %in% positive, sum)
     	})
-		binMat=as.data.frame(binMat)
+		binMat = as.data.frame(binMat)
     	colnames(binMat) = clusterLabels
-	    #rownames(binMat) = markers
 			
 		labelMatch = match(clusterSizeSub$clusters, labels$cluster)
     	clusterSizeSub$label = labels$positive[labelMatch]
 	    clusterSizeSub$clusters = factor(clusterSizeSub$clusters, 
 			levels = rev(rownames(clusterNormSub)[column_order(heat)]))
     	rowLabels = sapply(clusterLabels, 
-			function(x) paste0(labels$cellType[labels$cluster == x][1], 
-				" (", x, 
-				',n=', sum(clusters == x), ")")
+			function(x) 
+				paste0(labels$cellType[labels$cluster == x][1], 
+					"(", ifelse(plotPos, "n=", c(x, ",n=")), sum(clusters == x), ")")
 			)
     	rowCellTypes=sapply(clusterLabels, 
 					function(x) labels$cellType[labels$cluster == x][1])
@@ -239,6 +233,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 			if(! all(binMat == 0) & ! all(binMat == 1)) {
 
 			print('Plotting bin mat')
+			print(rowLabels)
 		    bin=ComplexHeatmap::Heatmap(binMat, cluster_rows = F,
 									cluster_columns = F,
         	                        bottom_annotation = row_ha,
@@ -273,7 +268,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels) {
 		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))    
 		write.tab(stats, f('{runID}.major_stats.txt'))
 		
-		cellTypeColors=rep(unlist(palette$cellTypeColors), 2)
+		cellTypeColors = rep(unlist(palette$cellTypeColors), 2)
 		names(cellTypeColors) = c(names(palette$cellTypeColors), 
 			paste('Excluded', names(palette$cellTypeColors)))
 		cellTypeColors=cellTypeColors[names(cellTypeColors) %in% stats$cellType]
@@ -367,6 +362,30 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, pl
 	
 	medianVal = apply(dfExpMag, 2, median, na.rm = T)
 	cat("Median intensity", medianVal, '\n')
+	
+	for(cellMarker in colnames(dfExpMag)) {
+		cat(".")
+		values = dfExpMag[[cellMarker]]
+		clNamesOrder = names(table(clusters))
+
+		cols = get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
+		cols = cols[match(clNamesOrder, clusterNames$cluster)]
+
+		cols = sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
+		boxplot(values ~ clusters, col=cols, las=.5, cex.lab.x = 0.5,
+			cex.main=.5, varwidth=F, outline=F,  log = "y", xaxt='n',
+			xlab="", ylab = "", ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)),
+			main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"),
+									  paste0("n=", length(indices), " cells")),)
+		axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=45)
+		abline(h=medianVal[[cellMarker]], lty=2, col='red')
+  }
+  cat("\n")
+  dev.off()
+  print("Plotted raw intensity per marker")
+  
+  
+	
 	pdf(file=f("{plotDir}/raw_intensities.per_cluster.pdf"), 
 		width =  7 + round(clusterCount / 60),
 		height=5 + round(clusterCount / 60))
@@ -390,25 +409,5 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, pl
 	pdf(file=f("{plotDir}/raw_intensities.per_marker.pdf"), width=7 + round(clusterCount / 60),
 		height=4 + round(clusterCount / 60))
 	# par(mfrow=c(2, 2))
-	for(cellMarker in colnames(dfExpMag)) {
-		cat(".")
-		values = dfExpMag[[cellMarker]]
-		clNamesOrder = names(table(clusters))
 
-		cols = get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
-		cols = cols[match(clNamesOrder, clusterNames$cluster)]
-
-		cols = sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
-		boxplot(values ~ clusters, col=cols, las=1, cex.lab = 0.4,
-			cex.main=2, varwidth=F, outline=F,  log = "y", xaxt='n',
-			xlab="", ylab = "", ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)),
-			main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"),
-									  paste0("n=", length(indices), " cells")),)
-		axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=45)
-		abline(h=medianVal[[cellMarker]], lty=2, col='red')
-  }
-  cat("\n")
-  dev.off()
-  print("Plotted raw intensity per marker")
-  
 }

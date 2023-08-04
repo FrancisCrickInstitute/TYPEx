@@ -5,7 +5,7 @@ process preprocess_panck {
 
 	publishDir path: "${params.output_dir}/composites/", 
 			   mode: params.publish_dir_mode, 
-			   overwrite: true
+			   overwrite: false
 
 	input:
 		tuple val(tumour), val(immune), val(stroma), val(auxStroma), val(dna)
@@ -29,7 +29,7 @@ process create_composites {
 	
 	publishDir path:"${params.output_dir}/composites/", 
 			   mode: params.publish_dir_mode, 
-			   overwrite: true
+			   overwrite: false
 
 	input:
 		val files
@@ -135,7 +135,7 @@ process mask_overlay {
 	
 	publishDir "${params.output_dir}/tissue_seg/",
 				mode: params.publish_dir_mode,
-				overwrite: true
+				overwrite: false
 
 	input:
 		tuple path(maskDir), val(maskRegEx), val(regionType), val(imageRegEx), val(regionRegEx)

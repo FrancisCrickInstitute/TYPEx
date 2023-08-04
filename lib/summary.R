@@ -149,7 +149,8 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		selectedMarkers=colnames(inData)[colnames(inData) %in% unlist(markersList)]
 		heatmapOrder=plot_heatmap(dfExp = inData[, ..selectedMarkers],
 			                                clusters = runOutput, runID = runID,
-			                                labels =clusterNames)
+			                                labels =clusterNames,
+											 plotDir = f("{runID}_plots"))
 			cat('Marker expression heatmap for ', nrClusters, ' clusters\n')
 			
 	  print("Plotting expression")
