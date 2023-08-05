@@ -1,67 +1,61 @@
 {
-  "major_markers":{
-	  
-      "Leukocytes":{
-  		"Leukocytes - Other":["vimentin", "CD45"],
-  		"Lymphocytes":{
-  		    "T cells":{
-  				"T cells - Other":["vimentin", "CD45", "CD3"],
-  				"CD8 T cells":["vimentin", "CD45", "CD3", "CD8a"],
-  				"CD4 T cells":["vimentin", "CD45", "CD3", "CD4"]
-  			}
-  		}
+	"major_markers":{
+
+		"Leukocytes":{
+			"Leukocytes - Other":["CD45"],
+			"T cells":{
+             	"T - Other":["CD45", "CD3"],
+                "CD8T":["CD45", "CD3", "CD8"],
+                "CD4T":["CD45", "CD3", "CD4"]
+             }, 
+			"B":["CD45", "CD20", "BCL2", "CD38"],
+			"Myeloid cells - Other":["CD45", "CD11b", "CD8"],
+			"Macrophages":["CD45", "CD68", "CD163", "CD206"]
+	  },
+	  "Epithelium":["Cytokeratin", "CK7", "Bcatenin", "p63", "CHGA"],
+	  "Stroma":["Vimentin"],
+	  "Endothelial":["CD31"],
+	  "PDPN":["Podoplanin"],
+	  "SmoothMuscle":["aSMA"],
+	  "Paneth":["aDefensin5"]
 	},
-	"Endothelial cells":["vimentin", "CD31"],
-	"Mesenchymal cells":{
-		"Mesenchymal cells - Other":["vimentin"],
-  		"aSMA+ cells":["vimentin", "aSMA"],
-  		"Smooth muscle cells":["aSMA"]
-  	},
-  	"Epithelial cells":["panCK"]
-  },
-  
-  "subtype_markers":{
-    "Leukocytes":{
-		"Leukocytes - Other":["vimentin", "CD45", "CD103"],
-		"Lymphocytes":{
-		    "T cells":{
-				"T cells - Other":["vimentin", "CD45", "CD3"],
-				"T cells DP":["vimentin", "CD45", "CD3", "CD4", "CD8a"],
-				"Tgd":["vimentin", "CD45", "CD3", "TCRd", "KIR2DL3"],
-				"CD8 T cells": {
-					"CD8 T cells - Other":["vimentin", "CD45", "CD3", "CD8a"],
-					"CD8 Tcm":["vimentin", "CD45", "CD3", "CD8a", "CD27", "CCR7"],
-					"CD8 Tem":["vimentin", "CD45", "CD3", "CD8a", "CD27"],
-					"Cytotoxic CD8 T cells":["vimentin", "CD45", "CD3", "CD8a", "CD103", "GZMB"],
-					"Naive CD8 T cells":["vimentin", "CD45", "CD3", "CD8a", "CD45RA"],
-					"CD8 Trm": {
-						"CD8 Trm - Others": ["vimentin", "CD45", "CD3", "CD8a", "CD103"],
-						"CD8 Exhausted TDT":["vimentin", "CD45", "CD3", "CD8a", "CD103", "CD57", "CD39"],
-						"CD57+ CD8 Trm":["vimentin", "CD45", "CD3", "CD8a", "CD57", "CD103"]
-					}
-				 },
-				"CD4 T cells":{
-					"CD4 T cells - Other": ["vimentin", "CD45", "CD3", "CD4"],
-					"Tregs":["vimentin", "CD45", "CD3", "CD4", "FOXP3"],
-					"Naive CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "CD45RA"],
-					"CD4 Tcm":["vimentin", "CD45", "CD3", "CD4", "CD27", "CCR7"],
-					"CD4 Tem":["vimentin", "CD45", "CD3", "CD4", "CD27"],
-					"Cytotoxic CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "GZMB"],
-					"CD4 Trm":["vimentin", "CD45", "CD3", "CD4", "CD103"],
-					"CD57+ CD4 T cells":["vimentin", "CD45", "CD3", "CD4", "CD57"],
-					"CD4 Exhausted TDT":["vimentin", "CD45", "CD3", "CD4", "CD57", "CD39"]
-			}
-		}
-	},
-	"Myeloid cells": {
-		    "CD4+ Myeloid cells":["vimentin", "CD45", "CD4"]
-	},
-	"Endothelial cells":["vimentin", "CD31", "CD39"],
-	"Mesenchymal cells":{
-		"Mesenchymal cells - Other":["vimentin", "collagen1"],
-		"aSMA+ cells":["vimentin", "aSMA", "collagen1"]
-	},
-	"Epithelial cells":["panCK"]
+	"subtype_markers":{
+	  "Leukocytes":{
+		  "Leukocytes - Other":["Vimentin", "CD45"],
+		  "Lymphocytes":{
+			  "T":{
+				  "T - Other":["Vimentin", "CD45", "CD3"],
+				  "CD8T":["Vimentin", "CD45", "CD3", "CD8"],
+				  "CD4T":["Vimentin", "CD45", "CD3", "CD4"]
+			  },
+			  
+			  "B":{
+				  "B - Other":["Vimentin", "CD45", "BCL2", "CD20"],
+				  "Plasma":["Vimentin","CD45", "BCL2", "CD138", "CD38", "CD31"]
+			  }
+		  },
+		  "Myeloid cells":{
+			"Myeloid cells - Other":["Vimentin", "CD45", "CD11b",  "Arginase1",  "CD8"],
+			"Neutrophils":["Vimentin","CD45", "CD11b", "CD11c", "Arginase1", "CD15", "CD8"],
+			"DC":["Vimentin","CD45", "CD11c", "CD4"],
+			"Macrophages":["Vimentin","CD45", "CD11b", "CD11c", "CD68", "CD163", "CD206", "CD4"],		
+			"Innate - Other":["Vimentin", "CD45", "CD11b", "CD11c", "Arginase1", "CD15", "CD68", "CD206", "CD56"]
+		  }
+	  },
+	 "Epithelium":{
+		  "Epithelial - Other":["Cytokeratin", "CK7", "CD138", "Bcatenin"],
+        "Secretory_epithelial":["Cytokeratin", "CK7", "CD138", "Bcatenin", "CHGA"],
+               "Glandular_epi":["Cytokeratin", "CK7", "CD138", "Bcatenin", "CHGA", "p63", "CD25"], // MUC1, MUC5AC          CD25         CD138      Bcatenin 
+         "Squamous_epithelial":["Cytokeratin", "CK7", "CD138", "Bcatenin", "p63", "CD56"],
+	     "Nerve":["CHGA", "Nestin", "Cytokeratin", "CD56"]
+      },
+      "Stroma":{
+           "Stroma - Other":["Vimentin"],
+      		"Endothelial":["Vimentin", "CD31", "CD34", "Nestin", "aSMA"],
+            "SmoothMuscle":["Vimentin", "aSMA", "aDefensin5"],
+			"PDPN":["Vimentin", "Podoplanin"]
+      },
+      "Paneth":["aDefensin5"]
   }
- }
 }
+ 

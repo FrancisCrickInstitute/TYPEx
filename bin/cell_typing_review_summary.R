@@ -351,11 +351,11 @@ if(! length(data)) {
 				positiveExcludedIndices=positiveExcludedIndices |
 					recast[[typedCols[1]]] %in% missedCellType &
 					recast[[intensityColNameFull]] > nCut & 
-					recast[[intensityColNameRef]] < qCut
+					recast[[intensityColNameRef]] <= qCut
 
 				negativeExcludedIndices = negativeExcludedIndices | 
 						recast[[typedCols[1]]] %in% missedCellType &
-							recast[[intensityColNameFull]] < qCut
+							recast[[intensityColNameFull]] <= qCut
 		}
 		
 		positiveExcluded=recast$cellID[positiveExcludedIndices]
@@ -409,7 +409,9 @@ if(! length(data)) {
 	print('Creating model with')
 	print(with(dfFlt, table(control, cellType, markers)))
 	cat('Creating model with', '\n', file = log, append = T)
-	cat(with(dfFlt, table(control, cellType, markers)), '\n', file = log, append = T)
+	cntrStat = with(dfFlt, table(control, cellType, markers))
+	write.table(cntrStat, file = log, append = T, sep = '\t',
+					row.names = F)
 	nrControls = length(unique(dfFlt$control[!is.na(dfFlt$control)]))
 	if(nrControls < 2)
 		stop('Cannot create a model with', nrControls, 'control values.')
@@ -454,7 +456,10 @@ if(! length(data)) {
 		posExcludedIndices | negExcludedIndices, ])
 
 	table(dfMrg$predicted, dfMrg$cellType) %>% print
-	
+	cat("Predicted\n", file = log, append = T)
+	predStat = table(dfMrg$predicted, dfMrg$cellType)
+	write.table(predStat, 
+		 append = T, quote = F, row.names = T, file = log)
 	stats=data.frame(table(dfMrg$control))
 	stats$Freq=round(stats$Freq/sum(stats$Freq), 3)
 	stats$Var1=factor(stats$Var1, levels=sort(stats$Var1))

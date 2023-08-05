@@ -427,7 +427,9 @@ assign_celltype <- function(names, markers,
 	      if(majorType == "none" & region == "none") {
 	        return("Unassigned")
 			} else if(majorType != "none") {
-	        return(majorType)
+				if(majorType %in% cellTypeNames || grepl("Unassigned|Ambiguous", majorType))
+	       	 		return(majorType)
+				return(f("{majorType} - Other"))
 	      } else if(considerTissueSeg) {
   	        # added if region == 1
 	        return("Epithelial cells - Tissue Segmentation")
@@ -442,8 +444,11 @@ assign_celltype <- function(names, markers,
 		cat(name, majorType, region, cellMarkers, major, '\n')
 		
 		if(! length(cellMarkers)) {
-	      if(majorType != "none")
-			  return(majorType)
+	      if(majorType != "none") {
+			if(majorType %in% cellTypeNames || grepl("Unassigned|Ambiguous", majorType))
+       	 		return(majorType)
+			return(f("{majorType} - Other"))
+		  }
 	      if(considerTissueSeg)
 			  return("Epithelial cells - Tissue Segmentation")
 	      return("Unassigned")
@@ -527,8 +532,11 @@ assign_celltype <- function(names, markers,
 		if(all(assigned == 0)) {
 			if(considerTissueSeg)
 				return("Epithelial cells - Tissue Segmentation")
-			if(! majorType %in% c('none', 'mostLikelyCellType'))
-				return(majorType)
+			if(! majorType %in% c('none', 'mostLikelyCellType')) {
+				if(majorType %in% cellTypeNames)
+	       	 		return(majorType)
+				return(f("{majorType} - Other"))
+			}
 			return("Unassigned")
 		}
 		print(sort(assigned))
@@ -562,7 +570,9 @@ assign_celltype <- function(names, markers,
 		
 		if(length(assignedCelltype) > 1)  {
 			if(! majorType %in% c("none"))	{
-				return(majorType)
+				if(majorType %in% cellTypeNames || grepl("Unassigned|Ambiguous", majorType))
+	       	 		return(majorType)
+				return(f("{majorType} - Other"))
 			}
 			if(considerTissueSeg) 
 				return("Epithelial cells - Tissue Segmentation")
@@ -572,8 +582,11 @@ assign_celltype <- function(names, markers,
 		print(intersect)
 		if(length(intersect) > 1 & all(intersect == 0) & 
 				! majorType %in% c('none', "Unassigned")) {
-			if(! majorType %in% c("none") & ! major)
-				return(majorType)
+			if(! majorType %in% c("none") & ! major) {
+				if(majorType %in% cellTypeNames || grepl("Unassigned|Ambiguous", majorType))
+	       	 		return(majorType)
+				return(f("{majorType} - Other"))
+			}
 			if(considerTissueSeg & ! major)
 				return("Epithelial cells - Tissue Segmentation")
 			return("Ambiguous Intersect")
@@ -581,11 +594,14 @@ assign_celltype <- function(names, markers,
 		# See if on the subtree of the majorType
 		if(! grepl('none|Unassigned', majorType)) {
 			cat("CHECK:", majorType, name, '\n')
-			if(! isChild(tree=markers, parent=majorType, child=assignedCelltype)) {
+			if(! isChild(tree=markers,  parent = gsub(" - Other", '', majorType), child=assignedCelltype)) {
 				if(! major) 
 					return(f('{assignedCelltype}'))
-				if(majorType != 'none')
-					return(majorType)
+				if(majorType != 'none') {
+					if(majorType %in% cellTypeNames || grepl("Unassigned|Ambiguous", majorType))
+		       	 		return(majorType)
+					return(f("{majorType} - Other"))
+				}
 			}
 		}
 		return(assignedCelltype)

@@ -81,19 +81,7 @@ cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is
 markersList = sapply(cellTypeList, function(celltype) {
 	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
 }) %>% unlist %>%  unique
-print(markersList)
-
-
-# Intensity heatmaps
-cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$cellType
-cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
-clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
-
-plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
-	clusters, "", cellTypeStats, 
-	plotDir = f("{outDir}"), plotPos = T)
+markersList = intersect(markersList, colnames(expDf))
 
 # Intensity boxplots
 cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
@@ -108,6 +96,18 @@ plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters,
 				cellTypeStats, 
 				pars[[args$method]], 
 				plotDir = f("{outDir}/raw"), magnitude = max(1, pars$magnitude/10))
+
+# Intensity heatmaps
+cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$cellType
+cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
+clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
+
+plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
+	clusters, runID = f("{outDir}"), cellTypeStats, 
+	plotDir = f("{outDir}"), plotPos = T)
+
 
 stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
 stats$cellType = factor(stats$cellType, levels = cellTypeList)
@@ -128,8 +128,6 @@ plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha 
   scale_fill_manual(values = cellTypeColors[match( names(cellTypeColors), cellTypeList)])
 print(plot)
 dev.off()
-
-
 
 posDir = f("{outDir}/scatter")
 if(! dir.exists(posDir))

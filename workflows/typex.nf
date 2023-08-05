@@ -304,7 +304,6 @@ workflow QC {
 					markers,
 					subset, 
 					method,
-					params.mccs, 
 					qc_create_single_channel_images.out
 			)
 		}

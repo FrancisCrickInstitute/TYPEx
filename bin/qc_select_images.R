@@ -17,7 +17,7 @@ arg_parser=add(arg_parser, arg="--outDir", default = 'qc', help="in")
 arg_parser=add(arg_parser, "--panel", default="p1", help="Panel of markers")
 arg_parser=add(arg_parser, "--ref_markers", default="major_markers", help="Marker lists")
 
-args=argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
+args=argparser::parse_args(arg_parser, argv = commandArgs(trailingOnly=TRUE))
 pars=c(pars, args) 
 
 if(! dir.exists(args$outDir))
@@ -34,30 +34,32 @@ markerStats = marker_gene_list[[args$ref_markers]] %>%
 print(markerStats)
 
 selected = vector(mode = 'list')
-for(majorCellType in unique(dfIn$majorType)) {
-	
+for(majorCellType in unique(dfIn$cellType)) {
+		
 	if(is.na(majorCellType)) 
 		next
 	
 	if(majorCellType %in% c('Unassigned', 'Ambiguous')) 
 		next
 	markers = get_celltype_markers(marker_gene_list[[args$ref_markers]], majorCellType)
+	markers = unique(c(markers, get_celltype_markers(marker_gene_list[[args$ref_markers]], gsub(" - Other", "", majorCellType))))
 	# get the most unique marker per cell type
 	sel = markerStats[markers] == 1 &  markers %in% names(markerStats)
 	if(! any(sel))
 		sel = order(markerStats[markers])[1]
 	markers = markers[sel]
-	if(is.na(sel)) 
+	if(all(is.na(sel))) 
 		next
+	cat(majorCellType, markers, '\n')
 	
 	# for each of these markers with that cell type, select the image where this marker is most frequent
-	dfSub = subset(dfIn, majorType == majorCellType)
+	dfSub = subset(dfIn, cellType == majorCellType)
 	
 	stats = ddply(dfSub, .(imagename), summarise, count = sum(cellCount))
 	stats = stats[order(stats$count, decreasing = T), ]
 	
 	selected[[majorCellType]] = cbind(imagename = stats$imagename[1], 
-									  marker=markers, majorType = majorCellType)
+									  marker=markers, cellType = majorCellType)
 }
 
 mrg = do.call(rbind, selected)

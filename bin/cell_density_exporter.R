@@ -160,8 +160,8 @@ for(file in resultFiles) {
   dfIn$positivity=gsub("pos:(.*) neg:.*", "\\1", dfIn$positive)
   stopifnot(! any(is.na(dfIn$cellDensity)))
 
-	id.vars=c(id.vars, "cellType", "majorType", "cluster", "positivity")
-    tissue.vars=c(id.vars, "cellType", "majorType", "cluster", "positivity", 'region')
+	id.vars = c(id.vars, "cellType", "majorType", "cluster", "positivity")
+    tissue.vars = c(id.vars, "cellType", "majorType", "cluster", "positivity", 'region')
 
   rowSel=1:nrow(dfIn)
 

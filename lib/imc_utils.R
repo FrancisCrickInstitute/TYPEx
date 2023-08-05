@@ -440,7 +440,7 @@ summary_table <- function(inDf, pars, regFile) {
 	  ids = c("imagename", pars$experimental_condition)
   } else {
 	  dfMarkMelt = reshape2::melt(dfMarker, id.vars=c("imagename",  "cellCount", "cellDensity"))
-	  ids = c("imagename", )
+	  ids = c("imagename")
 	  
   }
 

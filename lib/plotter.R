@@ -206,7 +206,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
     	rowLabels = sapply(clusterLabels, 
 			function(x) 
 				paste0(labels$cellType[labels$cluster == x][1], 
-					"(", ifelse(plotPos, "n=", c(x, ",n=")), sum(clusters == x), ")")
+					"(", ifelse(plotPos, "n=", paste0(x, ",n=")), sum(clusters == x), ")")
 			)
     	rowCellTypes=sapply(clusterLabels, 
 					function(x) labels$cellType[labels$cluster == x][1])
@@ -266,7 +266,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 
 		clusterSize$cellType = labels$cellType[match(clusterSize$clusters, labels$cluster)]
 		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))
-		write.tab(stats, f('{plotDir}/{runID}.celltype_stats.txt'))
+		write.tab(stats, f('{runID}.celltype_stats.txt'))
 		
 		cellTypeColors = rep(unlist(palette$cellTypeColors), 2)
 		names(cellTypeColors) = c(names(palette$cellTypeColors), 
@@ -282,9 +282,6 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 		cat("WARNING: No color annotation for the following celltypes: ", missing, 
 			". Amend in conf/celltype_colors.json.\n",
 			file = f("{runID}.log"), append = T)
-		
-		cellTypeList = get_celltypes(marker_gene_list[[args$markers]])
-		cellTypeList = c(cellTypeList, cellTypes) %>% unique
 
 		cellOrder = order(match(stats$cellType, names(cellTypeColors)))
 		stats$cellType = factor(stats$cellType, levels = unique(stats$cellType[cellOrder]))

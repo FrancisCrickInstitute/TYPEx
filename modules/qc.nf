@@ -58,7 +58,6 @@ process qc_overlay {
 		tuple val (ref_markers)
 		val subset
 		tuple val (method)
-		val mccs
 		val images
 
 	script:
@@ -70,7 +69,7 @@ process qc_overlay {
 			
 			plot_overlays.R \
 				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/ \
-				--maskDir ${params.input_dir} --mccs ${mccs}	 \
+				--maskDir ${params.input_dir} --mccs ${params.mccs}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
 				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/overlay_examples.txt \
