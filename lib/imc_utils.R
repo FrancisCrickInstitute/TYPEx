@@ -12,15 +12,15 @@ get_region_info <- function(panel, cellIDs, featurePattern, regFile) {
 	print(regFile)
 	if(! file.exists(regFile))
 		stop('The sample annotation file does not exists --sample_file')
-	regData=read.delim(f(regFile), stringsAsFactors = F)
+	regData = read.delim(f(regFile), stringsAsFactors = F)
 	
 	# Specific for Tx where regData can have images from multiple panels
 	panelSelection = grepl(f("^{toupper(panel)}_"), regData$imagename)
 	if(any(panelSelection))
 		regData=subset(regData, panelSelection)
-	cellRegions=get_cellRegionID(cellIDs)
-	ind=match(cellRegions, regData$imagename)
-	colNames=unique(grep(f("^{featurePattern}$"), colnames(regData)))
+	cellRegions = get_cellRegionID(cellIDs)
+	ind = match(cellRegions, regData$imagename)
+	colNames = unique(grep(f("^{featurePattern}$"), colnames(regData)))
 	return(regData[ind, colNames])
 }
 
@@ -36,7 +36,7 @@ get_tiff_path <- function(cellIDs, inDir, pattern=".tiff") {
 
 get_cellRegionID <- function(cellIDs) {
   
-  cellRegions=gsub("^([^\\.]+).*", "\\1", basename(cellIDs))
+  cellRegions=gsub(".txt", "", basename(cellIDs))
   return(cellRegions)
 }
 
@@ -410,10 +410,10 @@ review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
 	return(majorTypes)
 }
 
-summary_table <- function(inDf) {
-  markers=setdiff(unique(unlist(lapply(unique(inDf$positivity),
+summary_table <- function(inDf, pars, regFile) {
+  markers = setdiff(unique(unlist(lapply(unique(inDf$positivity),
                                        function(x) strsplit(toString(x), split="_")[[1]]))), c('NA', ''))
-  dfMarker=sapply(markers, function(marker) {
+  dfMarker = sapply(markers, function(marker) {
     get_marker_frequency(inDf, marker)
   })
   dfMarker=data.frame(imagename=   inDf$imagename,
@@ -422,18 +422,39 @@ summary_table <- function(inDf) {
                       cellType=    inDf$cellType,
                       dfMarker,
                       majorType=    inDf$majorType, stringsAsFactors = F)
-  dfMarkMelt=reshape2::melt(dfMarker, id.vars=c("imagename", "majorType", "cellCount", "cellDensity"))
-  dfMarkStats=ddply(dfMarkMelt, .(imagename, variable, value), summarise,
+
+   
+  if(length(pars$experimental_condition) > 0 & file.exists(regFile)) {
+	  # get info
+	
+	  
+	  info = sapply(pars$experimental_condition, function(factor) {
+		 	 get_region_info(panel = pars$panel, 
+		  					cellIDs = inDf$imagename,
+							regFile = regFile,
+							featurePattern = f("{factor}$"))
+	  })
+	  dfMarker = cbind(dfMarker, info)
+	  inDf = cbind(inDf, info)
+	  dfMarkMelt = reshape2::melt(dfMarker, id.vars=c("imagename", pars$experimental_condition, "cellCount", "cellDensity"))
+	  ids = c("imagename", pars$experimental_condition)
+  } else {
+	  dfMarkMelt = reshape2::melt(dfMarker, id.vars=c("imagename",  "cellCount", "cellDensity"))
+	  ids = c("imagename", )
+	  
+  }
+
+  dfMarkStats = ddply(dfMarkMelt, c(ids, "variable", "value"), summarise,
                     count=sum(cellCount, na.rm = T),
                     density = sum(cellDensity, na.rm = T))
 
   # Output for cell density table
-  inDf$cellID=paste(inDf$majorType, inDf$cellType, sep = ":")
-  typeStats=ddply(inDf, .(imagename, cellID), summarise,
-                  cellDensity=sum(cellDensity, na.rm = T),
-                  cellCount=sum(cellCount, na.rm = T),
-                  cellPercentage=sum(cellPercentage, na.rm = T), .drop=F)
-  posStatsList=lapply(markers, function(marker) {
+  inDf$cellID=paste(inDf$cellType, sep = ":")
+  typeStats = ddply(inDf, c(ids, "cellID"), summarise,
+                  cellDensity = sum(cellDensity, na.rm = T),
+                  cellCount = sum(cellCount, na.rm = T),
+                  cellPercentage = sum(cellPercentage, na.rm = T), .drop=F)
+  posStatsList = lapply(markers, function(marker) {
     print(marker)
     inDf$selection = get_marker_frequency(inDf, marker, 'positivity')
     stats=ddply(inDf, .(imagename, cellID), summarise,
@@ -446,10 +467,11 @@ summary_table <- function(inDf) {
                            value.var =  "cellDensity")
   markerColSel = colnames(posStats) %in% markers
   colnames(posStats)[markerColSel] = paste0('cellDensity_', colnames(posStats)[markerColSel])
+  
   typeMatch = match(with(typeStats, paste(imagename, cellID)), with(posStats, paste(imagename, cellID)))
   typeStats$majorType = gsub(':.*', "", typeStats$cellID)
   typeStats$cellType = gsub('^[^:]+:', "", typeStats$cellID)
-  typeStats = typeStats[, c('imagename', 'majorType', 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
+  typeStats = typeStats[, c(ids, 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
   typeStats = cbind(typeStats, posStats[typeMatch, markerColSel])
   typeStats[is.na(typeStats)] = 0
   return(typeStats)

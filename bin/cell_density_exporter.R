@@ -222,7 +222,7 @@ for(file in resultFiles) {
   unassignedStats$apct=with(unassignedStats, ambiguous/total)
   write.tab(unassignedStats, file = unassignedOut)
 	
-  exportAll=summary_table(dfStatsMrg)
+  exportAll = summary_table(dfStatsMrg, pars, args$regFile)
   write.tab(exportAll, file=densityOut)  
   
   dfStatsMrg=subset(dfStatsMrg, imagename %in% selectedImages)

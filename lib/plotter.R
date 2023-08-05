@@ -116,7 +116,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
     clusterSummary <- sapply(colnames(dfExp), function(x) {
       tapply(t(dfExp[[x]]), as.factor(clusters), mean, na.rm = T)
     })
-	#print(clusterSummary)
+		
 	minValue = min(clusterSummary[clusterSummary > 0], na.rm = T)
 	clusterSummary[clusterSummary == 0] = minValue
 	clusterSummary[is.nan(clusterSummary) | is.na(clusterSummary)] = minValue 
@@ -264,9 +264,9 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 		}
 		dev.off()
 
-		clusterSize$cellType=labels$cellType[match(clusterSize$clusters, labels$cluster)]
-		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))    
-		write.tab(stats, f('{runID}.major_stats.txt'))
+		clusterSize$cellType = labels$cellType[match(clusterSize$clusters, labels$cluster)]
+		stats=ddply(clusterSize, .(cellType), summarise, TotalFreq = sum(Freq))
+		write.tab(stats, f('{plotDir}/{runID}.celltype_stats.txt'))
 		
 		cellTypeColors = rep(unlist(palette$cellTypeColors), 2)
 		names(cellTypeColors) = c(names(palette$cellTypeColors), 
@@ -282,9 +282,13 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 		cat("WARNING: No color annotation for the following celltypes: ", missing, 
 			". Amend in conf/celltype_colors.json.\n",
 			file = f("{runID}.log"), append = T)
-			
+		
+		cellTypeList = get_celltypes(marker_gene_list[[args$markers]])
+		cellTypeList = c(cellTypeList, cellTypes) %>% unique
+
 		cellOrder = order(match(stats$cellType, names(cellTypeColors)))
 		stats$cellType = factor(stats$cellType, levels = unique(stats$cellType[cellOrder]))
+
 		pdfOut = f("{plotDir}/cell_types_pie_chart.pdf")
 		pdf(pdfOut, useDingbats = F, height = 5, width = 5)
 	    g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
@@ -298,7 +302,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
     	  xlab("") + ylab("") +
 	      scale_y_continuous(labels=function(x) {
     	    paste0(x * 100, "%")
-	      }) +  # facet_wrap(. ~ confidence + cellassign_cluster, nrow= 2) +
+	      }) +
 		scale_fill_manual(values = cellTypeColors)
 	    print(plot)
     	dev.off()
@@ -355,37 +359,13 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, pl
 		clusters = clusters[clusters %in% clusterNames$cluster]
 	}
 	positive = clusterNames$positive[match(clusters, clusterNames$cluster)]
-	clusterCount = length(unique(paste(clusters, positive)))
+	clusterCount = length(unique(clusters))
 	cat('Number of clusters', clusterCount, '\n')
 
-	dfExpMag = dfExp + 1
+	dfExpMag = dfExp + .1
 	
 	medianVal = apply(dfExpMag, 2, median, na.rm = T)
 	cat("Median intensity", medianVal, '\n')
-	
-	for(cellMarker in colnames(dfExpMag)) {
-		cat(".")
-		values = dfExpMag[[cellMarker]]
-		clNamesOrder = names(table(clusters))
-
-		cols = get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
-		cols = cols[match(clNamesOrder, clusterNames$cluster)]
-
-		cols = sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
-		boxplot(values ~ clusters, col=cols, las=.5, cex.lab.x = 0.5,
-			cex.main=.5, varwidth=F, outline=F,  log = "y", xaxt='n',
-			xlab="", ylab = "", ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)),
-			main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"),
-									  paste0("n=", length(indices), " cells")),)
-		axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=45)
-		abline(h=medianVal[[cellMarker]], lty=2, col='red')
-  }
-  cat("\n")
-  dev.off()
-  print("Plotted raw intensity per marker")
-  
-  
-	
 	pdf(file=f("{plotDir}/raw_intensities.per_cluster.pdf"), 
 		width =  7 + round(clusterCount / 60),
 		height=5 + round(clusterCount / 60))
@@ -397,17 +377,41 @@ plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, pl
 		boxplot(inFlt, outline=FALSE,
 			main = with(clusterNames, f("cluster:{cluster[.row]}\n",
 							gsub("_", "+", gsub('pos:(.*)neg:', "\\1", positive[.row])), "\n")),
-			ylab=paste0("n=", length(indices), " cells"),  cex.main=.5, las=1,
-			ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)), cex.lab.x=.5, xaxt='n', log='y')
-		points(medianVal, pch = 23, col='red')
-		axis(side=1, 1:ncol(inFlt), colnames(inFlt), las = 2, srt=45)
+			ylab=paste0("n=", length(indices), " cells"), 
+			ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)), 
+			cex.main=1, cex.lab = 1,
+			xaxt='n', log='y', las=.5)
+		points(medianVal, pch = 23, col='red', cex = .5)
+		axis(side=1, 1:ncol(inFlt), colnames(inFlt), las = 2, srt=45, cex.axis = .5)
 	}
 	cat("\n")
 	dev.off()
     print("Plotted raw intensity per cluster")
 	
 	pdf(file=f("{plotDir}/raw_intensities.per_marker.pdf"), width=7 + round(clusterCount / 60),
-		height=4 + round(clusterCount / 60))
-	# par(mfrow=c(2, 2))
+		height=6 + round(clusterCount / 60))
+	par(mar = c(8, 3, 2, 2))
+	for(cellMarker in colnames(dfExpMag)) {
+		cat(".")
+		values = dfExpMag[[cellMarker]]
+		clNamesOrder = names(table(clusters))
+		print(cellMarker)
+		cols = get_marker_frequency(data = clusterNames, marker=cellMarker, column = 'positive')
+		cols = cols[match(clNamesOrder, clusterNames$cluster)]
+
+		cols = sapply(cols, function(col) ifelse(grepl('\\+', col), 'red', 'transparent'))
+		boxplot(values ~ clusters, col=cols, las=.5, 
+			cex.main = 1, cex.lab = 1,
+			varwidth=F, outline=F,  log = "y", xaxt='n',
+			xlab="", ylab = "Raw pixel intensity (+0.1)", ylim=c(min(dfExpMag, na.rm = T), max(dfExpMag, na.rm = T)),
+			main = with(clusterNames, paste("Cell marker:", cellMarker, "\n"),
+									  paste0("n=", length(indices), " cells")),)
+		axis(side=1, 1:length(clNamesOrder), clNamesOrder, las = 2, srt=45, cex.axis = 0.6)
+		abline(h=medianVal[[cellMarker]], lty=2, col='red')
+  }
+  cat("\n")
+  dev.off()
+  print("Plotted raw intensity per marker")
+	
 
 }

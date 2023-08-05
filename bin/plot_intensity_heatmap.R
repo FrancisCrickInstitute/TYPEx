@@ -81,11 +81,37 @@ cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is
 markersList = sapply(cellTypeList, function(celltype) {
 	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
 }) %>% unlist %>%  unique
-print(markersList)					
+print(markersList)
+
+
+# Intensity heatmaps
+cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$cellType
+cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
+clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
+
+plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
+	clusters, "", cellTypeStats, 
+	plotDir = f("{outDir}"), plotPos = T)
+
+# Intensity boxplots
+cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$majorType
+cellTypeStats$cluster = cellTypeStats$cellType
+cellTypeStats$positive = cellTypeStats$cellType
+cellTypeStats = cellTypeStats[order(match(cellTypeStats$cellType, cellTypeList)), ]
+clusters = cellObjectsDf$cellType[densMatch]
+
+plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
+				cellTypeStats, 
+				pars[[args$method]], 
+				plotDir = f("{outDir}/raw"), magnitude = max(1, pars$magnitude/10))
 
 stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
 stats$cellType = factor(stats$cellType, levels = cellTypeList)
-pdfOut = f("{outDir}/cell_types_pie_chart.pdf")
+pdfOut = f("{outDir}/cell_types_pie_chart_v2.pdf")
 pdf(pdfOut, useDingbats = F, height = 5, width = 5)
 g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
 plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha = 1) + 
@@ -262,8 +288,8 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
     print('Binary')
   }
   row_ha = HeatmapAnnotation(
-    "# Cells [log2]" = anno_barplot(border = F, 
-                             x = log2(clusterSizeSub$Freq),
+    "# Cells" = anno_barplot(border = F, 
+                             x = clusterSizeSub$Freq,
                              gp = gpar(fill = '#0571B0', col='transparent',
 							 fontsize = 8, title = expression("# Cells"))),
     cellType = rownames(clusterNormSub),
@@ -307,14 +333,13 @@ exp$confidence = grepl("Excluded ", cellObjectsDf$cluster[anaMatch])
 exp$confidence = exp$confidence %>% gsub("TRUE", 'low confidence', .) %>%
   gsub('FALSE', 'high confidence', .)
  
-typeDir = f("{outDir}/intensity_by_cellType")
-if(! dir.exists(typeDir))
-  	dir.create(typeDir)
+
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
+pdfOut = f("{outDir}/median_intensities_per_celltype.log10.pdf")
+pdf(pdfOut, height = 11, width = 8)
 for(marker in majorMarkers) {
 	
-	cat("Intensity violin plots for ", marker, '\n')
-
+  cat("Intensity violin plots for ", marker, '\n')
   markerCols = intersect(colnames(exp), markers)
   avg = exp[, lapply(.SD, median), 
   				.SDcols = markerCols,
@@ -342,9 +367,9 @@ for(marker in majorMarkers) {
   cmbDF$panel[cmbDF$panel < 1e-2] = 1e-2
 
   nrCelltypes = unique(cmbDF$variable)
-  pdfOut = f("{typeDir}/median_intensities_per_celltype.log10.{marker}.pdf")
-  pdf(pdfOut, height = 8, width = 8)
-  sub = subset(cmbDF, variable == marker)
+
+  # Plotting an image if there are more than 5 cells to represent that image
+  sub = subset(cmbDF, variable == marker & count > 5)
   sub = droplevels(sub)
   sub$cellType = factor(sub$cellType, levels = c(cellTypeList, setdiff(unique(sub$cellType), cellTypeList)))
     if(! marker %in% sub$variable) next
@@ -354,7 +379,7 @@ for(marker in majorMarkers) {
     plot = g + 
      geom_violin(aes(fill = cellType), # varwidth = T, 
                  position = position_dodge(width = 1), 
-                  color='black') +
+                 color='black') +
       geom_quasirandom(aes(fill = cellType, size = count), dodge.width = 1, 
 	  			color='black', alpha = .6, pch = 21) +
       stat_summary(geom = 'pointrange', aes(fill = cellType), # varwidth = T,
@@ -364,27 +389,26 @@ for(marker in majorMarkers) {
       theme_classic(base_size = 16) + 
       scale_fill_manual(values = cellTypeColors) +	  
       theme(legend.position="top",
-            axis.text.x=element_text(color="black", angle = 90, hjust = 1),
-            axis.text.y=element_text(color="black"),
-            strip.background=element_blank(),
+            axis.text.x = element_text(color="black", angle = 90, hjust = 1),
+            axis.text.y = element_text(color="black"),
+            strip.background = element_blank(),
             legend.title = element_blank()) +
       scale_y_log10() +
 	  guides(fill = 'none') +
-      facet_wrap(. ~ confidence,  scale = 'free', nrow=4) + 
+      facet_wrap(. ~ confidence,  scale = 'free_y', nrow=4) + 
 	  xlab("") + 
 	  ylab("Median cell intensity per image") +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
-  dev.off()
+
 }
+dev.off()
 
-
-posDir = f("{outDir}/intensity_by_positive")
-if(! dir.exists(posDir))
-	dir.create(posDir) 
 
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
+pdfOut = f("{outDir}/median_intensities_per_positive_type.log10.pdf")
+pdf(pdfOut, height = 11, width = 8)
 for(marker in majorMarkers) {
 
   exp$markerPos = get_marker_frequency(data = exp, marker, 'positive')
@@ -415,9 +439,8 @@ for(marker in majorMarkers) {
   cmbDF$panel[cmbDF$panel < 1e-2] = 1e-2
 
   nrCelltypes = unique(cmbDF$variable)
-  pdfOut = f("{posDir}/median_intensities_per_positive_type.log10.{marker}.pdf")
-  pdf(pdfOut, height = 8, width = 8)
-  sub = subset(cmbDF, variable == marker)
+ 
+  sub = subset(cmbDF, variable == marker & count > 5)
   sub = droplevels(sub)
     if(! marker %in% sub$variable) next
     if(all(is.na(sub[sub$variable == marker, "panel"])))
@@ -442,22 +465,15 @@ for(marker in majorMarkers) {
             strip.background=element_blank(),
             legend.title = element_blank()) +
       scale_y_log10() +
-      facet_wrap(. ~ confidence,  scale = 'free', nrow=4) + 
-	  xlab("") + ylab("Median cell intensity per image")
+      facet_wrap(. ~ confidence,  scale = 'free_y', nrow=4) + 
+	  xlab("") + ylab("Median cell intensity per image") +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
-  dev.off()
 }
+dev.off()
 
-cellTypeStats = ddply(cellObjectsDf, .(cellType, positive, majorType), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$majorType
-cellTypeStats$cluster = cellTypeStats$positive
-clusters = cellObjectsDf$positive[densMatch]
 
-plot_heatmap(expDf, clusters, "", cellTypeStats, 
-	plotDir = f("{outDir}/raw"), plotPos = T)
-plot_expression(expDf, clusters, cellTypeStats, pars[[args$method]], plotDir = f("{outDir}/raw"))
+
 
 
