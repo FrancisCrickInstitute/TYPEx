@@ -190,11 +190,12 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			Dsel = max(Dsel)
 			threshold=mat$D[Dsel] # %>% round(., 2)
 			plot(mat$D, tcell_pct, pch=19, cex=0.1, ylim = c(0, 1), 
-				main = threshold, xlab = 'D score', 
-				ylab = 'Ratio between the proportions of rare cell populations to high cell populations')
+				main = f("{confidence} confidence D cutoff = {threshold}"), 
+				xlab = 'D score', 
+				ylab = 'Ratio between the proportions of\nrare to high cell populations')
 			abline(v=threshold, color = 'red', lty =2)
 			abline(v=mat$D[which(!tcell_count)], 
-				col=rgb(red = 0.8, blue = 0.8, green = 0.8, alpha = 0.5))
+				col = "#e6e6e6ffbr")
 			points(mat$D, tcell_pct, pch=19, cex=0.1, type='l')
 			cat('Selected D cutoff ', mat$D[Dsel], 
 				' for confidence ', confidence, '\n')
@@ -223,12 +224,13 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 				}
 				groups[[group]]= groups[[group]] %>% gsub('(.*)', '`\\1`', .)
 				string_formula=f(paste(groups[[group]], collapse = "+", sep = '+'), "+ 1")
-				g = g + geom_path(aes_string(y=string_formula), color="black", linetype="dashed", size=.7)
-				plot = g + 	scale_color_manual(values= unlist(palette$tcellLines)) +
-							scale_linetype_manual(values=unlist(palette$tcellLinetype)) +
+				g = g + geom_path(aes_string(y=string_formula), color="black", 
+												linetype="dashed", size=.7)
+				plot = g + 	scale_color_manual(values = unlist(palette$tcellLines)) +
+							scale_linetype_manual(values = unlist(palette$tcellLinetype)) +
 							cowplot::theme_cowplot() +
 							theme(legend.position = 'top', legend.title = element_blank()) +
-							guides(color=guide_legend(nrow=3), linetype=guide_legend(nrow=3)) +
+							guides(color=guide_legend(nrow = 3), linetype=guide_legend(nrow=3)) +
 							scale_y_log10() +
 							ylab(f('Cell count [ {group} ]'))
 				print(plot + geom_vline(xintercept=threshold, linetype='dotted', color = 'black'))

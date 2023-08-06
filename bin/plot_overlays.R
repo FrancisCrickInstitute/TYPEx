@@ -104,12 +104,12 @@ if(file.size(args$posFile)) {
 		  png(pngOut, width=dim(raw)[2], height=dim(raw)[1], units = 'px')
 		  par(omi=c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D') 
 		  plot(raw, axes = F, legend = F, 
-			  col = colorRampPalette(c("white", "black"))(80),
+			  col = colorRampPalette(c("black", "white"))(80),
 			  maxpixels = dim(raw)[1] * dim(raw)[2], 
 				xpd = T, frame = F, box = F, legend.mar = 0)
 		  plot(pos, legend=F, axes = F,
 		       maxpixels=dim(r)[2] * dim(r)[1], add = T, alpha=0.4,
-		       col=hcl.colors(length(positive)), xpd = T, type = 'n')
+		       col=hcl.colors(length(positive), "Temps"), xpd = T, type = 'n')
 		  dev.off()
 		 
 	  }

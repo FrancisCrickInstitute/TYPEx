@@ -333,8 +333,9 @@ exp$confidence = exp$confidence %>% gsub("TRUE", 'low confidence', .) %>%
  
 
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
+width = length(unique(cellTypes))/2
 pdfOut = f("{outDir}/median_intensities_per_celltype.log10.pdf")
-pdf(pdfOut, height = 11, width = 8)
+pdf(pdfOut, height = 9, width = width)
 for(marker in majorMarkers) {
 	
   cat("Intensity violin plots for ", marker, '\n')
@@ -405,8 +406,10 @@ dev.off()
 
 
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
+width = length(unique(cellTypes))/2
+
 pdfOut = f("{outDir}/median_intensities_per_positive_type.log10.pdf")
-pdf(pdfOut, height = 11, width = 8)
+pdf(pdfOut, height = 9, width = width)
 for(marker in majorMarkers) {
 
   exp$markerPos = get_marker_frequency(data = exp, marker, 'positive')
