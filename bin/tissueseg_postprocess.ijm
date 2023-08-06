@@ -99,24 +99,31 @@ for (i = 0; i < slideDirList.length; i++) {
 				continue;
 			}
 		}
-		selectWindow("Tumour_" + imgName + '.tiff');
+		open(rawImgName);
 		imgTitle = getList("image.titles");
         for (j = 0; j < imgTitle.length; j++) {
 			print(imgTitle[j]);
+			if (startsWith(imgTitle[j], "Stroma")) {
+				selectWindow(imgTitle[j]);
+				run("Blue");
+				selectWindow(File.getName(rawImgName));
+				run("Add Image...", "image=Stroma_" + imgName + '.tiff' + " x=0 y=0 opacity=50 zero");
+			}
+			if(startsWith(imgTitle[j], "Stroma")) {
+				selectWindow("Tumour_" + imgName + '.tiff');
+				run("Yellow");
+				selectWindow(File.getName(rawImgName));
+				run("Add Image...", "image=Tumour_" + imgName + '.tiff' + " x=0 y=0 opacity=50 zero");
+			}
 		}
+		saveAs("PNG", outDirOverlay + "overlay_" + imgName +".png");
+
 		run("Images to Stack");
 		run("Make Composite", "display=Composite");
 		Stack.setActiveChannels("1110");
 		saveAs("tiff", outDirMasks + "segmentation_" + imgName);
 		saveAs("PNG", outDirMasks + "segmentation_" + imgName);
-
-		print('run RGB');
-		run("RGB Color");
-		rename("Filled");
-		print(rawImgName, 'opening');
-		open(rawImgName);
-		run("Add Image...", "image=Filled" + " x=0 y=0 opacity=20");
-		saveAs("PNG", outDirOverlay + "overlay_" + imgName +".png");
+		
 		run("Close All");
 }
 

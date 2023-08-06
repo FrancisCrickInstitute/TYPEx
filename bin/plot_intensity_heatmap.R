@@ -16,7 +16,7 @@ source(file.path(Sys.getenv('BASE_DIR'), "/lib/plotter.R"))
 source(file.path(Sys.getenv('BASE_DIR'), "/lib/celltype_tree_utils.R"))
 
 
-arg_parser=argparser::arg_parser("Summarize typing results")
+arg_parser=argparser::arg_parser("Summarise typing results")
 add=argparser::add_argument
 arg_parser=add(arg_parser, arg="--inDir", help="in")
 arg_parser=add(arg_parser, arg="--subset", default="subtypes", help=paste("all", "sampled"))
@@ -51,7 +51,7 @@ if(! any(metals %in% colnames(expDf))) {
 }
 
 summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}'))
-outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/plots"))
+outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/intensity_plots"))
 
 if(! dir.exists(outDir))
 	dir.create(outDir, recursive = T)
@@ -292,7 +292,7 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
 							 fontsize = 8, title = expression("# Cells"))),
     cellType = rownames(clusterNormSub),
     which = 'row',
-    gp = gpar(col = "grey50"),
+    gp = gpar(col = "black"),
 	col = list(cellType = unlist(cellTypeColors)))
 	
   full = ComplexHeatmap::Heatmap(

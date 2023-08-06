@@ -45,6 +45,12 @@ for(majorCellType in unique(dfIn$cellType)) {
 	markers = unique(c(markers, get_celltype_markers(marker_gene_list[[args$ref_markers]], gsub(" - Other", "", majorCellType))))
 	# get the most unique marker per cell type
 	sel = markerStats[markers] == 1 &  markers %in% names(markerStats)
+	
+	# if Double positive included in T cells
+	if(majorCellType %in% c("T cells", "T cells - Other", "T", "T - Other")) {
+		sel = markers %in% c("CD3", "CD3e")
+	}
+	
 	if(! any(sel))
 		sel = order(markerStats[markers])[1]
 	markers = markers[sel]

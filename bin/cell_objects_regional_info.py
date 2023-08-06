@@ -34,7 +34,8 @@ if(not os.path.isdir(outDir)):
 cellFrame=pd.read_csv(args.cellObjFile, sep =",")
 print(cellFrame.columns.values.tolist())
 
-if not os.path.exists(args.maskDir) and args.regionType == 'regional':
+# if not os.path.exists(args.maskDir) and args.regionType == 'regional':
+if args.regionType == 'regional':
     args.maskDir = os.path.join(args.tissueAreaDir, 'labels')
 
 maskList=glob.glob(os.path.join(args.maskDir,
@@ -73,13 +74,14 @@ if(len(maskList) > 0):
         print(max(dataTmp["LocationCenter_Y"]))
         print(tiff.shape)
         print(region, imagename)
+        # Check the orientation of the mask
         if(max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1]):
             regions=[
                 tiff[int(np.round(x)), int(np.round(y))]
                     for x, y in zip(dataTmp['LocationCenter_X'],
                                     dataTmp['LocationCenter_Y'])
             ]
-        elif(max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1]):
+        elif(max(dataTmp["LocationCenter_X"]) <= tiff.shape[1] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[0]):
 	        regions=[
     	        tiff[int(np.round(y)), int(np.round(x))]
         	        for x, y in zip(dataTmp['LocationCenter_X'], 

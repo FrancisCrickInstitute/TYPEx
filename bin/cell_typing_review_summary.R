@@ -142,11 +142,16 @@ if(! length(data)) {
 	
 	fullStats = recast[[typedCols[1]]] %>% table
 	refStats = recast[[typedCols[2]]] %>% table
+
 	mostLikelyCellTypes = c(
 		names(fullStats)[order(fullStats, decreasing = T)][1],
 		names(refStats)[order(refStats, decreasing = T)][1]
 	)
 	print(mostLikelyCellTypes)
+	if(length(mostLikelyCellTypes) < 2) {
+		stop(paste("ERROR: Please make sure that both models have run.", 
+					"If cached in an earlier run, one of the processes can be skipped."))
+	}
 	cat(mostLikelyCellTypes, '\n', file = log, append = F)
 	
 	# No cell-specific raw masks to be used to define positive controls
