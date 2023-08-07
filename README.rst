@@ -25,38 +25,59 @@ Running on input generated with deep-imcyto
 --------------
 
 .. code-block:: bash
+
    nextflow run TRACERx-PHLEX/TYPEx/main.nf \
         -c $PWD/TRACERx-PHLEX/TYPEx/conf/testdata.config \
         --input_dir $PWD/results/deep-imcyto/$release/ \
-        --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+        --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_file.tracerx.txt \
         --release $release \
         --outDir "$PWD/results/TYPEx/$release/" \
         --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
-        --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+        --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.json" \
+		--tissue_seg_model "$PWD/TRACERx-PHLEX/TYPEx/models/tumour_stroma_classifier.ilp" \
+		--color_config $PWD/TRACERx-PHLEX/TYPEx/data/celltype_colors.json \
         --deep_imcyto true --mccs true \
         -profile singularity \
-        --wd "scratch" \
         -resume
 
-Running indpendently of deep-imcyto
+Running TYPEx with user-provided cell objects tables (indpendently of deep-imcyto)
 --------------
 
 .. code-block:: bash
 
    release=TYPEx_test
    nextflow run TYPEx/main.nf \
-   -c $PWD/TYPEx/conf/testdata.config \
-    -c TYPEx/nextflow.config \
+   -c $PWD/TYPEx/test.config \
+    -c TYPEx/testdata.config \
     --input_dir $PWD/results/ \
     --release $release \
     --input_table $PWD/TYPEx/data/cell_objects.tracerx.txt \
-    --sample_file $PWD/TRACERx-PHLEX/TYPEx/data/sample_data.tracerx.txt \
+    --sample_file $PWD/TYPEx/data/sample_file.tracerx.txt \
     --outDir "$PWD/results/TYPEx/$release/" \
-    --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
-    --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.p1.json" \
+    --params_config "$PWD/TYPEx/data/typing_params.json" \
+    --annotation_config "$PWD/TYPEx/data/cell_type_annotation.json" \
+	--color_config $PWD/TYPEx/data/celltype_colors.json \
     -profile singularity \
-    --wd "scratch" \
     -resume
+	
+Running locally without high-perfomance computing server
+
+.. code-block:: bash
+
+	   release=TYPEx_test
+	   nextflow run TYPEx/main.nf \
+	   -c $PWD/TYPEx/conf/testdata.config \
+	    -c TYPEx/testdata.config \
+	    --input_dir $PWD/results/ \
+	    --release $release \
+	    --input_table $PWD/TYPEx/data/cell_objects.tracerx.txt \
+	    --sample_file $PWD/TYPEx/data/sample_file.tracerx.txt \
+	    --outDir "$PWD/results/TYPEx/$release/" \
+	    --params_config "$PWD/TYPEx/data/typing_params.json" \
+	    --annotation_config "$PWD/TYPEx/data/cell_type_annotation.json" \
+		--color_config $PWD/TYPEx/data/celltype_colors.json \
+	    -profile docker \
+	    -resume
 
 
 Input Files
