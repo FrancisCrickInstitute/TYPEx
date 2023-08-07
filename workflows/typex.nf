@@ -18,10 +18,9 @@ include { exporter as subtypes_exporter; exporter as major_exporter;
 			plot_dr } from '../modules/release.nf'
 include { get_cell_files; get_imcyto_raw_masks; parse_json_file;
 		get_tissue_seg_markeres; get_tissue_masks_config }  from '../lib/functions.nf'
+include { QC as QC_subtype; QC as QC_major } from '../workflows/qcw.nf'
 
-include { qc_select_images; qc_create_single_channel_images; qc_overlay;
-	 	qc_intensity_heatmap} from '../modules/qc.nf'
-
+		
 /* -- INPUT TYPING PARAMETERS -- */
 subsample_methods =
 	Channel.of(
@@ -152,7 +151,7 @@ workflow TIERED {
 				params.subtype_markers,
 				params.major_markers,
 				tier_two.out)
-			QC(subtypes_exporter.out,
+			QC_subtype(subtypes_exporter.out,
 				"${params.subtype_markers}",
 				'subtypes',
                 params.subtype_method)
@@ -164,6 +163,11 @@ workflow TIERED {
 				params.subtype_markers,	
 				params.major_markers,				
 				tier_two.out)
+				
+			QC_subtype(subtypes_exporter.out,
+					params.subtype_method_nostrat,
+					'subtypes',
+	                params.subtype_method)
 		}
 	// emit:
 	//	subtypes_exporter:.out
@@ -234,7 +238,7 @@ workflow SUBSAMPLING {
 	//////////////////////////////////////////////
 	take: out
 	main:
-		pars=iterations.combine(subsample_methods)
+		pars = iterations.combine(subsample_methods)
 				.combine(subsample_markers)
 		if(params.sampled || params.clustered) 	{
 			call_cluster(
@@ -252,6 +256,12 @@ workflow SUBSAMPLING {
 				params.annotate_markers,
 				params.annotate_markers,
 				call_cluster.out.collect())
+				
+			QC_major(
+				major_exporter.out,
+				"${params.subtype_markers}",
+				'subtypes',
+				params.subtype_method)
 		}
 		if(params.sampled) {
 			call_subsampled(
@@ -276,40 +286,4 @@ workflow SUBSAMPLING {
 		//	"${params.output_dir}/nfData", 
 		//	call_cluster.out.collect()
 		//)
-}
-
-workflow QC {
-
-	take: out
-		  markers
-		  subset
-		  method
-	main:
-	
-		if(file(params.image_dir).isDirectory())	{
-				qc_select_images(
-					markers, 
-					subset,
-					method,
-					out
-				)
-				qc_create_single_channel_images(
-					markers,
-					subset,
-					method,
-					qc_select_images.out
-				)
-				qc_overlay(
-					markers,
-					subset, 
-					method,
-					qc_create_single_channel_images.out
-			)
-		}
-		qc_intensity_heatmap(
-			markers,
-			subset, 
-			method,
-			out
-		)
 }

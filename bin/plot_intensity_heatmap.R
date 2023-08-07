@@ -129,7 +129,7 @@ plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha 
 print(plot)
 dev.off()
 
-posDir = f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter")
+posDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter"))
 if(! dir.exists(posDir))
 	dir.create(posDir) 
 pngOut = f("{posDir}/legend.png")

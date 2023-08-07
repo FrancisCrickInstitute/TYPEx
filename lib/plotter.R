@@ -114,7 +114,7 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 	clusterSize = table(clusters) %>% as.data.frame
 
     clusterSummary <- sapply(colnames(dfExp), function(x) {
-      tapply(t(dfExp[[x]]), as.factor(clusters), mean, na.rm = T)
+      tapply(t(dfExp[[x]]), as.factor(clusters), median, na.rm = T)
     })
 		
 	minValue = min(clusterSummary[clusterSummary > 0], na.rm = T)
