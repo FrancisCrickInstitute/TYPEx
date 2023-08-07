@@ -197,7 +197,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			abline(v=mat$D[which(!tcell_count)], 
 				col = "#e6e6e6ff")
 			points(mat$D, tcell_pct, pch=19, cex=0.1, type='l')
-			stop()
+
 			cat('Selected D cutoff ', mat$D[Dsel], 
 				' for confidence ', confidence, '\n')
 			cat('INFO: Selected D cutoff ', mat$D[Dsel], 

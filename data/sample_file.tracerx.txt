@@ -1,0 +1,6 @@
+study	cohort	panel	imagename	TMA_position	TMA	duplicate_core	CRUK_ID	CRUK_RegionID	tissue_type	histology_subtype	growth pattern	useImage
+tracerx	tx100	T cell & Stroma	P1_TMA002_L_20190619-roi_16.ome-roi_p1_tma002_l_20190619-roi_16	TMA002_3_9	TMA002	L	CRUK0003	CRUK0003:R4	Tumour	Invasive adenocarcinoma	acinar	keep
+tracerx	tx100	T cell & Stroma	P1_TMA005_R_20190619-roi_4.ome-roi_p1_tma005_r_20190619-roi_4	TMA005_5_2	TMA005	R	CRUK0096	CRUK0096:LN1	Lymphnode	Adenosquamous carcinoma (no tumour)	NA	keep
+tracerx	tx100	T cell & Stroma	P1_TMA006_L_20190619-roi_24-roi_p1_tma006_l_20190619-roi_24	TMA006_3_10	TMA006	L	CRUK0041	CRUK0041:R2	Tumour	Invasive adenocarcinoma	solid	keep
+tracerx	tx100	T cell & Stroma	P1_TMA006_L_20190619-roi_6.ome-roi_p1_tma_rec_20190508-roi_6	TMA006_1_7	TMA006	L	CRUK0083	CRUK0083:R3	Tumour	Squamous cell carcinoma	NA	keep
+tracerx	tx100	T cell & Stroma	P1_TMA007_L_20190619-roi_12-roi_p1_tma007_l_20190619-roi_12	TMA007_4_2	TMA007	L	CRUK0094	CRUK0094:R4	Tumour	Pleomorphic carcinoma	NA	keep
