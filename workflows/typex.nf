@@ -243,7 +243,6 @@ workflow SUBSAMPLING {
 				params.annotate_markers,
 				params.annotate_markers,
 				false,
-				params.stratify_label,
 				"${params.output_dir}/nfData",
 				out
 			)

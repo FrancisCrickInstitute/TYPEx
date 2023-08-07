@@ -95,7 +95,7 @@ clusters = cellObjectsDf$cellType[densMatch]
 plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
 				cellTypeStats, 
 				pars[[args$method]], 
-				plotDir = f("{outDir}/raw"), magnitude = max(1, pars$magnitude/10))
+				plotDir = f("{outDir}/intensity"), magnitude = max(1, pars$magnitude/10))
 
 # Intensity heatmaps
 cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
@@ -105,7 +105,7 @@ cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
 clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
 
 plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
-	clusters, runID = f("{outDir}"), cellTypeStats, 
+	clusters, runID = f("{outDir}/heatmap"), cellTypeStats, 
 	plotDir = f("{outDir}"), plotPos = T)
 
 
@@ -129,7 +129,7 @@ plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha 
 print(plot)
 dev.off()
 
-posDir = f("{outDir}/scatter")
+posDir = f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter")
 if(! dir.exists(posDir))
 	dir.create(posDir) 
 pngOut = f("{posDir}/legend.png")
@@ -335,7 +335,7 @@ exp$confidence = exp$confidence %>% gsub("TRUE", 'low confidence', .) %>%
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))/2
 pdfOut = f("{outDir}/median_intensities_per_celltype.log10.pdf")
-pdf(pdfOut, height = 9, width = width)
+pdf(pdfOut, height = 7.5, width = width)
 for(marker in majorMarkers) {
 	
   cat("Intensity violin plots for ", marker, '\n')
@@ -409,7 +409,7 @@ majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))/2
 
 pdfOut = f("{outDir}/median_intensities_per_positive_type.log10.pdf")
-pdf(pdfOut, height = 9, width = width)
+pdf(pdfOut, height = 7.5, width = width)
 for(marker in majorMarkers) {
 
   exp$markerPos = get_marker_frequency(data = exp, marker, 'positive')
