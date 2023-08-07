@@ -191,12 +191,13 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			threshold=mat$D[Dsel] # %>% round(., 2)
 			plot(mat$D, tcell_pct, pch=19, cex=0.1, ylim = c(0, 1), 
 				main = f("{confidence} confidence D cutoff = {threshold}"), 
-				xlab = 'D score', 
-				ylab = 'Ratio between the proportions of\nrare to high cell populations')
+				xlab = 'D score', bty = "n",
+				ylab = 'Ratio between proportions of\nrare to high cell populations')
 			abline(v=threshold, color = 'red', lty =2)
 			abline(v=mat$D[which(!tcell_count)], 
-				col = "#e6e6e6ffbr")
+				col = "#e6e6e6ff")
 			points(mat$D, tcell_pct, pch=19, cex=0.1, type='l')
+			stop()
 			cat('Selected D cutoff ', mat$D[Dsel], 
 				' for confidence ', confidence, '\n')
 			cat('INFO: Selected D cutoff ', mat$D[Dsel], 

@@ -268,7 +268,7 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
                                 cluster_columns = F,
                                 row_title_gp = gpar(fontsize = 10),
                                 column_title = NULL,
-								row_title = 'positivity',
+								row_title = 'Positivity',
 								row_title_rot=90,
                                 rect_gp = gpar(col = 'grey85'),
                                 column_title_gp = gpar(fontsize = 10),
@@ -317,7 +317,7 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
                                 ncol=1, nrow=4,by_row=T, 
                                 direction='horizontal', fontsize=8),
     show_heatmap_legend=T,
-    column_names_gp = gpar(fontsize = 8, angle=90))
+    column_names_gp = gpar(fontsize = 8, angle = 90))
   full = draw(full)
   print("Full map")
 dev.off()
