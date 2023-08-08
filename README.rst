@@ -141,9 +141,9 @@ Input table
 
 The input matrix has values that summarise the intensity of a protein per cell object, such as mean intensity, independently of the imaging modality or antibody tagging technique.
 
-================= ============ ===== ===== ============== ============ ============ ============
-  Cell Object ID    Image ID     X     Y     Area [opt].    Marker 1     ...          Marker N  
-================= ============ ===== ===== ============== ============ ============ ============
+================= =========== ===== ===== ======= ============ ============ ============
+   ObjectNumber    imagename    X     Y     Area   <Marker 1>       ...      <Marker N>  
+================= =========== ===== ===== ======= ============ ============ ============
 
 .. _Typing parameters config:
 Typing parameters config
