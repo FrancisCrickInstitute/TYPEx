@@ -175,12 +175,15 @@ These include densities of identified cell phenotypes (cell_density_*.txt), a ca
 
 .. code-block:: bash
 
-        summary
-        ├── cell_density_*.txt
-        ├── cell_objects_*.txt
-        ├── phenotypes.*.txt          
-        ├── summary_*.cell_stats.txt
-        ├── categs_summary_*.cell_stats.txt
+		summary
+	    ├── cell_density_*.txt
+	    ├── cell_objects_*.txt
+	    ├── phenotypes.*.txt          
+	    ├── summary_*.cell_stats.txt
+	    ├── categs_summary_*.cell_stats.txt
+		├── mapps
+		├── intensity_plots
+		├── overlays
        
 Troubleshooting
 =============
