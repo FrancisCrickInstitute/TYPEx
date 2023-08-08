@@ -138,7 +138,7 @@ for(feature in pars$features) {
 	
 
 	## Filter out excluded samples based on metadata
-	if("useImage" %in% colnames(metaDf)) {
+	if("useImage" %in% colnames(metaDf) | "use_image" %in% colnames(metaDf)) {
 	
 		imagenames = gsub(".txt", "", basename(inData$imagename))
 		excludeIDs = metaDf$imagename[

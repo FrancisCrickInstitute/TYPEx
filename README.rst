@@ -163,9 +163,9 @@ Sample annotation table
 -----------------------------
 Provide the sample annotation table in the following format: 
 
-============ ================== ======= ===================
-  Image ID     Batch effect 1     ...     Batch effect N  
-============ ================== ======= ===================
+============ =========================== ================== ======= =================== =================
+ imagename     <experimental condition>   <Batch effect 1>    ...    <Batch effect N>  		use_image
+============ =========================== ================== ======= =================== =================
 
 .. _Outputs:
 Outputs
