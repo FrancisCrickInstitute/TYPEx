@@ -20,7 +20,7 @@ process qc_select_images {
 		
         qc_select_images.R \
 			--inDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
-			--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/" \
+			--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/" \
 			--ref_markers ${params.major_markers}
 
     """
@@ -44,11 +44,11 @@ process qc_create_single_channel_images {
 
 		script:
 		"""
-			[[ ! -d ${subset}_${ref_markers}_${method}/qc ]]
-				mkdir -p ${subset}_${ref_markers}_${method}/qc
+			[[ ! -d ${subset}_${ref_markers}_${method}/overlays ]]
+				mkdir -p ${subset}_${ref_markers}_${method}/overlays
 			## Using params.input_dir as an absolute path
 			ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/raw_image_by_file.ijm" \
-				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/overlay_examples.txt", outDir=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc\"'
+				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt", outDir=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays\"'
 		"""
 }
 
@@ -68,11 +68,11 @@ process qc_overlay {
 			export COL_CONF=${params.color_config}
 			
 			plot_overlays.R \
-				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/ \
+				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/ \
 				--maskDir ${params.input_dir} --mccs ${params.mccs}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
 				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
-				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/qc/overlay_examples.txt \
+				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt \
 				--panel ${params.panel} \
 				--run ${params.release}
 	    """

@@ -411,8 +411,11 @@ review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
 }
 
 summary_table <- function(inDf, pars, regFile) {
+	
+	print(head(inDf))
   markers = setdiff(unique(unlist(lapply(unique(inDf$positivity),
                                        function(x) strsplit(toString(x), split="_")[[1]]))), c('NA', ''))
+									   
   dfMarker = sapply(markers, function(marker) {
     get_marker_frequency(inDf, marker)
   })
@@ -426,16 +429,18 @@ summary_table <- function(inDf, pars, regFile) {
    
   if(length(pars$experimental_condition) > 0 & file.exists(regFile)) {
 	  # get info
-	
-	  
 	  info = sapply(pars$experimental_condition, function(factor) {
 		 	 get_region_info(panel = pars$panel, 
 		  					cellIDs = inDf$imagename,
 							regFile = regFile,
 							featurePattern = f("{factor}$"))
 	  })
-	  dfMarker = cbind(dfMarker, info)
-	  inDf = cbind(inDf, info)
+	  colnames(info) = pars$experimental_condition
+	  if(any(is.na(info)))
+		  cat("WARNING: check whether the imagenames match the sample annotation table. Missing values for some.\n")
+	  dfMarker = cbind(dfMarker, info) %>% as.data.frame
+	  inDf = cbind(inDf, info)  %>% as.data.frame
+
 	  dfMarkMelt = reshape2::melt(dfMarker, id.vars=c("imagename", pars$experimental_condition, "cellCount", "cellDensity"))
 	  ids = c("imagename", pars$experimental_condition)
   } else {
@@ -443,17 +448,30 @@ summary_table <- function(inDf, pars, regFile) {
 	  ids = c("imagename")
 	  
   }
-
   dfMarkStats = ddply(dfMarkMelt, c(ids, "variable", "value"), summarise,
-                    count=sum(cellCount, na.rm = T),
+                    count = sum(cellCount, na.rm = T),
                     density = sum(cellDensity, na.rm = T))
 
   # Output for cell density table
   inDf$cellID=paste(inDf$cellType, sep = ":")
-  typeStats = ddply(inDf, c(ids, "cellID"), summarise,
-                  cellDensity = sum(cellDensity, na.rm = T),
+  print(head(inDf))
+  typeStats = ddply(inDf, .(imagename, cellID), summarise,
+                  cellDensity = ifelse(all(is.na(cellDensity)), NA, sum(cellDensity, na.rm = T)),
                   cellCount = sum(cellCount, na.rm = T),
                   cellPercentage = sum(cellPercentage, na.rm = T), .drop=F)
+
+  if(length(pars$experimental_condition) > 0 & file.exists(regFile)) {
+	  # get info
+	  info = sapply(pars$experimental_condition, function(factor) {
+		 	 get_region_info(panel = pars$panel, 
+		  					cellIDs = typeStats$imagename,
+							regFile = regFile,
+							featurePattern = f("{factor}$"))
+	  })
+	  colnames(info) = pars$experimental_condition
+	  typeStats = cbind(imagename = typeStats[, "imagename"], info, typeStats[, ! colnames(typeStats) %in%"imagename"])
+  }
+	
   posStatsList = lapply(markers, function(marker) {
     print(marker)
     inDf$selection = get_marker_frequency(inDf, marker, 'positivity')
@@ -462,6 +480,7 @@ summary_table <- function(inDf, pars, regFile) {
     stats$marker=marker
     stats
   })
+
   posStatsList = do.call(rbind, posStatsList)
   posStats = reshape2::dcast(data = posStatsList, formula = imagename + cellID ~ marker,
                            value.var =  "cellDensity")
