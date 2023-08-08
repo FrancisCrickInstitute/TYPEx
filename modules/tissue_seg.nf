@@ -67,7 +67,7 @@ process run_classifier {
 	
 	"""
 		files=` find ${params.output_dir}/composites/ -name "*tiff" `
-		echo $files
+	 	echo " $files "
 		if [ -n "` find ${params.output_dir}/composites/ -name "*tiff" `" ]; then
 			/ilastik-release/run_ilastik.sh --headless \
 				--project=${params.tissue_seg_model} \
