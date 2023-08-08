@@ -34,7 +34,7 @@ process TYPE {
 			--tissAreaDir "${params.output_dir}/tissue_seg/" \
 			--celltypeModelFile ${params.output_dir}/review/${params.panel}_${params.major_markers}.RData \
 			--stratify ${stratify} \
-			--mostFreqCellType ${params.most_freq_celltype} \
+			--mostFreqCellType "${params.most_freq_celltype}" \
 			--major_markers "${major_markers}"
 
 	"""

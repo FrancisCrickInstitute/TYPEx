@@ -205,15 +205,15 @@ run_cellassign <- function(inMat, p, colors)  {
   
   if(! file.exists(outFile)) {
 	  
-	marker_list=get_node_list(marker_gene_list[[p$markers]])
-    markerMat=cellassign::marker_list_to_mat(marker_list)
-    markerMat=markerMat[rownames(markerMat) %in% colnames(inMat), ]
-    markerMat=markerMat[, apply(markerMat, 2, function(x) ! all(x == 0))]
+	marker_list = get_node_list(marker_gene_list[[p$markers]])
+    markerMat = cellassign::marker_list_to_mat(marker_list)
+    markerMat = markerMat[rownames(markerMat) %in% colnames(inMat), ]
+    markerMat = markerMat[, apply(markerMat, 2, function(x) ! all(x == 0))]
     # if same signature for multiple cells because of missing markers, keep the higest in lineage
-    cellcode=apply(markerMat, 2, paste, collapse="")
-    exclude=unlist(sapply(unique(cellcode[duplicated(cellcode)]), function(x) {
-      duplcates=names(cellcode)[cellcode==x]
-      count=sapply(duplcates, function(celltype) {
+    cellcode = apply(markerMat, 2, paste, collapse="")
+    exclude = unlist(sapply(unique(cellcode[duplicated(cellcode)]), function(x) {
+      duplcates = names(cellcode)[cellcode==x]
+      count = sapply(duplcates, function(celltype) {
         length(marker_gene_list[[p$markers]][[celltype]])
       })
       names(count)[count > min(count)]
@@ -227,7 +227,7 @@ run_cellassign <- function(inMat, p, colors)  {
     cat("From them,", length(keep), "are found in inMat.\n")
     
 	# Constant library size
-    s=rep(1, nrow(inMat))
+    s = rep(1, nrow(inMat))
     fit <- cellassign::cellassign(
 		exprs_obj        = as.matrix(inMat[, ..keep]),
         marker_gene_info = markerMat,
