@@ -149,7 +149,7 @@ The input matrix has values that summarise the intensity of a protein per cell o
 Typing parameters config
 -----------------------------
 
-:bash: `typing_params.json` contains the settings for clustering approaches to be used, normalisation approaches, and filtering criteria.
+:bash:`typing_params.json` contains the settings for clustering approaches to be used, normalisation approaches, and filtering criteria.
 
 Key parameters that are often of interest are:
 * magnitude 
