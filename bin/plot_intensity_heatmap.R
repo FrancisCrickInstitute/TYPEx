@@ -131,7 +131,7 @@ dev.off()
 
 posDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter"))
 if(! dir.exists(posDir))
-	dir.create(posDir) 
+	dir.create(posDir, recursive = T) 
 pngOut = f("{posDir}/legend.png")
 png(pngOut, width = 300, height = length(cellTypeColors)*30, units = 'px')
 par(omi = c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D')

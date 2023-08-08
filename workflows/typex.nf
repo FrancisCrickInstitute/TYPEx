@@ -259,8 +259,8 @@ workflow SUBSAMPLING {
 				
 			QC_major(
 				major_exporter.out,
-				"${params.subtype_markers}",
-				'subtypes',
+				"${params.annotate_markers}",
+				'major',
 				params.subtype_method)
 		}
 		if(params.sampled) {
