@@ -65,7 +65,7 @@ process build_strata_model {
             --subset major \
 			--panel ${params.panel} \
 			--regFile ${params.sample_file} \
-			--mostFreqCellType ${params.most_freq_celltype} \
+			--mostFreqCellType "${params.most_freq_celltype}" \
 			--major_markers ${params.major_markers}
 
 	"""
