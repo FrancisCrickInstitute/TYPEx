@@ -67,7 +67,8 @@ if(! pars$markers %in% names(marker_gene_list))
 if(file.exists(args$regFile)) {
 	metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
 } else {
-	stop('Sample annotation file does not exist', args$regFile)
+	stop(f('ERROR: Sample annotation file does not exist {args$regFile}. ', 
+		"In the running script, include the path to your sample annotation table next to the --sample_file argument."))
 }
 
 # If reference model called for stratification

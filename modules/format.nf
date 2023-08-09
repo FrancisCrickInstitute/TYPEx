@@ -5,7 +5,7 @@
 
 process format_input {
 
-	label 'xs'
+	label 's'
 
 	publishDir "${params.output_dir}/nfData/", mode: params.publish_dir_mode, overwrite: true
 
@@ -27,7 +27,7 @@ process format_input {
  */
 process collate_features {
 
-	label 'medium_mem'
+	label 's'
 	
 	publishDir "${params.output_dir}/features/", mode: params.publish_dir_mode, overwrite: true
 	
