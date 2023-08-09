@@ -103,6 +103,8 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 			"the probabilistic cellassign model",
 	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
         #stop("ERROR: Missing TMA values")
+	  } else if(! length(tma_values)) {
+		  stop("Open the sample annotation table and verify that the column(s) for batch effects exit. These columns are defined in typing_params.json")
 	  } else {
 	  	tma_values=apply(tma_values, 1, paste, collapse = '_')
   	  }

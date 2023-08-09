@@ -52,7 +52,7 @@ process create_composites {
 
 process run_classifier {
 
-	label "s"
+	label "medium_mem"
 	
 	// publishDir path: "${params.output_dir}/composites/probs/", 
 			//	  mode: params.publish_dir_mode, 
