@@ -45,6 +45,11 @@ analysisID = with(args, f("{panel}_{major_markers}"))
 modelOut = with(args, f("{cellReviewDir}/{analysisID}.RData"))
 log=f("{out}/{analysisID}.log")
 
+if(! dir.exists(out))
+	dir.create(out, recursive = T))
+if(! dir.exists(visDir))
+	dir.create(visDir, recursive = T)
+
 cat('Stratification by confidence', file = log, append = F)
 
 if(args$mostFreqCellType == 'None') {
@@ -80,11 +85,7 @@ intensityColNameFull = f("meanIntensity_{args$major_method}_{args$major_markers}
 intensityColNameRef = f("meanIntensity_{args$major_method}_{ref_markers_list}")
 	
 
-if(! dir.exists(out))
-	dir.create(out, recursive = T)
 
-if(! dir.exists(visDir))
-	dir.create(visDir, recursive = T)
 
 data=vector(mode="list")
 
