@@ -182,7 +182,7 @@ workflow STRATIFY {
 		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
 		rawMasks=get_imcyto_raw_masks()
 		
-		if(params.most_freq_celltype != 'None') {
+		if(params.exclude_cell_lineage != 'None') {
 			tier_one_ref(
 				params.major_method,
 				'major',
@@ -238,8 +238,7 @@ workflow SUBSAMPLING {
 	//////////////////////////////////////////////
 	take: out
 	main:
-		pars = iterations.combine(subsample_methods)
-				.combine(subsample_markers)
+		
 		if(params.sampled || params.clustered) 	{
 			call_cluster(
 				params.subtype_method, 
@@ -264,6 +263,9 @@ workflow SUBSAMPLING {
 				params.subtype_method)
 		}
 		if(params.sampled) {
+			pars = iterations.combine(subsample_methods)
+					.combine(Chanel.of(["major"]))
+					.combine(subsample_markers)
 			call_subsampled(
 	            pars,
 	            "${params.output_dir}/nfData",

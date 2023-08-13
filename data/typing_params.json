@@ -4,7 +4,7 @@
   "channels_exclude":["Argon", "80ArAr", "131Xe", "134Xe", "DNA1",  "DNA2", "processed"],
 
   // Exlude cells with an area smaller or eqiual to pars$area_exclude [area for raidus > 2 pixels]
-  "area_exclude":[12.5664],
+  "area_exclude":[0],
   
   // Cells with zero expression for all markers will not be typed
   "min_expresssion":[0],
@@ -28,7 +28,10 @@
 
   // Batch effects correction to be considered from the sample annotation table
   "batch_effects":["TMA", "duplicate_core", "cohort"],
+  
   // CODEX "batch_effects":["TMA_12"],
+  //
+  "experimental_condition":["tissue_type"],
 
   // Method-specific parameters
   "FastPG":{

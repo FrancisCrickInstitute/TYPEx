@@ -1,8 +1,6 @@
 
 process preprocess_panck {
 
-	maxRetries 1
-
 	publishDir path: "${params.output_dir}/composites/", 
 			   mode: params.publish_dir_mode, 
 			   overwrite: false
@@ -53,10 +51,6 @@ process create_composites {
 process run_classifier {
 
 	label "medium_mem"
-	
-	// publishDir path: "${params.output_dir}/composites/probs/", 
-			//	  mode: params.publish_dir_mode, 
-				//  overwrite: true
 
 	input:
 		val files
@@ -105,8 +99,6 @@ process process_probs {
 
 process ts_exporter {
 	
-	maxRetries 1
-
 	input:
 		val files
 
@@ -130,12 +122,6 @@ process ts_exporter {
 
 process mask_overlay {
 
-	maxRetries 1
-    tag "post-process"
-	
-	publishDir "${params.output_dir}/tissue_seg/",
-				mode: params.publish_dir_mode,
-				overwrite: false
 
 	input:
 		tuple path(maskDir), val(maskRegEx), val(regionType), val(imageRegEx), val(regionRegEx)
@@ -144,14 +130,15 @@ process mask_overlay {
 		val cells
 
 	output:
-		path("*")
-
+		val params.output_dir
+		
 	script:
     """
 			
 		cell_objects_regional_info.py \
 			--maskDir ${maskDir} \
 			--tissueAreaDir "${params.output_dir}/tissue_seg" \
+			--outDir "${params.output_dir}/tissue_seg/" \
 			--panel ${params.panel} \
 			--cellObjFile ${cellObjFile} \
 			--maskRegEx "${maskRegEx}" \

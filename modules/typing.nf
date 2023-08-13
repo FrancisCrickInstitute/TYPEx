@@ -34,7 +34,7 @@ process TYPE {
 			--tissAreaDir "${params.output_dir}/tissue_seg/" \
 			--celltypeModelFile ${params.output_dir}/review/${params.panel}_${params.major_markers}.RData \
 			--stratify ${stratify} \
-			--mostFreqCellType "${params.most_freq_celltype}" \
+			--mostFreqCellType "${params.exclude_cell_lineage}" \
 			--major_markers "${major_markers}"
 
 	"""
@@ -42,7 +42,7 @@ process TYPE {
 
 process build_strata_model {
 	
-	label 'xs'
+	label 'medium_mem'
 	
 	input:
 		val files
@@ -65,7 +65,7 @@ process build_strata_model {
             --subset major \
 			--panel ${params.panel} \
 			--regFile ${params.sample_file} \
-			--mostFreqCellType "${params.most_freq_celltype}" \
+			--mostFreqCellType "${params.exclude_cell_lineage}" \
 			--major_markers ${params.major_markers}
 
 	"""

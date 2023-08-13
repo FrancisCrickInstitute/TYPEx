@@ -94,7 +94,8 @@ process qc_intensity_heatmap {
 			export ANN_CONF=${params.annotation_config}
 			export COL_CONF=${params.color_config}
 			
-			plot_intensity_heatmap.R --inDir ${params.output_dir}/ \
+			plot_intensity_heatmap.R \
+				--inDir ${params.output_dir}/ \
 				--panel ${params.panel} \
 				--subset ${subset} \
 				--method ${method} \

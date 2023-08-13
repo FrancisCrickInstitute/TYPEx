@@ -23,7 +23,7 @@ print 'File ', $inFile, "\n";
 $core =~ s/.*segmentation.(.*).Cells.csv/$1/i;
 print "core ", $core, "\n";
 
-$core =~ s/\//-/;
+$core =~ s/\/roi/-roi/;
 open IN, $inFile or die "Could not open $inFile:$!\n";
 my @header = split /$delim/, <IN>;
 $header[$#header] =~ s/\n//;
@@ -33,8 +33,8 @@ if($imcyto eq 'true')	{
 	@header = map {s/Location_Center/LocationCenter/; $_} @header;
 	# simple segmentaiton
 	@header = map {s/mean_intensity/MeanIntensity/i; $_} @header;
-	@header = map {s/centroid-?0/LocationCenter_X/; $_} @header;
-	@header = map {s/centroid-?1/LocationCenter_Y/; $_} @header;
+	@header = map {s/centroid-?x/LocationCenter_X/; $_} @header;
+	@header = map {s/centroid-?y/LocationCenter_Y/; $_} @header;
 	@header = map {s/label/ObjectNumber/; $_} @header;
 	@header = map {s/area/AreaShape_Area/; $_} @header;
 } else {

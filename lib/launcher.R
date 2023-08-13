@@ -47,6 +47,8 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 		colnames(inData) = colnames(inData) %>%
 			gsub(metalPattern, '', .)
   }
+  # Exclude channels without metals
+  columnNames = setdiff(columnNames, c(pars$channels_exclude))
 
    cat('INFO: range of values in the input matrix is ', 
 		range(inData[, ..columnNames], na.rm = T),
@@ -79,7 +81,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	cat('Area', sum(rowsKeep), '\n')
 
     # Exclude cells with intensity smaller or equal to pars$min_expression for all markers
-    rowsKeep=apply(inData[, ..columnNames], 1, 
+    rowsKeep = apply(inData[, ..columnNames], 1, 
 		function(x) any(x > pars$min_expresssion, na.rm = T))
 	cat('Rows kept after expression filter', sum(rowsKeep), '\n',
 		file=f("{runID}.log"), append=T)
@@ -104,7 +106,8 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
         #stop("ERROR: Missing TMA values")
 	  } else if(! length(tma_values)) {
-		  stop("Open the sample annotation table and verify that the column(s) for batch effects exit. These columns are defined in typing_params.json")
+		  stop("ERROR: The variables for batch effect correction specified in typing_params.json do not exist. ", 
+		  		"Verify that the column(s) for batch effects exit")
 	  } else {
 	  	tma_values=apply(tma_values, 1, paste, collapse = '_')
   	  }

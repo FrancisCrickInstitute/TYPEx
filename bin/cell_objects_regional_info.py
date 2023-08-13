@@ -24,11 +24,14 @@ parser.add_argument('--imageRegEx', default = '\\2',
     metavar='coords', help='RegEx index for imageID')
 parser.add_argument('--regionRegEx', default = None,
     metavar='coords', help='RegEx index for region type')
-
+parser.add_argument('--outDir', default = None,
+    metavar='out', help='RegEx index for region type')
+    
 args = parser.parse_args()
 
-outDir = os.path.join("cell_info")
+outDir = os.path.join(args.outDir, "cell_info")
 if(not os.path.isdir(outDir)):
+    print("Creating ", outDir)
     os.mkdir(outDir)
 
 cellFrame=pd.read_csv(args.cellObjFile, sep =",")

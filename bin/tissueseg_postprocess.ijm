@@ -107,13 +107,13 @@ for (i = 0; i < slideDirList.length; i++) {
 				selectWindow(imgTitle[j]);
 				run("Blue");
 				selectWindow(File.getName(rawImgName));
-				run("Add Image...", "image=Stroma_" + imgName + '.tiff' + " x=0 y=0 opacity=50 zero");
+				run("Add Image...", "image=Stroma_" + imgName + '.tiff' + " x=0 y=0 opacity=40 zero");
 			}
 			if(startsWith(imgTitle[j], "Stroma")) {
 				selectWindow("Tumour_" + imgName + '.tiff');
 				run("Yellow");
 				selectWindow(File.getName(rawImgName));
-				run("Add Image...", "image=Tumour_" + imgName + '.tiff' + " x=0 y=0 opacity=50 zero");
+				run("Add Image...", "image=Tumour_" + imgName + '.tiff' + " x=0 y=0 opacity=40 zero");
 			}
 		}
 		saveAs("PNG", outDirOverlay + "overlay_" + imgName +".png");

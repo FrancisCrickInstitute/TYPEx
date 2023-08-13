@@ -73,7 +73,7 @@ Running locally without high-perfomance computing server
 	    --input_table $PWD/TYPEx/data/cell_objects.tracerx.txt \
 	    --sample_file $PWD/TYPEx/data/sample_file.tracerx.txt \
 	    --outDir "$PWD/results/TYPEx/$release/" \
-	    --params_config "$PWD/TYPEx/data/typing_params.json" \
+	    --params_config "$PWD/TYPEx/conf/typing_params.json" \ 
 	    --annotation_config "$PWD/TYPEx/data/cell_type_annotation.json" \
 		--color_config $PWD/TYPEx/data/celltype_colors.json \
 	    -profile docker \
@@ -181,10 +181,11 @@ These include densities of identified cell phenotypes (cell_density_*.txt), a ca
 	    ├── phenotypes.*.txt          
 	    ├── summary_*.cell_stats.txt
 	    ├── categs_summary_*.cell_stats.txt
-		├── mapps
+		├── maps
 		├── intensity_plots
 		├── overlays
        
+
 Troubleshooting
 =============
 

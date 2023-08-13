@@ -10,7 +10,7 @@
   "min_expresssion":[0],
   
   // 10 ** 6
-  "magnitude":[1000000],
+  "magnitude":[10],
   
   // Select a name/RegEx to match to the intensity column 
   "features":["MeanIntensity"],
@@ -30,6 +30,8 @@
   // Batch effects correction to be considered from the sample annotation table
   "batch_effects":["TMA", "duplicate_core", "cohort"],
   // CODEX "batch_effects":["TMA_12"],
+  //
+  "experimental_condition":["tissue_type"],
 
   // Method-specific parameters
   "FastPG":{

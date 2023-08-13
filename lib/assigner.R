@@ -3,13 +3,13 @@
 
 determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		
-		breakStep=0.0001, greater = F, markers=c('CD3', 'CD8a', 'CD4')) {
-		breaks=seq(0, 1, breakStep)
+		breakStep = 0.0001, greater = F, markers=c('CD3', 'CD8a', 'CD4')) {
+		breaks = seq(0, 1, breakStep)
 		smallImageSetCutoff = 100000
 		cat("Determining threshold with markers: ", markers, '\n')
 		# Determine separation by T cell markers
 		if(! is.null(markers)) {
-			combos=gsub(':', '_', get_combos(markers))
+			combos = gsub(':', '_', get_combos(markers))
 		} else {
 			stop("ERROR: Cell type-specific markers not provided for positivity calling")
 		}
@@ -41,7 +41,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 		if(! all(markers %in% colnames(mark))) {
 			print(markers)
 		   print(colnames(mark))
-			stop('The marker names defined for thresholding in typing_params.json are not in the cell objects file')
+			stop('ERROR: The marker names defined for thresholding in typing_params.json are not in the cell objects file')
 		}
 
 		stats=lapply(breaks, function(x) {

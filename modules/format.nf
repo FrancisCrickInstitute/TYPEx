@@ -6,6 +6,7 @@
 process format_input {
 
 	label 's'
+//	executor "local"
 
 	publishDir "${params.output_dir}/nfData/", mode: params.publish_dir_mode, overwrite: true
 
