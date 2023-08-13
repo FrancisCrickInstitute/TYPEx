@@ -46,7 +46,13 @@ modelOut = with(args, f("{cellReviewDir}/{analysisID}.RData"))
 log=f("{out}/{analysisID}.log")
 
 if(! dir.exists(out))
+<<<<<<< HEAD
 	dir.create(out, recursive = T)
+=======
+	dir.create(out, recursive = T))
+if(! dir.exists(visDir))
+	dir.create(visDir, recursive = T)
+>>>>>>> 1bba0b93da05c99a1297b3450f673b0dc6ceb125
 
 cat('Stratification by confidence', file = log, append = F)
 
@@ -86,6 +92,12 @@ typedCols = sapply(markerSets,
 
 intensityColNameFull = f("meanIntensity_{args$major_method}_{args$major_markers}")
 intensityColNameRef = f("meanIntensity_{args$major_method}_{ref_markers_list}")
+<<<<<<< HEAD
+=======
+	
+
+
+>>>>>>> 1bba0b93da05c99a1297b3450f673b0dc6ceb125
 
 data=vector(mode="list")
 
