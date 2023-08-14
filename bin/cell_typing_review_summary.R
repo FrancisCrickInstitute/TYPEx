@@ -172,21 +172,19 @@ if(! length(data)) {
 	negativeIndices = setdiff(which(recast[[typedCols[1]]] != recast[[typedCols[2]]]),
 							  which(recast[[typedCols[2]]] %in% undefinedRefTypes |
 						 		recast[[typedCols[1]]] %in% c(args$mostFreqCellType, args$dependentCell, dependentCellTypes) &
-								recast[[typedCols[2]]] %in% args$dependentCell |
-								recast[[typedCols[2]]] %in% mostLikelyCellTypes[2] &
-								mostLikelyCellTypes[1] == mostLikelyCellTypes[2]))
+								recast[[typedCols[2]]] %in% args$dependentCell))
 								
 	table(recast[[typedCols[2]]][! recast[[typedCols[1]]] %in% refCellTypes]) %>% 
 		sort %>% print
 	negative = recast$cellID[negativeIndices]
 	cat('Negative CellIDs: ', length(negative), '\n')
 		
-	posIndices = recast[[typedCols[2]]] == recast[[typedCols[1]]] & 
-					! recast[[typedCols[1]]] %in% mostLikelyCellTypes[1]
+	posIndices = recast[[typedCols[2]]] == recast[[typedCols[1]]] &  
+				 ! recast[[typedCols[1]]] %in% mostLikelyCellTypes[1]
 
-	positiveExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType, mostLikelyCellTypes[1]) &
+	positiveExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType) &
 								recast[[typedCols[2]]] %in% c(args$dependentCell, mostLikelyCellTypes[2])
-	negativeExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType, mostLikelyCellTypes[1]) &
+	negativeExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType) &
 								! recast[[typedCols[2]]] %in% c(mostLikelyCellTypes[2], args$dependentCell, dependentCellTypes)
 	
 	if(mostLikelyCellTypes[2] == mostLikelyCellTypes[1]) {
@@ -209,8 +207,11 @@ if(! length(data)) {
 		cat("Negative cutoff", negativeCutoff, '\n', file = log, append = T)
 		
 		# The intensities should not change significantly for the most common cell type
-		nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & intensityRefNonzero & excludedFreqIndices], na.rm = T)
-		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & excludedFreqIndices], na.rm = T)
+		nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & 
+												  intensityRefNonzero & 
+												  excludedFreqIndices], na.rm = T)
+		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & 
+												 excludedFreqIndices], na.rm = T)
 		cat(qCut, nCut, '\n')
 	
 		cols = palette$cellTypeColors
@@ -261,24 +262,28 @@ if(! length(data)) {
 			cat("Most likely cell type in full model equals the excluded cell type in the reference model",
 				 "considering mean intensities: >", qCut, '\n', sep = ' ')
 
-		positiveExcludedIndices = positiveExcludedIndices & 
-							   (recast[[typedCols[2]]] != mostLikelyCellTypes[2] |
+		positiveExcludedIndices = positiveExcludedIndices |
 								recast[[typedCols[2]]] == mostLikelyCellTypes[2] &  
 								recast[[typedCols[1]]] == args$mostFreqCellType & # Excluded cell type - sifnificant intensity change
 								recast[[intensityColNameFull]] > nCut &
-			                    recast[[intensityColNameRef]] <= qCut |
-								recast[[typedCols[2]]] == mostLikelyCellTypes[2] & # Both models have mostLikelyCellTypes - no singificant change in intensity, & nonzero
-								recast[[typedCols[1]]] == mostLikelyCellTypes[2] &
-								abs(recast[[intensityColNameFull]] - recast[[intensityColNameRef]]) <= mostFreqNegativeCutoff &
-								intensityRefNonzero)
+			                    recast[[intensityColNameRef]] <= qCut
+															
+		posIndices = posIndices |
+					recast[[typedCols[2]]] == mostLikelyCellTypes[2] & # Both models have mostLikelyCellTypes - no singificant change in intensity, & nonzero
+					recast[[typedCols[1]]] == mostLikelyCellTypes[2] &
+					abs(recast[[intensityColNameFull]] - recast[[intensityColNameRef]]) <= mostFreqNegativeCutoff &
+					intensityRefNonzero
 	}
-	positive=recast$cellID[which(posIndices)]
+	positive = recast$cellID[which(posIndices)]
 	cat('Positive CellIDs: ', length(positive), '\n')
 	if(regionCol %in% colnames(recast))
 		positive = union(positive,
 			  			recast$cellID[which(recast[[regionCol]] == "Tumour" &
 									  grepl("Epithelial cells|tumour cells|Epithelium", 
 									  		recast[[typedCols[2]]], ignore.case = T))])
+											
+	print(table(recast[[typedCols[2]]][recast$cellID %in% positive]))
+
 	colorCol = typedCols[1]
 	if(args$mostFreqCellType == mostLikelyCellTypes[1]) {
 			
@@ -445,7 +450,7 @@ if(! length(data)) {
 	totalExcludedCell=mrg$markers==args$major_markers & 
 		mrg$method == args$major_method &
 		! is.na(mrg$probability) &
-		mrg$cellType %in% c(args$mostFreqCellType, mostLikelyCellTypes[1], undefinedFullTypes)
+		mrg$cellType %in% c(args$mostFreqCellType, undefinedFullTypes)
 
 	posExcludedIndices = mrg$cellID %in% positiveExcluded & totalExcludedCell
 	negExcludedIndices = mrg$cellID %in% negativeExcluded & totalExcludedCell
