@@ -49,6 +49,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
   }
   # Exclude channels without metals
   columnNames = setdiff(columnNames, c(pars$channels_exclude))
+  colnames(inData) = setdiff(colnames(inData), c(pars$channels_exclude))
 
    cat('INFO: range of values in the input matrix is ', 
 		range(inData[, ..columnNames], na.rm = T),

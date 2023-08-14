@@ -13,6 +13,8 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 		  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
     		gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) 
 
+		colnames(inData) = setdiff(colnames(inData), c(pars$channels_exclude))
+
 		if(! any(metals %in% colnames(inData)))
 			colnames(inData)=colnames(inData) %>%
     			gsub(metalPattern, '', .)
