@@ -27,8 +27,10 @@ args = argparser::parse_args(arg_parser, argv=commandArgs(trailingOnly=TRUE))
 f <- glue::glue
 
 releaseOut=with(args, f("cell_objects_{run}_{panel}.fst"))
-print(file.path(args$inDir, releaseOut))
 data = fst::read.fst(file.path(args$inDir, releaseOut))
+
+
+print(file.path(args$inDir, releaseOut))
 
 if(! dir.exists(args$outDir))
 	dir.create(args$outDir,  recursive = T)
@@ -51,6 +53,70 @@ cellTypeColors = sapply(celltypes, function(type) {
 print(cellTypeColors)
 
 
+pdfOut = f("{imgMapDir}/legend.pdf")
+#png(pngOut, width = 300, height = length(cellTypeColors) * 30, units = 'px')
+pdf(pdfOut)
+plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, 
+	xpd = F, type = "n", xaxt = 'n', yaxt='n')
+legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
+			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
+dev.off()
+
+for(imagename in imagenames) {
+
+	print(imagename)
+	dataFlt = data[data$imagename == imagename, ]
+	
+	if(args$mccs) {
+		if(dir.exists(file.path(args$maskDir, "consensus_cell_segmentation"))) {
+			outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
+	  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)		
+		} else {
+			outlineImg = list.files(file.path(args$maskDir, "segmentation"), 
+	  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
+		}
+	} else {
+		outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
+						pattern = '.*nuclear_mask_nuclear_dilation.tiff', 
+						full.name = T, recursive = T)
+	}
+	print(gsub('-',  '.', f("{imagename}\\/")))
+	
+	outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
+	print(outlineImg)
+	if(! length(outlineImg)) {
+		cat("WARNING: Segmentation outlines not found for", imagename, ".Skipping.\n")
+		next
+	}
+	if(length(outlineImg) > 1)
+		stop(f("More than one image selected for the segmentation mask in {imagename}\\/"))
+	
+	r <- raster::raster(outlineImg)
+  
+	typeMat = r
+	typeMat[typeMat == 0] = "black"
+  
+	for(cellType in celltypes) {
+	  objects = dataFlt$object[dataFlt$cellType == cellType]
+	  color = palette$cellTypeColors[[cellType]]
+	  if(is.null(color))
+		  color = 'grey'
+	  typeMat[typeMat %in% objects] = color
+	}
+
+	pngOut = f("{imgMapDir}/types_{imagename}.png")
+	png(pngOut, width = dim(typeMat)[2], height = dim(typeMat)[1], units = 'px')
+	par(omi=c(0,0,0,0), mgp=c(0,0,0), mar = c(0, 0, 0, 0), family = 'D')
+	plot(typeMat, legend=F, axes = F,
+	   maxpixels=dim(r)[2] * dim(r)[1], alpha=1,
+	   col=cellTypeColors, xpd = T)
+	dev.off()
+	
+}
+print(f('Cell type maps saved in {imgMapDir}'))
+
+
+
 
 if(file.size(args$posFile)) {
 	qcDf = read.csv(args$posFile, sep = '\t', header = F)
@@ -62,16 +128,21 @@ if(file.size(args$posFile)) {
 		dataFlt = data[data$imagename == imagename, ]
 		
 		if(args$mccs) {
-			outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
-	  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
-						
+			if(dir.exists(file.path(args$maskDir, "consensus_cell_segmentation"))) {
+				outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
+		  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)		
+			} else {
+				outlineImg = list.files(file.path(args$maskDir, "segmentation"), 
+		  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
+			}			
 		} else {
 			outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
 				pattern = '.*nuclear_mask_nuclear_dilation.tiff',
 				full.name = T, recursive = T)
 		}
-		outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
 		print(outlineImg)
+		
+		outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
 		if(length(outlineImg) > 1)
 			stop(f("More than one image selected for the segmentation mask in {imagename}\\/"))
 
@@ -115,56 +186,4 @@ if(file.size(args$posFile)) {
 	  }
 	}
 }
-
-pdfOut = f("{imgMapDir}/legend.pdf")
-#png(pngOut, width = 300, height = length(cellTypeColors) * 30, units = 'px')
-pdf(pdfOut)
-plot(1:length(cellTypeColors), rep(1, length(cellTypeColors)), axes = F, 
-	xpd = F, type = "n", xaxt = 'n', yaxt='n')
-legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
-			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
-dev.off()
-
-for(imagename in imagenames) {
-
-	print(imagename)
-	dataFlt = data[data$imagename == imagename, ]
-	
-	if(args$mccs) {
-		outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
-  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
-	} else {
-		outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
-						pattern = '.*nuclear_mask_nuclear_dilation.tiff', 
-						full.name = T, recursive = T)
-	}
-	outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
-	print(outlineImg)
-	if(length(outlineImg) > 1)
-		stop(f("More than one image selected for the segmentation mask in {imagename}\\/"))
-	
-  	r <- raster::raster(outlineImg)
-  
-	typeMat = r
-	typeMat[typeMat == 0] = "black"
-  
-	for(cellType in celltypes) {
-	  objects = dataFlt$object[dataFlt$cellType == cellType]
-	  color = palette$cellTypeColors[[cellType]]
-	  if(is.null(color))
-		  color = 'grey'
-	  typeMat[typeMat %in% objects] = color
-	}
-
-	pngOut = f("{imgMapDir}/types_{imagename}.png")
-	png(pngOut, width = dim(typeMat)[2], height = dim(typeMat)[1], units = 'px')
-	par(omi=c(0,0,0,0), mgp=c(0,0,0), mar = c(0, 0, 0, 0), family = 'D')
-	plot(typeMat, legend=F, axes = F,
-	   maxpixels=dim(r)[2] * dim(r)[1], alpha=1,
-	   col=cellTypeColors, xpd = T)
-	dev.off()
-	
-}
-print(f('Cell type maps saved in {imgMapDir}'))
-
 
