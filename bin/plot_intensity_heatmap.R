@@ -9,12 +9,14 @@ library(ggbeeswarm)
 suppressPackageStartupMessages(library(ComplexHeatmap))
 
 f <- glue::glue
+split_by_other <- function(value) {
+	gsub(" Tissue Segmentation.*", "\nTissue Segmentation", value, ignore.case = T)
+}
 source(file.path(Sys.getenv('BASE_DIR'), "/conf/settings.R"))
 source(file.path(Sys.getenv('BASE_DIR'), "/lib/utilities.R"))
 source(file.path(Sys.getenv('BASE_DIR'), "/lib/imc_utils.R"))
 source(file.path(Sys.getenv('BASE_DIR'), "/lib/plotter.R"))
 source(file.path(Sys.getenv('BASE_DIR'), "/lib/celltype_tree_utils.R"))
-
 
 arg_parser=argparser::arg_parser("Summarise typing results")
 add=argparser::add_argument
@@ -40,7 +42,6 @@ metals = colnames(expDf) %>%
 
 metalPattern =paste0(metals, collapse = ".*|\\.?") %>%
 				paste0(., ".*")
-
 colnames(expDf) = colnames(expDf) %>%
 				gsub(paste0(".*", pars$features, "_?_(.*)"), "\\1", .) %>%
 				gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
@@ -49,17 +50,22 @@ if(! any(metals %in% colnames(expDf))) {
 	colnames(expDf) = colnames(expDf) %>%
 						gsub(metalPattern, '', .)
 }
+expDf = subset(expDf, select = ! colnames(expDf) %in% pars$exclude_channels)
 
-summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}'))
+summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}/tables'))
 outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/intensity_plots"))
 
 if(! dir.exists(outDir))
 	dir.create(outDir, recursive = T)
 
 print(summaryDir)
+
 cellObjectsFile = list.files(summaryDir, 
 				pattern = f("cell_objects_.*{args$panel}.fst"),
 				full.names = T)
+if(! length(cellObjectsFile)) {
+	stop("ERROR: the cell objects table has not been created by the process subtype_exporter.")
+} 
 cellObjectsDf = fst::read.fst(cellObjectsFile)
 
 markers = setdiff(colnames(expDf), c('ObjectNumber', 'imagename'))
@@ -83,6 +89,7 @@ markersList = sapply(cellTypeList, function(celltype) {
 }) %>% unlist %>%  unique
 markersList = intersect(markersList, colnames(expDf))
 
+
 # Intensity boxplots
 cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
 					count = length(cellType))
@@ -95,7 +102,7 @@ clusters = cellObjectsDf$cellType[densMatch]
 plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
 				cellTypeStats, 
 				pars[[args$method]], 
-				plotDir = f("{outDir}/intensity"), magnitude = max(1, pars$magnitude/10))
+				plotDir = f("{outDir}"), magnitude = max(1, pars$magnitude/10))
 
 # Intensity heatmaps
 cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
@@ -322,6 +329,8 @@ pdf(pdfOut, useDingbats = F, height = 10, width = 10)
   print("Full map")
 dev.off()
 
+
+
 exp = setDT(expDf)
 anaMatch = match(with(exp, paste(imagename, ObjectNumber)),
                   with(cellObjectsDf, paste(imagename, object)))
@@ -335,7 +344,7 @@ exp$confidence = exp$confidence %>% gsub("TRUE", 'low confidence', .) %>%
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))
 pdfOut = f("{outDir}/median_intensities_per_celltype.log10.pdf")
-pdf(pdfOut, height = 5, width = width)
+pdf(pdfOut, height = 7, width = width)
 for(marker in majorMarkers) {
 	
   cat("Intensity violin plots for ", marker, '\n')
@@ -394,9 +403,10 @@ for(marker in majorMarkers) {
             legend.title = element_blank()) +
       scale_y_log10() +
 	  guides(fill = 'none') +
-      facet_wrap(. ~ confidence,  scale = 'free_y', nrow=4) + 
+      facet_wrap(confidence ~ .,  scale = 'free_y') + 
 	  xlab("") + 
 	  ylab("Median cell intensity per image") +
+	  scale_x_discrete(labels = split_by_other) +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
@@ -404,12 +414,11 @@ for(marker in majorMarkers) {
 }
 dev.off()
 
-
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))
 
 pdfOut = f("{outDir}/median_intensities_per_positive_type.log10.pdf")
-pdf(pdfOut, height = 5, width = width)
+pdf(pdfOut, height = 7, width = width)
 for(marker in majorMarkers) {
 
   exp$markerPos = get_marker_frequency(data = exp, marker, 'positive')
@@ -466,14 +475,13 @@ for(marker in majorMarkers) {
             strip.background=element_blank(),
             legend.title = element_blank()) +
       scale_y_log10() +
-      facet_wrap(. ~ confidence,  scale = 'free_y', nrow=4) + 
+      facet_wrap(confidence ~ .,  scale = 'free_y') + 
 	  xlab("") + ylab("Median cell intensity per image") +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
 }
 dev.off()
-
 
 
 

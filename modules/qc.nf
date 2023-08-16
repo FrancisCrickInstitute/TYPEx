@@ -19,7 +19,7 @@ process qc_select_images {
 		export COL_CONF=${params.color_config}
 		
         qc_select_images.R \
-			--inDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
+			--inDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/tables/" \
 			--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/" \
 			--ref_markers ${params.major_markers}
 
@@ -70,7 +70,7 @@ process qc_overlay {
 			plot_overlays.R \
 				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/ \
 				--maskDir ${params.input_dir} --mccs ${params.mccs}	 \
-				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/ \
+				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/tables/ \
 				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt \
 				--panel ${params.panel} \

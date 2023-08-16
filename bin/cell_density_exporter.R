@@ -30,8 +30,9 @@ inDir=file.path(args$inDir, with(args, f(analysisPath)))
 imgData=read.csv(args$regFile, sep = '\t', stringsAsFactors = F)
 resultFiles=list.files(inDir, pattern=resultPattern, recursive=T)
 
-outDir=gsub("\\/", "_", with(args, f(analysisPath)))
-if(!dir.exists(outDir)) dir.create(outDir)
+outDir = file.path(gsub("\\/", "_", with(args, f(analysisPath))), "tables")
+if(! dir.exists(outDir))
+	dir.create(outDir, recursive = T)
 analysisID=gsub("/", "_", with(args,f(analysisPath)))
 	
 

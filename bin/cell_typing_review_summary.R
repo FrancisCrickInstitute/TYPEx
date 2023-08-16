@@ -171,8 +171,8 @@ if(! length(data)) {
 	
 	negativeIndices = setdiff(which(recast[[typedCols[1]]] != recast[[typedCols[2]]]),
 							  which(recast[[typedCols[2]]] %in% undefinedRefTypes |
-						 		recast[[typedCols[1]]] %in% c(args$mostFreqCellType, args$dependentCell, dependentCellTypes) &
-								recast[[typedCols[2]]] %in% args$dependentCell))
+						 		recast[[typedCols[1]]] %in% c(args$mostFreqCellType) &
+								recast[[typedCols[2]]] %in% c(args$dependentCell, dependentCellTypes)))
 								
 	table(recast[[typedCols[2]]][! recast[[typedCols[1]]] %in% refCellTypes]) %>% 
 		sort %>% print
@@ -183,7 +183,7 @@ if(! length(data)) {
 				 ! recast[[typedCols[1]]] %in% mostLikelyCellTypes[1]
 
 	positiveExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType) &
-								recast[[typedCols[2]]] %in% c(args$dependentCell, mostLikelyCellTypes[2])
+								recast[[typedCols[2]]] %in% c(args$dependentCell, mostLikelyCellTypes[2], dependentCellTypes)
 	negativeExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType) &
 								! recast[[typedCols[2]]] %in% c(mostLikelyCellTypes[2], args$dependentCell, dependentCellTypes)
 	
@@ -239,9 +239,14 @@ if(! length(data)) {
 				theme(legend.text = element_text(size = 5), legend.title = element_blank())
             print(plot)
 			
-			df = recast[excludedFreqIndices, ] %>% droplevels
+			df = recast
+			df$positive = NA
+			df$positive[positiveExcludedIndices] = T
+			df$negative[negativeExcludedIndices] = F
+			
+			df = df[excludedFreqIndices, ] %>% droplevels
 			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
-            plot = g + geom_point(aes(color = abs(get(intensityColNameFull) - get(intensityColNameRef)) > negativeCutoff), size = 0.01) +
+            plot = g + geom_point(aes(color = positive), size = 0.01) +
                 theme_classic() +
                 geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
 				ggtitle(args$mostFreqCellType) +
@@ -249,30 +254,19 @@ if(! length(data)) {
 				theme(legend.text = element_text(size = 5), legend.title = element_blank())
             print(plot)
 
-			df = recast[excludedFreqIndices, ] %>% droplevels
-			df$equal = df[[typedCols[2]]] != mostLikelyCellTypes[2]
-			g <- ggplot(df, aes(get(intensityColNameFull) - get(intensityColNameRef)))
-            plot = g + geom_density(aes(color = equal), size = 0.01) +
-                theme_classic() +
-				geom_vline(aes(xintercept = negativeCutoff), linetype = 'dashed') +
-				ggtitle(args$mostFreqCellType) +
-                theme(legend.text = element_text(size = 5), legend.title = element_blank())
-            print(plot)
 			dev.off()
-			cat("Most likely cell type in full model equals the excluded cell type in the reference model",
+			cat("Most likely cell type in full model equals the most likley cell type in the reference model",
 				 "considering mean intensities: >", qCut, '\n', sep = ' ')
-
-		positiveExcludedIndices = positiveExcludedIndices |
-								recast[[typedCols[2]]] == mostLikelyCellTypes[2] &  
-								recast[[typedCols[1]]] == args$mostFreqCellType & # Excluded cell type - sifnificant intensity change
-								recast[[intensityColNameFull]] > nCut &
-			                    recast[[intensityColNameRef]] <= qCut
-															
+		
 		posIndices = posIndices |
 					recast[[typedCols[2]]] == mostLikelyCellTypes[2] & # Both models have mostLikelyCellTypes - no singificant change in intensity, & nonzero
 					recast[[typedCols[1]]] == mostLikelyCellTypes[2] &
 					abs(recast[[intensityColNameFull]] - recast[[intensityColNameRef]]) <= mostFreqNegativeCutoff &
 					intensityRefNonzero
+					
+		positiveExcludedIndices = recast[[typedCols[1]]] %in% c(args$mostFreqCellType) & 
+									recast[[intensityColNameFull]] > nCut &
+      							  	recast[[intensityColNameRef]] <= qCut
 	}
 	positive = recast$cellID[which(posIndices)]
 	cat('Positive CellIDs: ', length(positive), '\n')
@@ -356,11 +350,11 @@ if(! length(data)) {
 			cat("Most likely cell type in full model equals the excluded cell type in the reference model",
 				 "considering mean intensities: >", nCut, '\n', sep = ' ')
 			
+			
 			positiveExcludedIndices = positiveExcludedIndices &
 					recast[[intensityColNameFull]] > nCut &
                     recast[[intensityColNameRef]] <= qCut
 		}
-
 		for(missedCellType in undefinedFullTypes) {
 			
 			print(missedCellType)
