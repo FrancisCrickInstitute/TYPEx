@@ -477,6 +477,7 @@ for(marker in majorMarkers) {
       scale_y_log10() +
       facet_wrap(confidence ~ .,  scale = 'free_y') + 
 	  xlab("") + ylab("Median cell intensity per image") +
+	  scale_x_discrete(labels = split_by_other) +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
