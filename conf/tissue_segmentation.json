@@ -1,21 +1,21 @@
 {
 	"masks":{
 			"tisseg":{
-				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/results/TYPEx/tissue_seg/labels/",
+				"tissueDir":"/path/to/users/segmentation/masks/",
 				"annotationName":"regional",
 				"maskRegEx":"labeled_regions_(.*)_(P[12].*).tiff",
 				"imgNameRegExIndex":"\\2",
 				"regionRegExIndex":"\\1"
 			},
 			"vessels":{
-				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/test/TRACERx-PHLEX/data/vessel/",
+				"tissueDir":"/path/to/pathology/masks/vessels/",
 				"annotationName":"vessels",
 				"maskRegEx":"(.*roi_[0-9]*)_(.*)-binary_mask.png",
 				"imgNameRegExIndex":"\\1",
 				"regionRegExIndex":"\\2"
 			},
 			"exclude_mask":{
-				"tissueDir":"/nemo/lab/swantonc/working/angelom/phlex/zoe/config/artefact_masks/",
+				"tissueDir":"/path/to/artefacts/masks",
 				"annotationName":"exclude",
 				"maskRegEx":"(.*-roi_[0-9]*)_(.*).tif",
 				"imgNameRegExIndex":"\\1",

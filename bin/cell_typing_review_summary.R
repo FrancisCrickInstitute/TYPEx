@@ -58,6 +58,8 @@ if(args$mostFreqCellType == 'None') {
 	fullModelDir = file.path(args$wDir, with(args, f(fullPath)))
 	fullModelID=paste0(args[[args$major_method]], collapse="_")
 	fullModelFile=f("{fullModelDir}/{fullModelID}.clusters.fst")
+	if(! file.exists(fullModelFile))
+		stop('The complete model hasnt been built', fullModelFile)
 	fullData=fst::read.fst(fullModelFile)
 	cellStats=table(fullData$cellType)
 	args$mostFreqCellType = names(cellStats)[cellStats == max(cellStats)]
@@ -290,7 +292,8 @@ if(! length(data)) {
 		print(negativeCutoff)
 		cat("Negative cutoff", negativeCutoff, '\n', file = log, append = T)
         
-        nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & intensityRefNonzero & mostFreqIndices], na.rm = T)
+        nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & 
+													intensityRefNonzero & mostFreqIndices], na.rm = T)
 		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
 		cat(qCut, nCut, '\n')
 			 

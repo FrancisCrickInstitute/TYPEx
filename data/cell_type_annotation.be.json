@@ -3,16 +3,17 @@
 
 		"Leukocytes":{
 			"Leukocytes - Other":["CD45"],
-			"T cells":{
+			"T":{
              	"T - Other":["CD45", "CD3"],
                 "CD8T":["CD45", "CD3", "CD8"],
                 "CD4T":["CD45", "CD3", "CD4"]
              }, 
 			"B":["CD45", "CD20", "BCL2", "CD38"],
-			"Myeloid cells - Other":["CD45", "CD11b", "CD8"],
+			"DC":["CD45", "CD11b", "CD15"],
+			"Myeloid cells - Other":["CD45", "CD11c"],
 			"Macrophages":["CD45", "CD68", "CD163", "CD206"]
 	  },
-	  "Epithelium":["Cytokeratin", "CK7", "Bcatenin", "p63", "CHGA"],
+	  "Epithelium":["Cytokeratin", "CK7", "Bcatenin"],
 	  "Stroma":["Vimentin"],
 	  "Endothelial":["CD31"],
 	  "PDPN":["Podoplanin"],

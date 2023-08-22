@@ -90,52 +90,6 @@ markersList = sapply(cellTypeList, function(celltype) {
 markersList = intersect(markersList, colnames(expDf))
 
 
-# Intensity boxplots
-cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$majorType
-cellTypeStats$cluster = cellTypeStats$cellType
-cellTypeStats$positive = cellTypeStats$cellType
-cellTypeStats = cellTypeStats[order(match(cellTypeStats$cellType, cellTypeList)), ]
-clusters = cellObjectsDf$cellType[densMatch]
-
-plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
-				cellTypeStats, 
-				pars[[args$method]], 
-				plotDir = f("{outDir}"), magnitude = max(1, pars$magnitude/10))
-
-# Intensity heatmaps
-cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$cellType
-cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
-clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
-
-plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
-	clusters, runID = f("{outDir}/heatmap"), cellTypeStats, 
-	plotDir = f("{outDir}"), plotPos = T)
-
-
-stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
-stats$cellType = factor(stats$cellType, levels = cellTypeList)
-pdfOut = f("{outDir}/cell_types_pie_chart_v2.pdf")
-pdf(pdfOut, useDingbats = F, height = 5, width = 5)
-g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
-plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha = 1) + 
-  cowplot::theme_cowplot() +
-  coord_polar(theta = "y", start = 0, direction = -1) + 
-  theme(axis.line = element_blank(), 
-	    strip.background = element_blank(),
-    	axis.text = element_blank(),
-        axis.ticks = element_blank()) +
-  xlab("") + ylab("") +
-  scale_y_continuous(labels=function(x) {
-    paste0(x * 100, "%")
-  }) +
-  scale_fill_manual(values = cellTypeColors[match( names(cellTypeColors), cellTypeList)])
-print(plot)
-dev.off()
-
 posDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter"))
 if(! dir.exists(posDir))
 	dir.create(posDir, recursive = T) 
@@ -198,6 +152,54 @@ for(image in imagenames) {
 	print(plot)
 	dev.off()
 }
+
+
+
+# Intensity boxplots
+cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$majorType
+cellTypeStats$cluster = cellTypeStats$cellType
+cellTypeStats$positive = cellTypeStats$cellType
+cellTypeStats = cellTypeStats[order(match(cellTypeStats$cellType, cellTypeList)), ]
+clusters = cellObjectsDf$cellType[densMatch]
+
+plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
+				cellTypeStats, 
+				pars[[args$method]], 
+				plotDir = f("{outDir}"), magnitude = max(1, pars$magnitude/10))
+
+# Intensity heatmaps
+cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$cellType
+cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
+clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
+
+plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
+	clusters, runID = f("{outDir}/heatmap"), cellTypeStats, 
+	plotDir = f("{outDir}"), plotPos = T)
+
+
+stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
+stats$cellType = factor(stats$cellType, levels = cellTypeList)
+pdfOut = f("{outDir}/cell_types_pie_chart_v2.pdf")
+pdf(pdfOut, useDingbats = F, height = 5, width = 5)
+g <- ggplot(stats, aes(x="", y = TotalFreq, fill = cellType))
+plot = g + geom_bar(stat="identity", position =  'fill', color = 'black', alpha = 1) + 
+  cowplot::theme_cowplot() +
+  coord_polar(theta = "y", start = 0, direction = -1) + 
+  theme(axis.line = element_blank(), 
+	    strip.background = element_blank(),
+    	axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  xlab("") + ylab("") +
+  scale_y_continuous(labels=function(x) {
+    paste0(x * 100, "%")
+  }) +
+  scale_fill_manual(values = cellTypeColors[match( names(cellTypeColors), cellTypeList)])
+print(plot)
+dev.off()
 
 
 clusterSummary <- sapply(markers, function(x) {

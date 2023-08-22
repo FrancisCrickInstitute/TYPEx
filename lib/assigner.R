@@ -192,7 +192,7 @@ determine_threshold <- function(assigned, clusterSize, runID, confidence='low',
 			plot(mat$D, tcell_pct, pch=19, cex=0.1, ylim = c(0, 1), 
 				main = f("{confidence} confidence D cutoff = {threshold}"), 
 				xlab = 'D score', bty = "n",
-				ylab = 'Ratio between proportions of\nrare to high cell populations')
+				ylab = 'Ratio of rare to dominant\ncell populations (proportions)')
 			abline(v=threshold, color = 'red', lty =2)
 			abline(v=mat$D[which(!tcell_count)], 
 				col = "#e6e6e6ff")
