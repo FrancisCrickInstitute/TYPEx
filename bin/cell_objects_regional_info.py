@@ -30,7 +30,7 @@ parser.add_argument('--outDir', default = None,
 args = parser.parse_args()
 
 outDir = os.path.join(args.outDir, "cell_info")
-if(not os.path.isdir(outDir)):
+if(not os.path.exists(outDir)):
     print("Creating ", outDir)
     os.mkdir(outDir)
 
