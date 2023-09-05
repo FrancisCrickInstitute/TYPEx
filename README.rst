@@ -34,8 +34,8 @@ Running on input generated with deep-imcyto
         --outDir "$PWD/results/TYPEx/$release/" \
         --params_config "$PWD/TRACERx-PHLEX/TYPEx/data/typing_params.json" \
         --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.json" \
-		--tissue_seg_model "$PWD/TRACERx-PHLEX/TYPEx/models/tumour_stroma_classifier.ilp" \
-		--color_config $PWD/TRACERx-PHLEX/TYPEx/data/celltype_colors.json \
+	--tissue_seg_model "$PWD/TRACERx-PHLEX/TYPEx/models/tumour_stroma_classifier.ilp" \
+	--color_config $PWD/TRACERx-PHLEX/TYPEx/conf/celltype_colors.json \
         --deep_imcyto true --mccs true \
         -profile singularity \
         -resume
@@ -55,7 +55,7 @@ Running TYPEx with user-provided cell objects tables (indpendently of deep-imcyt
     --sample_file $PWD/TYPEx/data/sample_file.tracerx.txt \
     --outDir "$PWD/results/TYPEx/$release/" \
     --params_config "$PWD/TYPEx/data/typing_params.json" \
-    --annotation_config "$PWD/TYPEx/data/cell_type_annotation.json" \
+    --annotation_config "$PWD/TYPEx/conf/cell_type_annotation.json" \
 	--color_config $PWD/TYPEx/data/celltype_colors.json \
     -profile singularity \
     -resume
@@ -75,7 +75,7 @@ Running locally without high-perfomance computing server
 	    --outDir "$PWD/results/TYPEx/$release/" \
 	    --params_config "$PWD/TYPEx/conf/typing_params.json" \ 
 	    --annotation_config "$PWD/TYPEx/data/cell_type_annotation.json" \
-		--color_config $PWD/TYPEx/data/celltype_colors.json \
+		--color_config $PWD/TYPEx/conf/celltype_colors.json \
 	    -profile docker \
 	    -resume
 
