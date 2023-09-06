@@ -159,7 +159,7 @@ if(! length(data)) {
 	)
 	print(mostLikelyCellTypes)
 	if(length(mostLikelyCellTypes) < 2) {
-		stop(paste("ERROR: Please make sure that both models have run.", 
+		stop(paste("ERROR: Please make sure that both models have run.",
 					"If cached in an earlier run, one of the processes can be skipped."))
 	}
 	cat(mostLikelyCellTypes, '\n', file = log, append = T)
@@ -222,8 +222,8 @@ if(! length(data)) {
 		pdf(pdfOut, width = 7, height = 4)
 		# Skip plotting the full dataset if more than 0.5M cells
 		if(nrow(recast) < 500000) {
-			g <- ggplot(droplevels(recast), aes_string(intensityColNameFull, intensityColNameRef))
-			plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
+			g <- ggplot(droplevels(recast), aes(get(intensityColNameFull), get(intensityColNameRef)))
+			plot = g + geom_point(aes(color = get(colorCol)), size = 0.01) + 
 				theme_classic() +
 				geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
 				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
@@ -232,7 +232,7 @@ if(! length(data)) {
 			print(plot)	
 		}		
 			df = recast[mostFreqIndices, ] %>% droplevels
-			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+			g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
             plot = g + geom_point(aes(color = abs(get(intensityColNameFull) - get(intensityColNameRef)) <= mostFreqNegativeCutoff), size = 0.01) +
                 theme_classic() +
                 geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
@@ -247,7 +247,7 @@ if(! length(data)) {
 			df$negative[negativeExcludedIndices] = F
 			
 			df = df[excludedFreqIndices, ] %>% droplevels
-			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+			g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
             plot = g + geom_point(aes(color = positive), size = 0.01) +
                 theme_classic() +
                 geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
@@ -291,7 +291,7 @@ if(! length(data)) {
 									 sd = sd(intensityChange[intensityFullNonzero], na.rm = T)) 
 		print(negativeCutoff)
 		cat("Negative cutoff", negativeCutoff, '\n', file = log, append = T)
-        
+
         nCut = min(recast[[intensityColNameFull]][intensityChange > negativeCutoff & 
 													intensityRefNonzero & mostFreqIndices], na.rm = T)
 		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
@@ -302,8 +302,8 @@ if(! length(data)) {
 		pdf(pdfOut, width = 7, height = 4)
 		# Skip plotting the full dataset if more than 0.5M cells
 		if(nrow(recast) < 500000) {
-			g <- ggplot(droplevels(recast), aes_string(intensityColNameFull, intensityColNameRef))
-			plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
+			g <- ggplot(droplevels(recast), aes(get(intensityColNameFull), get(intensityColNameRef)))
+			plot = g + geom_point(aes(color = get(colorCol)), size = 0.01) + 
 				theme_classic() +
 				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
 				geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
@@ -312,52 +312,53 @@ if(! length(data)) {
 			print(plot)
 
 		}
-			df = recast[mostFreqIndices, ] %>% droplevels
-			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
-			plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
-				theme_classic() +
-				geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-				ggtitle(mostLikelyCellTypes[1]) +
-				geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
-				theme(legend.text = element_text(size = 5), legend.title = element_blank())
-			print(plot)
-			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
-            plot = g + geom_point(aes_string(color = colorCol), size = 0.01) +
-                theme_classic() +
-                geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-                ggtitle(mostLikelyCellTypes[1]) +
-                geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
-                theme(legend.text = element_text(size = 5), legend.title = element_blank())
-            print(plot)
-			
-			df = recast[mostFreqIndices, ] %>% droplevels
-			g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
-            plot = g + geom_point(aes(color = get(intensityColNameFull) - get(intensityColNameRef) > negativeCutoff), size = 0.01) +
-                theme_classic() +
-                geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
-                geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
-				ggtitle(mostLikelyCellTypes[1]) +
-				theme(legend.text = element_text(size = 5), legend.title = element_blank())
-            print(plot)
+		df = recast[mostFreqIndices, ] %>% droplevels
+		g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
+		plot = g + geom_point(aes(color = get(colorCol)), size = 0.01) + 
+			theme_classic() +
+			geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+			ggtitle(mostLikelyCellTypes[1]) +
+			geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+			theme(legend.text = element_text(size = 5), legend.title = element_blank())
+		print(plot)
+		g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
+        plot = g + geom_point(aes(color = get(colorCol)), size = 0.01) +
+            theme_classic() +
+            geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+            ggtitle(mostLikelyCellTypes[1]) +
+            geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+            theme(legend.text = element_text(size = 5), legend.title = element_blank())
+        print(plot)
+	
+		
+		df = recast[mostFreqIndices, ] %>% droplevels
+		g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
+        plot = g + geom_point(aes(color = get(intensityColNameFull) - get(intensityColNameRef) > negativeCutoff), size = 0.01) +
+            theme_classic() +
+            geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
+            geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
+			ggtitle(mostLikelyCellTypes[1]) +
+			theme(legend.text = element_text(size = 5), legend.title = element_blank())
+        print(plot)
 
-			df = recast[mostFreqIndices, ] %>% droplevels
-			df$equal = df[[typedCols[2]]] != mostLikelyCellTypes[2]
-			g <- ggplot(df, aes(get(intensityColNameFull) - get(intensityColNameRef)))
-            plot = g + geom_density(aes(color = equal), size = 0.01) +
-                theme_classic() +
-				geom_vline(aes(xintercept = negativeCutoff), linetype = 'dashed') +
-				ggtitle(mostLikelyCellTypes[1]) +
-                theme(legend.text = element_text(size = 5), legend.title = element_blank())
-            print(plot)
-			dev.off()
-			cat("Most likely cell type in full model equals the excluded cell type in the reference model",
-				 "considering mean intensities: >", nCut, '\n', sep = ' ')
-			
-			
-			positiveExcludedIndices = positiveExcludedIndices &
-					recast[[intensityColNameFull]] > nCut &
-                    recast[[intensityColNameRef]] <= qCut
-		}
+		df = recast[mostFreqIndices, ] %>% droplevels
+		df$equal = df[[typedCols[2]]] != mostLikelyCellTypes[2]
+		g <- ggplot(df, aes(get(intensityColNameFull) - get(intensityColNameRef)))
+        plot = g + geom_density(aes(color = equal), size = 0.01) +
+            theme_classic() +
+			geom_vline(aes(xintercept = negativeCutoff), linetype = 'dashed') +
+			ggtitle(mostLikelyCellTypes[1]) +
+            theme(legend.text = element_text(size = 5), legend.title = element_blank())
+        print(plot)
+		dev.off()
+		cat("Most likely cell type in full model equals the excluded cell type in the reference model",
+			 "considering mean intensities: >", nCut, '\n', sep = ' ')
+		
+		
+		positiveExcludedIndices = positiveExcludedIndices &
+				recast[[intensityColNameFull]] > nCut &
+                recast[[intensityColNameRef]] <= qCut
+	}
 		for(missedCellType in undefinedFullTypes) {
 			
 			print(missedCellType)
@@ -381,8 +382,8 @@ if(! length(data)) {
 			pdf(pdfOut, width = 6, height = 4)
 			if(! nrow(recast) < 500000) {
 			
-				g <- ggplot(recast, aes_string(intensityColNameFull, intensityColNameRef))
-				plot = g + geom_point(aes_string(color = colorCol), size = 0.01) + 
+				g <- ggplot(recast, aes(get(intensityColNameFull), get(intensityColNameRef)))
+				plot = g + geom_point(aes(color = get(colorCol)), size = 0.01) + 
 					theme_classic() +
 					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
 					geom_hline(aes(yintercept = qCut), linetype= 'dotted') +
@@ -390,8 +391,8 @@ if(! length(data)) {
 					theme(legend.text = element_text(size = 5))
 				print(plot)
 
-				g <- ggplot(recast[mostFreqIndices, ], aes_string(intensityColNameFull, intensityColNameRef))
-				plot = g + geom_point(aes_string(color = typedCols[2]), size = 0.01) + 
+				g <- ggplot(recast[mostFreqIndices, ], aes(get(intensityColNameFull), get(intensityColNameRef)))
+				plot = g + geom_point(aes(color = get(typedCols[2])), size = 0.01) + 
 					theme_classic() +
 					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
 					geom_hline(aes(yintercept = qCut), linetype= 'dashed') +
@@ -404,7 +405,7 @@ if(! length(data)) {
 				df = recast[mostFreqIndices, ] %>% droplevels
 				df$color = df[[intensityColNameFull]] - df[[intensityColNameRef]] > negativeCutoff
 				print(table(df$color))
-				g <- ggplot(df, aes_string(intensityColNameFull, intensityColNameRef))
+				g <- ggplot(df, aes(get(intensityColNameFull), get(intensityColNameRef)))
 				plot = g + geom_point(aes(color = get(intensityColNameFull) - get(intensityColNameRef) > negativeCutoff), size = 0.01) +
 					theme_classic() +
 					geom_vline(aes(xintercept = nCut), linetype= 'dotted') +
@@ -638,12 +639,12 @@ if(! length(data)) {
 	    if(feature == "area")
 	      plot = plot + scale_y_log10()
 
-	  plot1 = plot + geom_boxplot(aes_string("cellType", feature, fill="control"), outlier.size = 0.05) +
+	  plot1 = plot + geom_boxplot(aes(cellType, get(feature), fill="control"), outlier.size = 0.05) +
 	    scale_fill_manual(values = palette$cellTypingStatusCols)
 	  print(plot1)
 	  	  
-	  plot2 = plot + geom_boxplot(data=droplevels(subset(dfFlt, !is.na(predicted))),
-	                            aes_string("cellType", feature, fill="predicted")) +
+	  plot2 = plot + geom_boxplot(data=droplevels(subset(dfFlt, ! is.na(predicted))),
+	                            aes(cellType, get(feature), fill = "predicted")) +
 	    facet_grid( . ~ control)
 	  print(plot2)
 

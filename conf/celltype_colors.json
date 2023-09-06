@@ -1,6 +1,7 @@
 {
 	"cellTypeColors":{
 		  "Epithelial cells":["#E31A1C"],
+		   "Epithelial cells - Tissue Segmentation - Other":["#E31A1C"],
 		  "Enterocyte":["#7d297cff"],
 		  "Enterocyte - Other":["#7d297cff"],
 		  "TA":["#87ceebff"],
@@ -19,6 +20,7 @@
 		  "Mesenchymal cells - Other":["#003399"],
 		  "Stroma":["#d2b48cff"],
 		  "Vim+ cells":["#003399"],
+		  "Vim+ cells - Other":["#003399"],
 		  
 		  "Nerve":["#9ad08aff"],
 		  
@@ -37,6 +39,7 @@
 		  "CD8 Tem":["#33a02c"],
 		  "CD8 Tcm":["#33a02c"],
 		  "CD8 Trm":["#33a02c"],
+		  "CD8 Trm - Other":["#33a02c"],
 		  "CD57+ CD8 Trm":["#33a02c"],
 		  "CD8 Trm - Others":["#33a02c"],
 		  "CD8 Exhausted TDT":["#33a02c"],
