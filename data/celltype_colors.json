@@ -1,0 +1,123 @@
+{
+	"cellTypeColors":{
+		  "Epithelial cells":["#E31A1C"],
+		   "Epithelial cells - Tissue Segmentation - Other":["#E31A1C"],
+		  "Enterocyte":["#7d297cff"],
+		  "Enterocyte - Other":["#7d297cff"],
+		  "TA":["#87ceebff"],
+		  "Goblet":["#4e297cff"],
+		  "Enterocyte_ITLN1p":["#7e8233ff"],
+		  "Neuroendocrine":["#146533ff"],
+		  "ICC":["#838383ff"],
+		  "Glandular_epi":["#53c2c4ff"],
+		  "Secretory_epithelial":["#e8ba20ff"],
+		  "Squamous_epithelial":["#981d20ff"],
+		  
+		  "Endothelial cells":["#e4acffff"],
+		  "Endothelial":["#040706ff"],
+		  
+		  "Mesenchymal cells":["#003399"],
+		  "Mesenchymal cells - Other":["#003399"],
+		  "Stroma":["#d2b48cff"],
+		  "Vim+ cells":["#003399"],
+		  "Vim+ cells - Other":["#003399"],
+		  
+		  "Nerve":["#9ad08aff"],
+		  
+		  "aSMA+ cells":["#FDDA16"],
+		  "Smooth muscle cells":["brown"],
+		  "Fibroblasts":["#E6AB02"],
+		  "SmoothMuscle":["#eb2025ff"],
+		  "Lymphatic":["#E6AB02"],
+		  "PDPN":["#d82b2aff"],
+		  "Paneth":["#6abd46ff"], // "Paneth":["#b6635bff"],
+
+		  "CD8 T cells":["#33a02c"],
+		  "CD8 T cells - Other":["#33a02c"],
+		  "CD8T":["#0e8284ff"],
+		  "CD8T - Other":["#0e8284ff"],
+		  "CD8 Tem":["#33a02c"],
+		  "CD8 Tcm":["#33a02c"],
+		  "CD8 Trm":["#33a02c"],
+		  "CD8 Trm - Other":["#33a02c"],
+		  "CD57+ CD8 Trm":["#33a02c"],
+		  "CD8 Trm - Others":["#33a02c"],
+		  "CD8 Exhausted TDT":["#33a02c"],
+		  "Naive CD8 T cells":["#33a02c"],
+		  "Cytotoxic CD8 T cells":["#33a02c"], 
+		  "CD8 T cells CD45RO":["#33a02c"],
+		  
+		  "CD4 T cells":["#0076B6"],
+		  "CD4 T cells - Other":["#0076B6"],
+		  "CD4T - Other":["#fba41bff"],
+		  "CD4 Tem":["#0076B6"],
+		  "CD4 Tcm":["#0076B6"],
+		  "CD57+ CD4 T cells":["#0076B6"],
+		  "CD4 Exhausted TDT":["#0076B6"],
+		  "Cytotoxic CD4 T cells":["#0076B6"], 
+		  "Naive CD4 T cells":["#0076B6"],
+		  "Tregs":["#0076B6"],
+		  
+		  "B cells":["#74c8c3"],
+		  "B":["#3952a5"],
+		  "mature B cells":["#3952a5"],
+		  "Plasma":["#fdd801"],
+		  
+		  "T cells - Other":["#B2DF8A"],
+		  "T cells":["#B2DF8A"],
+		  "T":["#b2de8aff"],
+		  "T cells DP":["#B2DF8A"],
+		  
+		  "Myeloid cells":["#FF7F00"],
+		  "Monocytes":["#E6AB02"],
+		  "Macrophages":["#6fcbdcff"],
+		  "Macrophages - Other":["#6fcbdcff"],
+		  "Macrophage":["#6fcbdcff"],
+		  
+		  "Neutrophils":["#FF7F00"],
+		  "Neutrophil":["#bb509fff"],
+		  
+		  "CD7_Immune":["#ce88c0ff"],
+		  "DC":["#8a181aff"],
+		  "Leukocytes":["#1965B0"],
+		  "Leukocytes - Other":["#1965B0"],
+		  "Ambiguous":["white"],
+		  "Unassigned":["grey60"]
+	}, 
+	"cellTypingStatusCols":{
+		"negative":["#0085FFFF"],
+		"positive":["#FF5C00FF"],
+		"undetermined":["grey50"]
+	},
+	"tcellColors":{
+		"CD3_CD8a_CD4":["black"],
+        "CD8a_CD4":["grey30"],
+        "CD8a":["dodgerblue3"],
+        "CD3_CD8a":["dodgerblue3"],
+         "CD4":["#038335ff"],
+         "CD3_CD4":["#20bb57ff"],
+         "CD3_CD8a":["#1997d8ff"],
+		 "CD3": ["#d63638"]
+	},
+	"tcellLinetype":{
+		"CD3_CD8a_CD4":["dotdash"], 
+		"CD8a_CD4":["dotdash"],
+		"CD3_CD8a":["solid"],
+		"CD8a":["dotdash"],
+		"CD3_CD4":["solid"],
+		"CD4":["solid"],
+		"CD3_CD8a":["solid"],
+		"CD3":["solid"]
+	},
+	"tcellLines":{
+		"CD3_CD8a_CD4":["grey40"],
+		"CD8a_CD4":["grey70"],
+		"CD8a":["#0e5192ff"],
+		"CD3_CD8a":["dodgerblue3"],
+		"CD4":["#075a28ff"],
+		"CD3_CD4":["#038335"],
+		"CD3":["#ee7600ff"]
+	}
+
+}
+	
