@@ -442,7 +442,8 @@ assign_celltype <- function(names, markers,
 			return(name)
 	
 		# Split, format and select the celltype-specifc marker
-	    cellMarkers = strsplit(name, split = "_")[[1]]		
+		# Postive markers are split by '_', get_markers_underscore considers when splitting
+	    cellMarkers = get_markers_underscore(markersList, name)
 	    cellMarkers = intersect(cellMarkers, markerNames)
 		cat(name, majorType, region, cellMarkers, major, '\n')
 		

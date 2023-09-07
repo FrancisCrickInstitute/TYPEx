@@ -40,6 +40,20 @@ get_cellRegionID <- function(cellIDs) {
   return(cellRegions)
 }
 
+get_markers_underscore <- function(markers, positive) {
+	
+	hasUnderscore = grep("_", markers, value = T) 
+	
+	if(length(hasUnderscore) & grepl(paste0(hasUnderscore, sep = "|"), positive)) {
+		cols = strsplit(positive, split = paste0(c("_", hasUnderscore), sep = "|"))[[1]]
+		cols = c(cols, hasUnderscore)
+	} else {
+		cols = strsplit(positive, split = "_")[[1]]
+	}
+	cols = cols[cols %in% markers]
+	return(cols)
+}
+
 # VISUALIZATION UTILS
 plot_spatial <- function(X, Y, clusters, exclude.zero=F)  {
   
@@ -78,141 +92,6 @@ plot_scatter <- function(x, y, color, xlab, ylab,legend=T)  {
     plot <- plot + scale_color_manual(values=inputColors)
     # brewer.pal(name="Dark2", n=length(unique(tmp$color))))
   }
-  print(plot)
-}
-
-overlay_cell_types <- function(imagename, imageDf, cellTypeCol, cellTypes = NULL,
-                               title=NULL, legend=F, local=T,
-                               pattern = "composite_with_outlines.png",
-                               xstart=NULL, xend=NULL, ystart=NULL, yend=NULL, ptx = 1,
-                               imageType="outlines") {
-  # cellTypes = NULL; title=NULL; legend=F; local=T; run="B"; pattern = "composite_with_outlines.png"
-  # xstart=NULL; xend=NULL; ystart=NULL; yend=NULL; ptx = 1
-  inDir=file.path(Sys.getenv('BASE_DIR'), 'output/composites')
-  rawImgFile=get_tiff_path(cellIDs = imagename, inDir=inDir)
-  compositeImgFile=NA 
-  if(is.na(rawImgFile)) {
-    cat("file not found:", imagename, inDir, "\n")
-    outlineImg=NULL
-  } else {
-	library(tiff)
-    imageExtension=gsub(".*\\.([^.]+)$", "\\1", rawImgFile)
-    readImg=match.fun(paste0("read", toupper(imageExtension)))
-    outlineImg=readImg(rawImgFile)
-  }
-  if(is.na(compositeImgFile)) {
-    cat("file not found:", imagename, compositeImgFile, "\n")
-    compositeImg=NULL
-  } else {
-    imageExtension=gsub(".*\\.([^.]+)$", "\\1", compositeImgFile)
-    readImg=match.fun(paste0("read", toupper(imageExtension)))
-    compositeImg=readImg(compositeImgFile)
-  }
-  if(! is.null(cellTypes)) {
-    if(cellTypes == "Background") {
-      rowSel=imageDf$background.Background == 1
-    } else if(cellTypes %in% "filtered") {
-      rowSel=! imageDf$filtered
-    } else if(cellTypes =="nonfiltered") {
-      rowSel=imageDf$filtered
-    } else if(cellTypes=="unassigned") {
-      unassigned=union(intersect(which(imageDf[[cellTypeCol]] == ""), 
-                           grep("Excluded", imageDf$cluster)),
-                       which(imageDf[[cellTypeCol]] == 'Unassigned'))
-      rowSel=rep(F, nrow(imageDf))
-      rowSel[unassigned] = T
-    } else if(cellTypes=="assigned") {
-      rowSel=imageDf[[cellTypeCol]] != 'Unassigned'
-    } else {
-      rowSel=!is.na(imageDf[[cellTypeCol]])
-    }
-  } else {
-    rowSel=!is.na(imageDf[, cellTypeCol])
-  }
-  
-  if(!is.null(xstart))
-    rowSel = rowSel & imageDf$centerX >= xstart
-  if(!is.null(xend))
-    rowSel = rowSel & imageDf$centerX <= xend
-  if(!is.null(ystart))
-    rowSel = rowSel & imageDf$centerY >= ystart
-  if(!is.null(yend))
-    rowSel = rowSel & imageDf$centerY <= yend
-  if(!sum(rowSel, na.rm = T)) return(NULL)
-  imageDf=imageDf[which(rowSel), ]
-  cellStats=ddply(imageDf, .(get(cellTypeCol)), summarise, count=length(positive))
-  cellStats=cellStats[order(cellStats$count, decreasing = T), ]
-  imageDf=droplevels(imageDf[ imageDf[[cellTypeCol]] %in% cellStats[,1], ])
-  imageDf[[cellTypeCol]]=factor(imageDf[[cellTypeCol]], levels=cellStats[, 1])
-  if(imageType == "outlines")  {
-    image=compositeImg
-  } else if(imageType  == "composite") {
-    image=outlineImg
-  } else {
-    "unknown"
-  }
-  # plot_image_cell_overlay(imageDf, image=compositeImg, clusters=cellTypeCol,
-                          # legend=legend, title=title, ptx=ptx)
-  plot_image_cell_overlay(imageDf, image=image, clusters=cellTypeCol,
-                          legend=legend, title=title, ptx=ptx)
-
-  # xstart=xstart, yend=yend, xend=xend, ystart=ystart)
-  # xstart=xstart, yend=yend, xend=xend, ystart=ystart)
-}
-
-plot_image_cell_overlay <- function(cellData, image=NULL, clusters, title=NULL, legend = F,
-                                    xstart=NULL, ystart=NULL, xend=NULL,  yend=NULL, ptx=1, 
-                                    legendTextSize=7) {
-  legend.position = "right"
-  nrCategs=length(unique(cellData[[clusters]]))
-  if(nrCategs>20) legendTextSize=4
-  if(nrCategs ==1 ) legend.position='top'
-  # cellData[, ..clusters := sapply(.SD, function(x) toString(x)), .SDcols=clusters]
-  if(length(clusters))
-  plot=ggplot(data=cellData, aes_string("centerX", "centerY", color=clusters)) +
-    coord_equal() +
-    scale_y_reverse() +
-    xlab("") + ylab("") +
-    theme_minimal() +
-    theme(legend.position = legend.position,
-          legend.background = element_rect(fill="black"),
-          axis.line = element_blank(), axis.ticks = element_blank(), 
-          axis.text = element_blank(), axis.title = element_blank(),
-          panel.background = element_rect(fill="black", colour = NA),
-          plot.background = element_rect(fill="black", colour = NA),
-          plot.title=element_text(color="white"),
-          panel.grid = element_blank(),
-          panel.spacing = unit(0, "in"),
-          plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "in"),
-          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit="in"),
-          # legend.justification = c(0, 0),
-          # legend.key.size = unit(x = 2, units =  "cm"),
-          legend.text=element_text(color="white", size = legendTextSize),
-          legend.spacing = unit(0.1, "in")) +
-    labs(x=NULL, y=NULL) 
-  if(clusters == "cellType")
-	colors=c(palette$cellTypeColors, palette$cellTypingStatusCols, palette$backgroundCols)
-	colors=colors[names(colors) %in% unique(cellData[["cellType"]])]
-    plot = plot + scale_color_manual(values=colors)
-  if(!is.null(image)) {
-    xmin=ifelse(is.null(xstart), 0, xstart)
-    xmax=ifelse(is.null(xstart), dim(image)[2], xend)
-    ymin=ifelse(is.null(ystart), 0, ystart)
-    ymax=ifelse(is.null(ystart), -dim(image)[1], yend)
-    plot=plot + annotation_raster(image, xmin = xmin, xmax = xmax, ymin = ymin, ymax=ymax)
-   # plot = plot + annotation_raster(image, xmin = 0, xmax = max(imageDf$centerX), ymin =-max(imageDf$centerY), ymax=0)
-  }
-  if(!is.function(title))
-    plot = plot + ggtitle(title)
-  if(!legend) {
-    plot=plot + guides(colour = legend)
-  } else if(nrCategs>20) {
-    plot = plot + guides(color = guide_legend(override.aes = list(shape = 15, size =.5),
-                                              legend.spacing = unit(0, "in"), ncol = 2))
-  } else {
-    plot = plot + guides(color = guide_legend(override.aes = list(shape = 15, size = 2), ncol = 1))
-  }
-  plot = plot + geom_point(size=ptx, stroke=0.1) # shape = 1
   print(plot)
 }
 
@@ -331,18 +210,6 @@ get_marker_frequency <- function(data, marker, column="positivity") {
 	values=rep(f("{marker}-"), nrow(data))
 	values[grep(markerPattern, data[[column]])] = f("{marker}+")
 	return(values)
-}
-
-get_positive_combination <- function(data, combo, column='positive')  {
-  
-  markers=sapply(combo, function(x)
-    strsplit(x, split = '\\+|-')[[1]]) %>%
-    unlist %>% unique
-  pos = lapply(markers, function(x)
-    get_marker_frequency(data, x, column=column))
-  pos=do.call(paste, pos) %>%
-    gsub(' ', '', .)
-  pos==combo
 }
 
 review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssignFile) {

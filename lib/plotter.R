@@ -192,9 +192,10 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 		clusterLabels=rownames(clusterNormSub)
 		markers = colnames(clusterSummary)[row_order(heat)]
 	    binMat = sapply(clusterLabels, function(cluster) {
-    	  positive=labels$positive[labels$cluster == cluster] %>%
-		  						strsplit(split = '_') %>% unlist
-	      sapply(markers %in% positive, sum)
+    	  positive=labels$positive[labels$cluster == cluster]
+		  # consider if any underscores in the marker names
+		  positive = get_markers_underscore(markers, positive) 
+		  sapply(markers %in% positive, sum)
     	})
 		binMat = as.data.frame(binMat)
     	colnames(binMat) = clusterLabels
@@ -308,37 +309,6 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
     clusters_order = rownames(clusterSummary)[row_order(heat)]
     markers_order = colnames(clusterSummary)[column_order(heat)]
     return(list(cluster = clusters_order, marker = markers_order))
-}
-
-plot_binary <- function(labels, runID, clusters_order=NULL, markers_order=NULL) {
-
-  labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive)
-  if(!is.null(clusters_order)) {
-    labels=labels[order(match(labels$cluster, clusters_order)), ]
-  }
-  markers=sapply(labels$positive,  function(x) strsplit(x, split='_')[[1]]) %>% unlist %>% unique
-  if(!is.null(markers_order)) {
-    markers=markers[order(match(markers, markers_order))]
-  }
-  binMat=sapply(labels$cluster, function(cluster) {
-      positive=labels$positive[labels$cluster == cluster] %>% 
-	  	strsplit(split = '_') %>% unlist
-      sapply(markers %in% positive, sum)
-  })
-
-  pdfOut=paste0(runID, ".binmat.pdf")
-  pdf(pdfOut, height=8)
-  pheatmap(t(binMat), cluster_cols = F, cluster_rows = F,
-           fontsize_row = 6, fontsize_col = 6,
-           border_color = "grey85",
-           # gaps_row = 1:length(labels_row),
-           cellheight =  6,
-           cellwidth = 6, na_col = 'white',
-           labels_row = labels$cellType,
-           labels_col = markers,
-           angle_col = 90,
-           color = colorRampPalette(rev(c('#1356bbff', "#0066FFFF", "aliceblue")))(100))
-  dev.off()
 }
 
 plot_expression <- function(dfExp, clusters, clusterNames, p, magnitude=NULL, plotDir = 'plots') {

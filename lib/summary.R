@@ -221,7 +221,6 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 		names[is.na(names)] = ''
 
 		getExpSummary=match.fun(fun)
-		hasUnderscore = grep("_", colnames(dfExp), value = T) 
 		print(colnames(dfExp))
 		summary = tapply(1:nrow(dfExp), names, function(subset) {
 			cluster = names[subset[1]]
@@ -229,14 +228,7 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 			if(cluster == "") {
 				values = rep(NA, length(subset))
 			} else {
-				if(length(hasUnderscore) & grepl(paste0(hasUnderscore, sep = "|"), cluster)) {
-					cols = strsplit(cluster, split = paste0(c("_", hasUnderscore), sep = "|"))[[1]]
-					cols = c(cols, hasUnderscore)
-				} else {
-					cols = strsplit(cluster, split = "_")[[1]]
-				}
-				cols = cols[cols %in% colnames(dfExp)]
-				
+				cols = get_markers_underscore(colnames(dfExp), cluster)
 				values = apply(dfExp[subset, ..cols], 1, getExpSummary)
 			}
 			names(values)=rownames(dfExp)[subset]
@@ -245,3 +237,4 @@ get_markers_expression <- function(dfExp, clusters, clusterNames, magnitude=NULL
 		summary=do.call(rbind, summary)
 		summary[match(rownames(dfExp), rownames(summary)), 1]
 }
+

@@ -32,7 +32,7 @@ args = parser.parse_args()
 outDir = os.path.join(args.outDir, "cell_info")
 if(not os.path.exists(outDir)):
     print("Creating ", outDir)
-    os.mkdir(outDir)
+    os.makedirs(outDir, exist_ok = True)
 
 cellFrame=pd.read_csv(args.cellObjFile, sep =",")
 print(cellFrame.columns.values.tolist())
