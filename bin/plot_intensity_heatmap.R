@@ -1,4 +1,8 @@
 #!/usr/bin/env Rscript
+maxDim = 2000
+bgColor = "black"
+reducetime = 2
+
 options(warn = -1)
 library(scales)
 library(plyr)
@@ -101,7 +105,6 @@ legend("left", pt.bg = unlist(cellTypeColors), legend = names(cellTypeColors),
 			pch = 22, box.lty=0, title = "Cell subtypes", cex = 1.5)
 dev.off()	
 
-bgColor = "black"
 if(cellTypeColors["Ambiguous"] == 'black') 
 	bgColor = 'white'
 imagenames = unique(cellObjectsDf$imagename)
@@ -112,13 +115,13 @@ for(image in imagenames) {
     pngOut = f("{posDir}/{image}.png")
 	height = max(dataFlt$centerY)
 	width = max(dataFlt$centerX)
-	if(width > 1000 | height > 1000) {
+	if(width > maxDim | height > maxDim) {
 		if(width > height) {
-			height = height / width * 1000 
-			width = 1000
+			height = height / reducetime 
+			width = width / reducetime
 		} else {
-			width = width / height * 1000
-			height = 1000
+			width = width / reducetime
+			height = height / reducetime
 		}
 	}
 
