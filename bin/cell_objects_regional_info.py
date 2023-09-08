@@ -52,10 +52,12 @@ fileOut=os.path.join(outDir, args.panel + "_" + args.regionType + "_cell_info.cs
 print(len(maskList), " masks listed in dir ", 
     args.maskDir, ' with regex ', args.maskRegEx)
 
+orientation_flag="none"
 if(len(maskList) > 0):
     regionInfo = []
     for mask in maskList:
         
+        print(mask)
         if(args.regionRegEx is not None):
             region=re.sub(args.maskRegEx, args.regionRegEx, os.path.basename(mask))
         else:
@@ -73,23 +75,32 @@ if(len(maskList) > 0):
         if(dataTmp.shape[0] == 0):
             continue
         
-        print(max(dataTmp["LocationCenter_X"]))
-        print(max(dataTmp["LocationCenter_Y"]))
-        print(tiff.shape)
-        print(region, imagename)
-        # Check the orientation of the mask
-        if(max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1]):
+        if(orientation_flag == 'keep' or 
+            max(dataTmp["LocationCenter_X"]) <= tiff.shape[0] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[1] and
+            (max(dataTmp["LocationCenter_X"]) > tiff.shape[1] or max(dataTmp["LocationCenter_Y"]) > tiff.shape[0])):
             regions=[
                 tiff[int(np.round(x)), int(np.round(y))]
                     for x, y in zip(dataTmp['LocationCenter_X'],
                                     dataTmp['LocationCenter_Y'])
             ]
-        elif(max(dataTmp["LocationCenter_X"]) <= tiff.shape[1] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[0]):
-	        regions=[
-    	        tiff[int(np.round(y)), int(np.round(x))]
-        	        for x, y in zip(dataTmp['LocationCenter_X'], 
-            	                    dataTmp['LocationCenter_Y'])
-        	]
+            orientation_flag="keep"
+        elif(orientation_flag == 'swap' or 
+             max(dataTmp["LocationCenter_X"]) <= tiff.shape[1] and max(dataTmp["LocationCenter_Y"]) <= tiff.shape[0] and
+             (max(dataTmp["LocationCenter_X"]) > tiff.shape[0] or max(dataTmp["LocationCenter_Y"]) > tiff.shape[1])):
+            regions=[
+                 tiff[int(np.round(y)), int(np.round(x))]
+                     for x, y in zip(dataTmp['LocationCenter_X'],
+                                     dataTmp['LocationCenter_Y'])
+            ]
+            orientation_flag="swap"
+        else:
+            print("WARNING:could not determine the orientation of the tiff relative to x and y cell object coordinates. Assuming they match")
+            regions=[
+                tiff[int(np.round(x)), int(np.round(y))]
+                    for x, y in zip(dataTmp['LocationCenter_X'],
+                                    dataTmp['LocationCenter_Y'])
+            ]
+            
         d = {'centerX':dataTmp['LocationCenter_X'],
              'centerY':dataTmp['LocationCenter_Y'],
              'ObjectNumber':dataTmp['ObjectNumber'],

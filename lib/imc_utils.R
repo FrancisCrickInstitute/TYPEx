@@ -43,14 +43,17 @@ get_cellRegionID <- function(cellIDs) {
 get_markers_underscore <- function(markers, positive) {
 	
 	hasUnderscore = grep("_", markers, value = T) 
-	
-	if(length(hasUnderscore) & grepl(paste0(hasUnderscore, sep = "|"), positive)) {
-		cols = strsplit(positive, split = paste0(c("_", hasUnderscore), sep = "|"))[[1]]
-		cols = c(cols, hasUnderscore)
+	print(positive)
+	print(paste0(hasUnderscore, collapse = "|"))
+	print(grepl(paste0(hasUnderscore, collapse = "|"), positive))
+	if(length(hasUnderscore) & grepl(paste0(hasUnderscore, collapse = "|"), positive)) {
+		cols = strsplit(positive, split = paste0(c("_", hasUnderscore), collapse = "|"))[[1]]
+		cols = c(cols, hasUnderscore[sapply(hasUnderscore, function(x) grepl(x, positive))])
 	} else {
 		cols = strsplit(positive, split = "_")[[1]]
 	}
 	cols = cols[cols %in% markers]
+		
 	return(cols)
 }
 
