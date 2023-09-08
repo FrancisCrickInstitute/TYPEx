@@ -50,7 +50,7 @@ if(! any(metals %in% colnames(expDf))) {
 	colnames(expDf) = colnames(expDf) %>%
 						gsub(metalPattern, '', .)
 }
-expDf = subset(expDf, select = ! colnames(expDf) %in% pars$exclude_channels)
+expDf = subset(expDf, select = ! colnames(expDf) %in% pars$channels_exclude)
 
 summaryDir = with(args, f('{inDir}/summary/{subset}_{markers}_{method}/tables'))
 outDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/intensity_plots"))
