@@ -638,16 +638,15 @@ if(! length(data)) {
 	        plot = plot + geom_hline(aes(yintercept=0.5), linetype="dashed", color="grey")
 	    if(feature == "area")
 	      plot = plot + scale_y_log10()
-
-	  plot1 = plot + geom_boxplot(aes(cellType, get(feature), fill="control"), outlier.size = 0.05) +
+	  plot1 = plot + geom_boxplot(aes(cellType, get(feature), fill=control), outlier.size = 0.05) +
 	    scale_fill_manual(values = palette$cellTypingStatusCols)
-	  print(plot1)
-	  	  
+		print(feature)
+		print(palette$cellTypingStatusCols)
+	  print(plot1)	  	  
 	  plot2 = plot + geom_boxplot(data=droplevels(subset(dfFlt, ! is.na(predicted))),
-	                            aes(cellType, get(feature), fill = "predicted")) +
+	                            aes(cellType, get(feature), fill = predicted)) +
 	    facet_grid( . ~ control)
 	  print(plot2)
-
 	dev.off()
 	cat('CHECK:', pdfOut, "\n")
 }
