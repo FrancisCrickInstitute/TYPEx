@@ -209,24 +209,24 @@ for (k = 0; k< runs.length;  k++)	{
 			if(auxStromaMarkers != "") {
 				// Max to generate a tumour mask - considering nuclei are not in it
 				run("Median (3D)");
-        	    setAutoThreshold("Triangle dark");
-            	run("Convert to Mask");
+				setAutoThreshold("Triangle dark");
+				run("Convert to Mask");
 				run("Morphological Filters", "operation=Closing element=Square radius=1");
-    	        run("Invert");
+				run("Invert");
 				run("32-bit");
 				run("Calculator Plus", "i1=Median-Closing i2=Median-Closing operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0");
-        	    run("Calculator Plus", "i1=auxStroma i2=Median-Closing operation=[Multiply: i2 = (i1*i2) x k1 + k2] k1=1 k2=0 create");
+				run("Calculator Plus", "i1=auxStroma i2=Median-Closing operation=[Multiply: i2 = (i1*i2) x k1 + k2] k1=1 k2=0 create");
 
-            	selectWindow("Result");
+				selectWindow("Result");
 				run("Median (3D)");
-    	        rename('auxStromaMrg');
+				rename('auxStromaMrg');
 				autoAdjust();
 				print(stromaMrgMarkers);
-	            run("Concatenate...", "  title=Stroma open " + stromaMrgMarkers);
+				run("Concatenate...", "  title=Stroma open " + stromaMrgMarkers);
 			} else {
 				 run("Concatenate...", "  title=Stroma open " + stromaMarkers);
 			}
-            run("Z Project...", "projection=[Sum Slices]");
+			run("Z Project...", "projection=[Sum Slices]");
 
 			run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
 			run("Median (3D)");
