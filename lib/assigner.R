@@ -417,13 +417,13 @@ assign_celltype <- function(names, markers,
 			grepl("\\|", majorType))
 			majorType='none'
 		
-	    name=gsub("^[^|]*\\|", "", name) %>%
-			gsub("^[^=]+=", "", .) %>%
-			gsub("^[^:]+:([^ ]+).*", "\\1", .)
+	    name = gsub("^[^|]*\\|", "", name) %>%
+				gsub("^[^=]+=", "", .) %>%
+				gsub("^[^:]+:([^ ]+).*", "\\1", .)
 		
-		considerTissueSeg=
+		considerTissueSeg =
 			majorType == 'none' &
-			region != 'none' & 
+			region != 'none' &
 			region > 0
 
 	    if(name %in% c("", "|", "NA"))
@@ -443,7 +443,8 @@ assign_celltype <- function(names, markers,
 	
 		# Split, format and select the celltype-specifc marker
 		# Postive markers are split by '_', get_markers_underscore considers when splitting
-	    cellMarkers = get_markers_underscore(markersList, name)
+	    cellMarkers = get_markers_underscore(unique(unlist(markersList)), name)
+		cat(cellMarkers, name, '\n')
 	    cellMarkers = intersect(cellMarkers, markerNames)
 		cat(name, majorType, region, cellMarkers, major, '\n')
 		
