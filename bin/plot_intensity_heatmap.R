@@ -89,7 +89,7 @@ paletteMatch = match(names(cellTypeColors), names(palette$cellTypeColors))
 cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is.na(paletteMatch)]]
 
 markersList = sapply(cellTypeList, function(celltype) {
-	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
+	get_celltype_markers(unique(unlist(marker_gene_list[[args$markers]])), celltype)
 }) %>% unlist %>%  unique
 markersList = intersect(markersList, colnames(expDf))
 
@@ -411,7 +411,7 @@ for(marker in majorMarkers) {
       facet_wrap(confidence ~ .,  scale = 'free_y') + 
 	  xlab("") + 
 	  ylab("Median cell intensity per image") +
-	  scale_x_discrete(labels = split_by_other) +
+	  scale_x_discrete(majorMarkers = split_by_other) +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
