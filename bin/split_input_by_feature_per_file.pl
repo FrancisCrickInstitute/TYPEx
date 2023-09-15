@@ -33,8 +33,6 @@ if($imcyto eq 'true')	{
 	@header = map {s/Location_Center/LocationCenter/; $_} @header;
 	# simple segmentaiton
 	@header = map {s/mean_intensity/MeanIntensity/i; $_} @header;
-	@header = map {s/centroid-?x/LocationCenter_X/; $_} @header;
-	@header = map {s/centroid-?y/LocationCenter_Y/; $_} @header;
 	@header = map {s/label/ObjectNumber/; $_} @header;
 	@header = map {s/area/AreaShape_Area/; $_} @header;
 } else {

@@ -63,14 +63,14 @@ if(len(maskList) > 0):
         else:
             region=args.regionType
         
-        imagename=re.sub(args.maskRegEx, args.imageRegEx, os.path.basename(mask))
+        imgName=re.sub(args.maskRegEx, args.imageRegEx, os.path.basename(mask))
         tiff = pyplot.imread(mask)
 
-        imgIndex=cellFrame['imagename'] == imagename
+        imgIndex=cellFrame['imagename'] == imgName
 
         dataTmp=cellFrame[imgIndex]
         
-        print(region, imagename)
+        print(region, imgName)
         print(dataTmp.shape)
         if(dataTmp.shape[0] == 0):
             continue
@@ -104,13 +104,28 @@ if(len(maskList) > 0):
         d = {'centerX':dataTmp['LocationCenter_X'],
              'centerY':dataTmp['LocationCenter_Y'],
              'ObjectNumber':dataTmp['ObjectNumber'],
-             'imagename':imagename,
+             'imagename':imgName,
              "region":region,
              "regionID":regions
         }
+
+        
         d = pd.DataFrame(d)
         regionInfo.append(d)
-
+        
+        pngOut = os.path.join(outDir, imgName + "_" + region + ".png")
+        pyplot.plot()
+        ind = [i > 0 for i in regions]
+        if(region == 'Tumour'):
+            pyplot.scatter(dataTmp['LocationCenter_X'][ind], -dataTmp['LocationCenter_Y'][ind], color = "red", s=1)
+        elif(region == 'Stroma'):
+            pyplot.scatter(dataTmp['LocationCenter_X'][ind], -dataTmp['LocationCenter_Y'][ind], color = "blue", s=1)
+        else:
+            pyplot.scatter(dataTmp['LocationCenter_X'][ind], -dataTmp['LocationCenter_Y'][ind], color = "black", s=1)
+        pyplot.show()
+        pyplot.savefig(pngOut)
+        pyplot.close()
+        
     if(len(regionInfo) == 0):
         print('ERROR: No data to append. Check the regular expression ' +
              ' for extracting the imagename from the input files. Exiting')
