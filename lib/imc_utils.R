@@ -46,6 +46,7 @@ get_markers_underscore <- function(markers, positive) {
 	print(positive)
 	print(paste0(hasUnderscore, collapse = "|"))
 	print(grepl(paste0(hasUnderscore, collapse = "|"), positive))
+	print(markers)
 	if(length(hasUnderscore) & grepl(paste0(hasUnderscore, collapse = "|"), positive)) {
 		cols = strsplit(positive, split = paste0(c("_", hasUnderscore), collapse = "|"))[[1]]
 		cols = c(cols, hasUnderscore[sapply(hasUnderscore, function(x) grepl(x, positive))])
@@ -282,7 +283,7 @@ review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
 
 summary_table <- function(inDf, pars, regFile) {
 	
-	print(head(inDf))
+  print(head(inDf))
   markers = setdiff(unique(unlist(lapply(unique(inDf$positivity),
                                        function(x) strsplit(toString(x), split="_")[[1]]))), c('NA', ''))
 									   

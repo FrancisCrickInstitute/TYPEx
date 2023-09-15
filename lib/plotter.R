@@ -112,10 +112,11 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 	heatmapData = f('{plotDir}/heatmap.RData')
 	save(dfExp, clusters, runID, labels, file=heatmapData)
 	clusterSize = table(clusters) %>% as.data.frame
-
+	
     clusterSummary <- sapply(colnames(dfExp), function(x) {
       tapply(t(dfExp[[x]]), as.factor(clusters), median, na.rm = T)
     })
+
 		
 	minValue = min(clusterSummary[clusterSummary > 0], na.rm = T)
 	clusterSummary[clusterSummary == 0] = minValue
@@ -140,60 +141,67 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 	
 	for(subset in subsets) {
 			
-			cat('Plotting subset of clusters: ', subset, runID, '\n')
-			clusterNormSub = clusterNorm
-			clusterSizeSub = clusterSize
-			
-			if(subset != 'all') {
-				clusterNormSub = clusterNorm[celltypes == subset, ]
-			}
-			if(is.null(nrow(clusterNormSub)))
-				next
-			if(! nrow(clusterNormSub))
-				next
-			selectedCols = apply(clusterNormSub, 2, function(x) length(unique(x)) > 1)
-			clusterNormSub = subset(clusterNormSub, select=selectedCols)
-			clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
-			if(is.null(nrow(clusterNormSub)))
-				next
-			
-			# apply(clusterNormSub, 2, function(x) length(unique(x))) %>% print
-			rowLabels = gsub(".*:", "", colnames(clusterNormSub))
-			heat = ComplexHeatmap::Heatmap(t(clusterNormSub),
-				na_col = "grey90",
-				col = circlize::colorRamp2(density_scale, 
-						rev(brewer.pal(name = "RdBu", length(density_scale)))),
-				row_title_gp = gpar(fontsize=12),
-				row_title_rot=90,
-				border = "grey85",
-				row_labels = rowLabels,
-				column_title_gp = gpar(fontsize=8),
-				name = subset,
-				column_title = subset,
-				row_title = "Mean raw pixel intensity",
-				width = unit(nrow(clusterNormSub)/10, 'in'),
-				height = unit(ncol(clusterNormSub)/4, "cm"),
-				clustering_method_rows = "ward.D2",
-				clustering_method_columns = 'ward.D2',
-				clustering_distance_rows='spearman',
-				clustering_distance_columns='spearman',
-				heatmap_legend_param = list(title = "Intensity\n[z-score]", 
-				ncol=1, nrow=4,by_row=T,
-				direction='horizontal', fontsize=8),
-				row_names_gp = gpar(fontsize = 8),
-				show_heatmap_legend=T,
-				column_names_gp = gpar(fontsize = 8, angle = 90))
+		cat('Plotting subset of clusters: ', subset, runID, '\n')
+		clusterNormSub = clusterNorm
+		clusterSizeSub = clusterSize
+
+		
+		if(subset != 'all') {
+			clusterNormSub = clusterNorm[celltypes == subset, ]
+		}
+		if(is.null(nrow(clusterNormSub)))
+			next
+		if(! nrow(clusterNormSub))
+			next
+		selectedCols = apply(clusterNormSub, 2, function(x) length(unique(x)) > 1)
+	
+		clusterNormSub = subset(clusterNormSub, select = selectedCols)
+		clusterSizeSub = clusterSize[clusterSize$clusters %in% rownames(clusterNormSub), ]
+		if(is.null(nrow(clusterNormSub)))
+			next
+		
+		# apply(clusterNormSub, 2, function(x) length(unique(x))) %>% print
+		rowLabels = gsub(".*:", "", colnames(clusterNormSub))
+		heat = ComplexHeatmap::Heatmap(t(clusterNormSub),
+			na_col = "grey90",
+			col = circlize::colorRamp2(density_scale, 
+					rev(brewer.pal(name = "RdBu", length(density_scale)))),
+			row_title_gp = gpar(fontsize=12),
+			row_title_rot=90,
+			border = "grey85",
+			row_labels = rowLabels,
+			column_title_gp = gpar(fontsize=8),
+			name = subset,
+			column_title = subset,
+			row_title = "Mean raw pixel intensity",
+			width = unit(nrow(clusterNormSub)/10, 'in'),
+			height = unit(ncol(clusterNormSub)/4, "cm"),
+			clustering_method_rows = "ward.D2",
+			clustering_method_columns = 'ward.D2',
+			clustering_distance_rows='spearman',
+			clustering_distance_columns='spearman',
+			heatmap_legend_param = list(title = "Intensity\n[z-score]", 
+			ncol=1, nrow=4,by_row=T,
+			direction='horizontal', fontsize=8),
+			row_names_gp = gpar(fontsize = 8),
+			show_heatmap_legend=T,
+			column_names_gp = gpar(fontsize = 8, angle = 90))
 		print(heat)
 
 		print(unit(nrow(clusterSummary)/10, 'in'))
 		print(unit(ncol(clusterSummary)/5, "cm"))
-    	labels$positive=gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 
+    	labels$positive = gsub('pos:(.*) neg:', '\\1', labels$positive) %>% 
 			gsub('up:(.*) down:', '\\1', .)
-		clusterLabels=rownames(clusterNormSub)
+		clusterLabels =rownames(clusterNormSub)
+
 		markers = colnames(clusterSummary)[row_order(heat)]
 	    binMat = sapply(clusterLabels, function(cluster) {
-    	  positive=labels$positive[labels$cluster == cluster]
+    	  positive = labels$positive[labels$cluster ==  cluster]
+		  if(! length(positive)) 
+			  return(0)	
 		  # consider if any underscores in the marker names
+		  print(cluster)
+		  print(positive)
 		  positive = get_markers_underscore(markers, positive) 
 		  sapply(markers %in% positive, sum)
     	})
@@ -211,27 +219,27 @@ plot_heatmap <- function(dfExp, clusters,  runID, labels, plotDir = "plots", plo
 			)
     	rowCellTypes=sapply(clusterLabels, 
 					function(x) labels$cellType[labels$cluster == x][1])
-			rowCellTypes[is.na(rowCellTypes)] = 'Excluded'
-			cellTypeColors=rep(unlist(palette$cellTypeColors), 2)
-			names(cellTypeColors) = c(names(palette$cellTypeColors), 
-				paste('Excluded', names(palette$cellTypeColors)))
-			cellTypeColors = cellTypeColors[match(rowCellTypes, names(cellTypeColors))]
-			if(all(is.na(cellTypeColors)))	{
-				cellTypeColors=rainbow(length(rowCellTypes))
-			}
-			cellTypeColors[is.na(cellTypeColors)] = 'grey'
-			names(cellTypeColors) = rowCellTypes
+		rowCellTypes[is.na(rowCellTypes)] = 'Excluded'
+		cellTypeColors=rep(unlist(palette$cellTypeColors), 2)
+		names(cellTypeColors) = c(names(palette$cellTypeColors), 
+			paste('Excluded', names(palette$cellTypeColors)))
+		cellTypeColors = cellTypeColors[match(rowCellTypes, names(cellTypeColors))]
+		if(all(is.na(cellTypeColors)))	{
+			cellTypeColors=rainbow(length(rowCellTypes))
+		}
+		cellTypeColors[is.na(cellTypeColors)] = 'grey'
+		names(cellTypeColors) = rowCellTypes
 
-	    	row_ha = HeatmapAnnotation("# Cells"=anno_barplot(border = F,
-										x = clusterSizeSub$Freq[match(clusterSizeSub$clusters, clusterLabels)],
-										gp=gpar(fill='#0571B0', col='transparent',
-										fontsize=8, title=expression("# Cells"))), 
-										which = 'column', cellType = sapply(clusterLabels, 
-											function(x) labels$cellType[labels$cluster == x][1]),
-												col=list(cellType = cellTypeColors),
-												gp = gpar(col = "grey50"))
-			
-			if(! all(binMat == 0) & ! all(binMat == 1)) {
+    	row_ha = HeatmapAnnotation("# Cells"=anno_barplot(border = F,
+									x = clusterSizeSub$Freq[match(clusterSizeSub$clusters, clusterLabels)],
+									gp=gpar(fill='#0571B0', col='transparent',
+									fontsize=8, title=expression("# Cells"))), 
+									which = 'column', cellType = sapply(clusterLabels, 
+										function(x) labels$cellType[labels$cluster == x][1]),
+											col=list(cellType = cellTypeColors),
+											gp = gpar(col = "grey50"))
+		
+		if(! all(binMat == 0) & ! all(binMat == 1)) {
 
 			print('Plotting bin mat')
 			print(rowLabels)

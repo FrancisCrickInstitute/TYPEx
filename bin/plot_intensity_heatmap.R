@@ -81,25 +81,182 @@ positive = cellObjectsDf$positive[densMatch]
 
 
 cellTypeList = get_celltypes(marker_gene_list[[args$markers]])
-cellTypeList = c(cellTypeList, cellTypes) %>% unique
-
+cellTypeList = c(cellTypeList, cellTypes) %>% unique %>% 
+	sapply(., toString)
 cellTypeColors = rep('grey', length(cellTypeList))
 names(cellTypeColors) = cellTypeList
 paletteMatch = match(names(cellTypeColors), names(palette$cellTypeColors))
 cellTypeColors[! is.na(paletteMatch)] = palette$cellTypeColors[paletteMatch[! is.na(paletteMatch)]]
 
 markersList = sapply(cellTypeList, function(celltype) {
-	get_celltype_markers(unique(unlist(marker_gene_list[[args$markers]])), celltype)
+	get_celltype_markers(marker_gene_list[[args$markers]], celltype)
 }) %>% unlist %>%  unique
 markersList = intersect(markersList, colnames(expDf))
 
+# Cluster summary for typing heatmaps
+clusterSummary <- sapply(markers, function(x) {
+  tapply(t(expDf[[x]]), as.factor(cellTypes), median)
+})
 
+clusterSize = table(cellTypes) %>% as.data.frame
+clusterNorm = apply(clusterSummary, 2, to_zscore)
+
+clusterPositive = sapply(rownames(clusterNorm), function(x) {
+  print(x)
+  densityFlt = subset(cellObjectsDf, cellType == x)
+  sapply(markers, function(m) {
+    pos = get_marker_frequency(data=densityFlt, marker = m, column = "positive")
+    (grepl('\\+', pos ) %>% sum)/length(pos) * 100
+  })
+})
+
+clusterSize = ddply(cellObjectsDf, .(cellType), summarise,
+                   Freq = length(object))
+
+if(max(abs(clusterNorm), na.rm = T) < 3) {
+  density_scale = pretty(c(-2, 2))
+  colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 4, 6, 8, 10)]
+} else {
+  density_scale = pretty(c(-3, 3))
+  colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 3, 4, 6, 8, 9, 10)]
+}
+print("Plot the typing heatmap")
+pdfOut = f("{outDir}/intensity_heatmap.pdf")
+pdf(pdfOut, useDingbats = F, height = 10, width = 10)
+  
+clusterNormSub = clusterNorm[rownames(clusterNorm) != 'Excluded', ]
+if(is.null(nrow(clusterNormSub))) next
+
+rowOrder = order(match(rownames(clusterNormSub), cellTypeList))
+colOrder = order(match(colnames(clusterNormSub), markersList))
+clusterNormSub = clusterNormSub[rowOrder, colOrder]
+clusterSizeSub = clusterSize[rowOrder, ]
+
+heat = ComplexHeatmap::Heatmap(
+	clusterNormSub[, colnames(clusterNormSub) %in% markersList],
+	na_col = "grey90",
+	cluster_columns = F,
+	cluster_rows = F,
+	row_title_gp = gpar(fontsize = 10),
+	rect_gp=gpar(col = 'grey85'),
+	col = circlize::colorRamp2(density_scale, colRange),
+	row_title_rot = 90,
+	row_title = 'Raw pixel intensity',
+	border = "darkgrey",
+	column_title_gp = gpar(fontsize = 10),
+	row_names_gp = gpar(fontsize = 7),
+	column_title = paste(args$panel),
+	width = unit(length(markersList)/10, 'in'),
+	height = unit(nrow(clusterNormSub)/10, "in"),
+	clustering_method_rows = "ward.D2",
+	# left_annotation = row_ha,
+	heatmap_legend_param = list(title = "Median intensity\n[z-score]",
+	                            ncol=1, nrow=4, by_row=T,
+	                            direction='horizontal', fontsize=8),
+	show_heatmap_legend = T,
+	column_names_gp = gpar(fontsize = 8, angle=90))
+ht = draw(heat)
+
+markerOrder = colnames(clusterNormSub)[column_order(ht)]
+cellTypeOrder = rownames(clusterNormSub)[row_order(ht)]
+
+clusterPositive = clusterPositive[markerOrder, cellTypeOrder]
+print(table(clusterPositive))
+  if(! all(clusterPositive == 0) & ! all(clusterPositive == 1)) {
+    
+    print('Plotting bin mat')
+    bin = ComplexHeatmap::Heatmap(t(clusterPositive), 
+                                cluster_rows = F,
+                                cluster_columns = F,
+                                row_title_gp = gpar(fontsize = 10),
+                                column_title = NULL,
+								row_title = 'Positivity',
+								row_title_rot=90,
+                                rect_gp = gpar(col = 'grey85'),
+                                column_title_gp = gpar(fontsize = 10),
+                                row_names_gp = gpar(fontsize = 7),
+                                column_names_gp = gpar(fontsize = 8),
+                                border = "grey85",
+                                na_col = 'white',
+                                width = unit(length(markersList)/10, 'in'), 
+                                height = unit(nrow(clusterNormSub)/10, "in"),
+                                col = colorRampPalette(rev(brewer.pal(name = "RdBu", 5)[-c(2, 4, 5)]))(100),
+								heatmap_legend_param = list(title = "Expressed marker", direction = 'horizontal', fontsize = 8))
+    ht_list=heat %v% bin
+	print("Drawing ht_list")
+	ht_list=draw(ht_list)
+    print('Binary')
+  }
+	print(cellTypeColors)
+  
+  row_ha = HeatmapAnnotation(
+    "# Cells" = anno_barplot(border = F, 
+                             x = clusterSizeSub$Freq,
+                             gp = gpar(fill = '#0571B0', col='transparent',
+							 fontsize = 8, title = expression("# Cells"))),
+    cellType = rownames(clusterNormSub),
+    which = 'row',
+    gp = gpar(col = "black"),
+	col = list(cellType = unlist(cellTypeColors)))
+  full = ComplexHeatmap::Heatmap(
+    clusterNormSub,
+	na_col = "grey90",
+    cluster_columns = F,
+    cluster_rows = F,
+    row_title_gp = gpar(fontsize = 10),
+    rect_gp=gpar(col = 'grey85'),
+    col = circlize::colorRamp2(density_scale, colRange),
+    row_title_rot = 90,
+	row_title = 'Raw pixel intensity',
+    border = "darkgrey",
+    column_title_gp = gpar(fontsize = 10),
+    row_names_gp = gpar(fontsize = 7),
+    column_title = paste(args$panel),
+    width = unit(ncol(clusterNormSub)/10, 'in'), 
+    height = unit(nrow(clusterNormSub)/10, "in"), 
+    clustering_method_rows = "ward.D2",
+    left_annotation = row_ha,
+    heatmap_legend_param = list(title = "Median intensity\n[z-score]",
+                                ncol=1, nrow=4,by_row=T, 
+                                direction='horizontal', fontsize=8),
+    show_heatmap_legend=T,
+    column_names_gp = gpar(fontsize = 8, angle = 90))
+  full = draw(full)
+  print("Full map")
+dev.off()
+
+# Intensity boxplots
+print("Plotting intensity heatmaps")
+cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$cellType
+cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
+clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
+
+plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
+	clusters, runID = f("{outDir}/heatmap"), cellTypeStats, 
+	plotDir = f("{outDir}"), plotPos = T)
+
+cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
+					count = length(cellType))
+cellTypeStats$majorType = cellTypeStats$majorType
+cellTypeStats$cluster = cellTypeStats$cellType
+cellTypeStats$positive = cellTypeStats$cellType
+cellTypeStats = cellTypeStats[order(match(cellTypeStats$cellType, cellTypeList)), ]
+clusters = cellObjectsDf$cellType[densMatch]
+
+plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
+				cellTypeStats, 
+				pars[[args$method]], 
+				plotDir = f("{outDir}"), magnitude = max(1, pars$magnitude/10))
+					
+# Plotting maps
 posDir = with(args, f("{inDir}/summary/{subset}_{markers}_{method}/maps/scatter"))
 if(! dir.exists(posDir))
 	dir.create(posDir, recursive = T) 
 pngOut = f("{posDir}/legend.png")
 png(pngOut, width = 300, height = length(cellTypeColors)*30, units = 'px')
-par(omi = c(0,0,0,0), mgp=c(0,0,0),mar=c(0,0,0,0), family = 'D')
+par(omi = c(0,0,0,0), mgp=c(0,0,0), mar=c(0,0,0,0), family = 'D')
 plot(1:length(cellTypeColors), rep(2, length(cellTypeColors)), axes = F, type = "n")
 legend("left", pt.bg = unlist(cellTypeColors), legend = names(cellTypeColors),
 			pch = 22, box.lty=0, title = "Cell subtypes", cex = 1.5)
@@ -158,31 +315,6 @@ for(image in imagenames) {
 
 
 
-# Intensity boxplots
-cellTypeStats = ddply(cellObjectsDf, .(cellType), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$majorType
-cellTypeStats$cluster = cellTypeStats$cellType
-cellTypeStats$positive = cellTypeStats$cellType
-cellTypeStats = cellTypeStats[order(match(cellTypeStats$cellType, cellTypeList)), ]
-clusters = cellObjectsDf$cellType[densMatch]
-
-plot_expression(expDf[, unique(c(markersList, colnames(expDf)))], clusters, 
-				cellTypeStats, 
-				pars[[args$method]], 
-				plotDir = f("{outDir}"), magnitude = max(1, pars$magnitude/10))
-
-# Intensity heatmaps
-cellTypeStats = ddply(cellObjectsDf, .(cellType, positive), summarise, 
-					count = length(cellType))
-cellTypeStats$majorType = cellTypeStats$cellType
-cellTypeStats$cluster = paste(cellTypeStats$positive, cellTypeStats$cellType)
-clusters = paste(cellObjectsDf$positive[densMatch], cellObjectsDf$cellType[densMatch])
-
-plot_heatmap(expDf[, setdiff(colnames(expDf), c('imagename', 'ObjectNumber'))], 
-	clusters, runID = f("{outDir}/heatmap"), cellTypeStats, 
-	plotDir = f("{outDir}"), plotPos = T)
-
 
 stats = ddply(cellObjectsDf, .(cellType), summarise, TotalFreq = length(cellType))    
 stats$cellType = factor(stats$cellType, levels = cellTypeList)
@@ -205,135 +337,6 @@ print(plot)
 dev.off()
 
 
-clusterSummary <- sapply(markers, function(x) {
-  tapply(t(expDf[[x]]), as.factor(cellTypes), median)
-})
-
-clusterSize = table(cellTypes) %>% as.data.frame
-clusterNorm = apply(clusterSummary, 2, to_zscore)
-
-clusterPositive = sapply(rownames(clusterNorm), function(x) {
-  print(x)
-  densityFlt = subset(cellObjectsDf, cellType == x)
-  sapply(markers, function(m) {
-    pos = get_marker_frequency(data=densityFlt, marker = m, column = "positive")
-    (grepl('\\+', pos ) %>% sum)/length(pos) * 100
-  })
-})
-
-clusterSize = ddply(cellObjectsDf, .(cellType), summarise, 
-                   Freq = length(object))
-
-if(max(abs(clusterNorm), na.rm = T) < 3) {
-  density_scale = pretty(c(-2, 2))
-  colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 4, 6, 8, 10)]
-} else {
-  density_scale = pretty(c(-3, 3))
-  colRange=rev(brewer.pal(name = "RdBu", 11))[c(2, 3, 4, 6, 8, 9, 10)]
-}
-
-pdfOut = f("{outDir}/intensity_heatmap.pdf")
-pdf(pdfOut, useDingbats = F, height = 10, width = 10)
-  
-  clusterNormSub = clusterNorm[rownames(clusterNorm) != 'Excluded', ]
-  if(is.null(nrow(clusterNormSub))) next
- 
-  rowOrder = order(match(rownames(clusterNormSub), cellTypeList))
-  colOrder = order(match(colnames(clusterNormSub), markersList))
-  clusterNormSub = clusterNormSub[rowOrder, colOrder]
-  clusterSizeSub = clusterSize[rowOrder, ]
-
-  heat = ComplexHeatmap::Heatmap(
-    clusterNormSub[, colnames(clusterNormSub) %in% markersList],
-    na_col = "grey90",
-    cluster_columns = F,
-    cluster_rows = F,
-    row_title_gp = gpar(fontsize = 10),
-    rect_gp=gpar(col = 'grey85'),
-    col = circlize::colorRamp2(density_scale, colRange),
-    row_title_rot = 90,
-    row_title = 'Raw pixel intensity',
-    border = "darkgrey",
-    column_title_gp = gpar(fontsize = 10),
-    row_names_gp = gpar(fontsize = 7),
-    column_title = paste(args$panel),
-    width = unit(length(markersList)/10, 'in'),
-    height = unit(nrow(clusterNormSub)/10, "in"),
-    clustering_method_rows = "ward.D2",
-    # left_annotation = row_ha,
-    heatmap_legend_param = list(title = "Median intensity\n[z-score]",
-                                ncol=1, nrow=4, by_row=T,
-                                direction='horizontal', fontsize=8),
-    show_heatmap_legend = T,
-    column_names_gp = gpar(fontsize = 8, angle=90))
-  ht = draw(heat)
-
-  markerOrder = colnames(clusterNormSub)[column_order(ht)]
-  cellTypeOrder = rownames(clusterNormSub)[row_order(ht)]
-
-  clusterPositive = clusterPositive[markerOrder, cellTypeOrder]
-  if(! all(clusterPositive == 0) & ! all(clusterPositive == 1)) {
-    
-    print('Plotting bin mat')
-    bin = ComplexHeatmap::Heatmap(t(clusterPositive), 
-                                cluster_rows = F,
-                                cluster_columns = F,
-                                row_title_gp = gpar(fontsize = 10),
-                                column_title = NULL,
-								row_title = 'Positivity',
-								row_title_rot=90,
-                                rect_gp = gpar(col = 'grey85'),
-                                column_title_gp = gpar(fontsize = 10),
-                                row_names_gp = gpar(fontsize = 7),
-                                column_names_gp = gpar(fontsize = 8),
-                                border = "grey85",
-                                na_col = 'white',
-                                width = unit(length(markersList)/10, 'in'), 
-                                height = unit(nrow(clusterNormSub)/10, "in"),
-                                col = colorRampPalette(rev(brewer.pal(name = "RdBu", 5)[-c(2, 4, 5)]))(100),
-								heatmap_legend_param = list(title = "Expressed marker", direction = 'horizontal', fontsize = 8))
-    ht_list=heat %v% bin
-	print("Drawing ht_list")
-	ht_list=draw(ht_list)
-    print('Binary')
-  }
-  row_ha = HeatmapAnnotation(
-    "# Cells" = anno_barplot(border = F, 
-                             x = clusterSizeSub$Freq,
-                             gp = gpar(fill = '#0571B0', col='transparent',
-							 fontsize = 8, title = expression("# Cells"))),
-    cellType = rownames(clusterNormSub),
-    which = 'row',
-    gp = gpar(col = "black"),
-	col = list(cellType = unlist(cellTypeColors)))
-	
-  full = ComplexHeatmap::Heatmap(
-    clusterNormSub,
-	na_col = "grey90",
-    cluster_columns = F,
-    cluster_rows = F,
-    row_title_gp = gpar(fontsize = 10),
-    rect_gp=gpar(col = 'grey85'),
-    col = circlize::colorRamp2(density_scale, colRange),
-    row_title_rot = 90,
-	row_title = 'Raw pixel intensity',
-    border = "darkgrey",
-    column_title_gp = gpar(fontsize = 10),
-    row_names_gp = gpar(fontsize = 7),
-    column_title = paste(args$panel),
-    width = unit(ncol(clusterNormSub)/10, 'in'), 
-    height = unit(nrow(clusterNormSub)/10, "in"), 
-    clustering_method_rows = "ward.D2",
-    left_annotation = row_ha,
-    heatmap_legend_param = list(title = "Median intensity\n[z-score]",
-                                ncol=1, nrow=4,by_row=T, 
-                                direction='horizontal', fontsize=8),
-    show_heatmap_legend=T,
-    column_names_gp = gpar(fontsize = 8, angle = 90))
-  full = draw(full)
-  print("Full map")
-dev.off()
-
 
 
 exp = setDT(expDf)
@@ -345,7 +348,7 @@ exp$confidence = grepl("Excluded ", cellObjectsDf$cluster[anaMatch])
 exp$confidence = exp$confidence %>% gsub("TRUE", 'low confidence', .) %>%
   gsub('FALSE', 'high confidence', .)
  
-
+print("median per celltype")
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))
 pdfOut = f("{outDir}/median_intensities_per_celltype.log10.pdf")
@@ -411,7 +414,7 @@ for(marker in majorMarkers) {
       facet_wrap(confidence ~ .,  scale = 'free_y') + 
 	  xlab("") + 
 	  ylab("Median cell intensity per image") +
-	  scale_x_discrete(majorMarkers = split_by_other) +
+	  scale_x_discrete(labels = split_by_other) +
       ggtitle(marker) +
       theme(strip.text=element_text(angle=0))
     print(plot)
@@ -422,6 +425,7 @@ dev.off()
 majorMarkers = intersect(markers, unlist(marker_gene_list[[args$ref_markers]]))
 width = length(unique(cellTypes))
 
+print("median positive")
 pdfOut = f("{outDir}/median_intensities_per_positive_type.log10.pdf")
 pdf(pdfOut, height = 7, width = width)
 for(marker in majorMarkers) {
@@ -488,7 +492,3 @@ for(marker in majorMarkers) {
     print(plot)
 }
 dev.off()
-
-
-
-

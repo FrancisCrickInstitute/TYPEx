@@ -171,7 +171,7 @@ for(feature in pars$features) {
 		cat('INFO: Excluding ', length(excludeCellIDs), ' cells out of ', length(ids),
 			' based on user-provided images for masking\n', 
 			file = f("{runID}.log"), append = T)	
-		inData = subset(inData, ! ids  %in% excludeCellIDs)	
+		inData = subset(inData, ! ids  %in% excludeCellIDs)
 	}
 
 	if(pars$method %in% c("MC", dimred_methods) | pars$subset == subtypesDir) {
