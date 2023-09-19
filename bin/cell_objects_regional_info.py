@@ -34,6 +34,10 @@ if(not os.path.exists(outDir)):
     print("Creating ", outDir)
     os.makedirs(outDir, exist_ok = True)
 
+plotDir=os.path.join(outDir, args.regionType)
+if(not os.path.exists(plotDir)):
+    os.makedirs(plotDir, exist_ok = True)
+
 cellFrame=pd.read_csv(args.cellObjFile, sep =",")
 print(cellFrame.columns.values.tolist())
 
@@ -96,25 +100,13 @@ if(len(maskList) > 0):
         else:
             print("WARNING:could not determine the orientation of the tiff relative to x and y cell object coordinates. Assuming they match")
             regions=[
-                tiff[int(np.round(x)), int(np.round(y))]
+                tiff[int(np.round(y)), int(np.round(x))]
                     for x, y in zip(dataTmp['LocationCenter_X'],
                                     dataTmp['LocationCenter_Y'])
             ]
-            
-        d = {'centerX':dataTmp['LocationCenter_X'],
-             'centerY':dataTmp['LocationCenter_Y'],
-             'ObjectNumber':dataTmp['ObjectNumber'],
-             'imagename':imgName,
-             "region":region,
-             "regionID":regions
-        }
-
-        
-        d = pd.DataFrame(d)
-        regionInfo.append(d)
-        
-        pngOut = os.path.join(outDir, imgName + "_" + region + ".png")
-        pyplot.plot()
+        pngOut = os.path.join(plotDir, imgName + "_" + region + ".png")
+        pyplot.plot(range(tiff.shape[0]), [0] * tiff.shape[0])
+        pyplot.plot([0] * tiff.shape[1], range(-tiff.shape[1], 0))
         ind = [i > 0 for i in regions]
         if(region == 'Tumour'):
             pyplot.scatter(dataTmp['LocationCenter_X'][ind], -dataTmp['LocationCenter_Y'][ind], color = "red", s=1)
@@ -125,6 +117,17 @@ if(len(maskList) > 0):
         pyplot.show()
         pyplot.savefig(pngOut)
         pyplot.close()
+            
+        d = {'centerX':dataTmp['LocationCenter_X'],
+             'centerY':dataTmp['LocationCenter_Y'],
+             'ObjectNumber':dataTmp['ObjectNumber'],
+             'imagename':imgName,
+             "region":region,
+             "regionID":regions
+        }
+        
+        d = pd.DataFrame(d)
+        regionInfo.append(d)
         
     if(len(regionInfo) == 0):
         print('ERROR: No data to append. Check the regular expression ' +
