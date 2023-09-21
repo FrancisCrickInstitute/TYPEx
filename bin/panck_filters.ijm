@@ -16,7 +16,7 @@ print(tumourMarkers[0]);
 print(tumourMarkers.length);
 panckID = "";
 for (m = 1; m < tumourMarkers.length; m++) {
-	index = indexOf(tumourMarkers[m], "panCK");
+	index = indexOf(tumourMarkers[m].toLowerCase(), "panck");
 	print(tumourMarkers[m]);
 	if(index != -1)
 		panckID = tumourMarkers[m];
@@ -38,7 +38,6 @@ for (k=0; k < runs.length; k++)	{
 			tma = replace(runs[k],  "/", "");
 			roi = replace(roiList[j], "/", "");
 			imgName = tma + "-" + roi;
-			print(imgName);
 			print(imgName);
 
 			if(image != "all" && imgName != image)

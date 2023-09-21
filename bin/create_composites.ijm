@@ -49,11 +49,13 @@ print(immuneMarkers)
 stromaList = split(stroma, "=|,");
 stromaMarkers = "";
 for (m = 1; m < stromaList.length; m++) {
+	  print(stromaList[m]);
     stromaMarkers = stromaMarkers + "image" + m + "=[Median of " + stromaList[m] + "] ";
 }
+
 stromaMrgMarkers = stromaMarkers + "image" + stromaList.length + "=auxStromaMrg image" +
     ( stromaList.length + 1 ) + "=[-- None --]";
-stromaMarkers = stromaMarkers + "image" + ( stromaList.length + 1 ) + "=[-- None --]";
+stromaMarkers = stromaMarkers + "image" + (stromaList.length) + "=[-- None --]";
 print(stromaMarkers)
 
 
@@ -67,7 +69,7 @@ if(auxStromaList.length > 1) {
 	auxStromaMarkers = auxStromaMarkers + "image" + auxStromaList.length + "=[-- None --]";
 	print(auxStromaMarkers);
 }
-nonstroma='image1=[Tumour,image2=SUM_DNA image3=[-- None --]';
+nonstroma='image1=Tumour image2=SUM_DNA image3=[-- None --]';
 
 setBatchMode(true);
 runs=getFileList(rootDir);
@@ -147,7 +149,8 @@ for (k = 0; k< runs.length;  k++)	{
 
 			print(tumourList.length);
 			// Tumour
-			if(tumourList.length > 2 || indexOf(tumourMarkers, "panCK") == -1) {
+			panCKIndex = indexOf(tumourMarkers.toLowerCase(), "panck");
+			if(tumourList.length > 2 || panCKIndex  == -1) {
 				print("Concatenate tumour");
 				print(tumourMarkers);
 				run("Concatenate...", " title=Test open " + tumourMarkers);
@@ -158,7 +161,7 @@ for (k = 0; k< runs.length;  k++)	{
 				print("Processing panCK");
 				panckID = "";
 				for (m = 1; m < tumourList.length; m++) {
-					index = indexOf(tumourList[m], "panCK");
+					index = indexOf(tumourList[m].toLowerCase(), "panck");
 					print(tumourList[m]);
 					if(index != -1)
 						panckID = tumourList[m];
@@ -205,7 +208,7 @@ for (k = 0; k< runs.length;  k++)	{
            
 			run("Concatenate...", "  title=NonStroma keep open " + nonstroma); 
 			run("Z Project...", "projection=[Sum Slices]");
-
+			print(stromaMarkers);
 			if(auxStromaMarkers != "") {
 				// Max to generate a tumour mask - considering nuclei are not in it
 				run("Median (3D)");
@@ -222,7 +225,7 @@ for (k = 0; k< runs.length;  k++)	{
 				autoAdjust();
 				print(stromaMrgMarkers);
 				run("Concatenate...", "  title=Stroma open " + stromaMrgMarkers);
-			} else {
+			} else if(stromaList.length > 1)	{
 				 run("Concatenate...", "  title=Stroma open " + stromaMarkers);
 			}
 			run("Z Project...", "projection=[Sum Slices]");
