@@ -12,6 +12,7 @@ lines = split(selectedImgs, '\n');
 
 for (i=0; i < lines.length; i++) {
 	
+	print(i);
 	line = split(lines[i], "\t");
 	marker=line[1];
 	marker = format_marker(marker);
@@ -19,8 +20,24 @@ for (i=0; i < lines.length; i++) {
 	print(imagePaths.length);
 	if(imagePaths.length == 0) 
 		continue;
-
-	open(imagePaths[0]);
+	if(imagePaths.length > 1) {
+		print("Multiple paths found");
+		print(line[0]);
+		for(j = 0; j < imagePaths.length; j++) {
+			print(imagePaths[j]);
+			imgID = replace(line[0], "-", "//");
+			lineIndex = indexOf(imagePaths[j], imgID);
+			print(lineIndex + " " + imgID + " " + imagePaths[j]);
+			if(lineIndex > -1) {
+				pathIndex = j;
+				break;
+			} 
+			
+		}
+	} else {
+		pathIndex = 0;
+	}
+	open(imagePaths[pathIndex]);
 	imageInfo=marker + ".." + line[0] + ".." + line[2];
 	rename(imageInfo);
 	getMinAndMax(min, max);
@@ -39,21 +56,20 @@ function getFiles(dir, imgID, marker, extension) {
 
 		showProgress(i, list.length);
 		dirName = replace(list[i], "\\/", "");
-			
 		if (endsWith(list[i], "/")) {
 
-			dirIndex = indexOf(imgID, dirName);
+			dirIndex = indexOf(imgID, dirName);			
 			if(endsWith(dirName, "full_stack"))
 				dirIndex = 0;
+				
 			if(dirIndex > -1) {
-		    	files = getFiles("" + dir + "/" + list[i], imgID, marker, extension);
-				result=Array.concat(result, files);
+				files = getFiles("" + dir + "/" + list[i], imgID, marker, extension);
+				result = Array.concat(result, files);
 			}
-		}
-		if(endsWith(list[i], extension)) {
+		} else if(endsWith(list[i], extension)) {
 			index = indexOf(list[i], marker + ".");
 			if(index == -1) continue;
-			result=Array.concat(result, dir + list[i]);
+			result = Array.concat(result, dir + list[i]);
 		}
 	}
 	return result;

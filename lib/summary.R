@@ -165,7 +165,8 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 	  )
 	  
 	  print("Wrapping up in data frame")
-	  outDF=data.frame(
+	  print(gsub(paste0(pars$inDir, "/?"), "", runID))
+	  outDF = data.frame(
 			imagename     = gsub(".txt", "", basename(inData$imagename)),
 			object        = sapply(inData$ObjectNumber, toString),
 			centerX       = spatData$LocationCenter_X[spatMatch],
