@@ -69,7 +69,7 @@ process qc_overlay {
 			
 			plot_overlays.R \
 				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/ \
-				--maskDir ${params.input_dir} --mccs ${params.mccs}	 \
+				--maskDir ${params.input_dir} --mccs ${params.cellprofiler}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/tables/ \
 				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt \

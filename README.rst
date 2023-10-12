@@ -36,7 +36,7 @@ Running on input generated with deep-imcyto
         --annotation_config "$PWD/TRACERx-PHLEX/TYPEx/data/cell_type_annotation.json" \
 		--tissue_seg_model "$PWD/TRACERx-PHLEX/TYPEx/models/tumour_stroma_classifier.ilp" \
 		--color_config $PWD/TRACERx-PHLEX/TYPEx/data/celltype_colors.json \
-        --deep_imcyto true --mccs true \
+        --deep_imcyto true --cellprofiler true \
         -profile singularity \
         -resume
 
@@ -113,7 +113,7 @@ Input Parameters
 
 Several input paramters can be used to define the typing workflow:
 - :bash:`deep-imcyto` run the TYPEx multi-tiered approach [default: true]
-- :bash:`mccs` run TYPEx on deep-imcyto in MCCS mode when true and simple segmentation mode when false [default: true]
+- :bash:`cellprofiler` run TYPEx on deep-imcyto in MCCS mode when true and simple segmentation mode when false [default: true]
 
 - :bash:`tiered` run the TYPEx multi-tiered approach  [default: true]
 - :bash:`stratify_by_confidence` include the stratification by low and high confidence when true [default: true]

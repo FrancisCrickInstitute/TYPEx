@@ -70,7 +70,7 @@ workflow TYPEx {
 workflow PREPROCESS {
 
 	main:
-		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
+		cellFiles=get_cell_files(params.deep_imcyto, params.cellprofiler)
 		// if(cellFiles.size() > 0) {
 			format_input(cellFiles.combine(features))
 			collate_features(features, format_input.out.collect())
@@ -179,7 +179,7 @@ workflow STRATIFY {
 		  mask_overlay
 		  tier_one
 	main:
-		cellFiles=get_cell_files(params.deep_imcyto, params.mccs)
+		cellFiles=get_cell_files(params.deep_imcyto, params.cellprofiler)
 		rawMasks=get_imcyto_raw_masks()
 		
 		if(params.exclude_cell_lineage != 'None') {

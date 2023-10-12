@@ -14,12 +14,12 @@ def helpMessage() {
     log.info(out)
 }
 
-def get_cell_files(imcyto, mccs) {
+def get_cell_files(imcyto, cellprofiler) {
 
 	if(imcyto) {
 		println 'Processing files from deep-imcyto run'
 		// tuple (imageID, file)
-		if(mccs) {
+		if(cellprofiler) {
 			cellFilePattern="${params.input_dir}/consensus_cell_segmentation/**/cells.csv"
 		} else {
 			cellFilePattern="${params.input_dir}/simple_segmentation/**/cells.csv"
