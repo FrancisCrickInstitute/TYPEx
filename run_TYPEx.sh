@@ -20,7 +20,7 @@ nextflow run main.nf \
    --overlay_config_file "$PWD/conf/tissue_segmentation.json" \
    --tissue_seg_model "$PWD/models/tumour_stroma_classifier.ilp" \
    --color_config $PWD/conf/celltype_colors.json \
-   --deep_imcyto false --mccs false \
+   --deep_imcyto false --cellprofiler false \
    --exclude_cell_lineage "Vim+ cells" \
    -profile singularity \
    -resume
