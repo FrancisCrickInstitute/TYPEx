@@ -62,21 +62,24 @@ legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
 			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
 dev.off()
 
+
+maskDirs=Sys.glob(args$maskDir)
+
 for(imagename in imagenames) {
 
 	print(imagename)
 	dataFlt = data[data$imagename == imagename, ]
 	
 	if(args$mccs) {
-		if(dir.exists(file.path(args$maskDir, "consensus_cell_segmentation"))) {
-			outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
+		if(any(dir.exists(file.path(maskDirs, "consensus_cell_segmentation")))) {
+			outlineImg = list.files(file.path(maskDirs, "consensus_cell_segmentation"), 
 	  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)		
 		} else {
-			outlineImg = list.files(file.path(args$maskDir, "segmentation"), 
+			outlineImg = list.files(file.path(maskDirs, "segmentation"), 
 	  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
 		}
 	} else {
-		outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
+		outlineImg = list.files(file.path(maskDirs, "simple_segmentation/"), 
 						pattern = '.*nuclear_mask_nuclear_dilation.tiff', 
 						full.name = T, recursive = T)
 	}
@@ -128,15 +131,15 @@ if(file.size(args$posFile)) {
 		dataFlt = data[data$imagename == imagename, ]
 		
 		if(args$mccs) {
-			if(dir.exists(file.path(args$maskDir, "consensus_cell_segmentation"))) {
-				outlineImg = list.files(file.path(args$maskDir, "consensus_cell_segmentation"), 
+			if(any(dir.exists(file.path(maskDirs, "consensus_cell_segmentation")))) {
+				outlineImg = list.files(file.path(maskDirs, "consensus_cell_segmentation"), 
 		  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)		
 			} else {
-				outlineImg = list.files(file.path(args$maskDir, "segmentation"), 
+				outlineImg = list.files(file.path(maskDirs, "segmentation"), 
 		  					pattern = "total_cells_mask.tiff", recursive = T, full.name = T)
 			}			
 		} else {
-			outlineImg = list.files(file.path(args$maskDir, "simple_segmentation/"), 
+			outlineImg = list.files(file.path(maskDirs, "simple_segmentation/"), 
 				pattern = '.*nuclear_mask_nuclear_dilation.tiff',
 				full.name = T, recursive = T)
 		}

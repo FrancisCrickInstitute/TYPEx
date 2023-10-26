@@ -9,7 +9,7 @@ workflow QC {
 		  method
 	main:
 	
-		if(file(params.image_dir).isDirectory())	{
+		//if(file(params.image_dir).isDirectory())	{
 				qc_select_images(
 					markers, 
 					subset,
@@ -28,7 +28,7 @@ workflow QC {
 					method,
 					qc_create_single_channel_images.out
 			)
-		}
+		//}
 		qc_intensity_heatmap(
 			markers,
 			subset, 
