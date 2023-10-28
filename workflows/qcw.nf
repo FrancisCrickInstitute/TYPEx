@@ -9,7 +9,8 @@ workflow QC {
 		  method
 	main:
 	
-		//if(file(params.image_dir).isDirectory())	{
+			run_dirs = Channel.fromPath(params.image_dir, type: "dir", relative: false)
+			run_dirs.view()
 				qc_select_images(
 					markers, 
 					subset,
@@ -20,15 +21,17 @@ workflow QC {
 					markers,
 					subset,
 					method,
-					qc_select_images.out
+					run_dirs,
+					qc_select_images.out.collect()
 				)
+				run_dirs = Channel.fromPath(params.input_dir, type: "dir", relative: false)
 				qc_overlay(
 					markers,
 					subset, 
 					method,
-					qc_create_single_channel_images.out
+					run_dirs,
+					qc_create_single_channel_images.out.collect()
 			)
-		//}
 		qc_intensity_heatmap(
 			markers,
 			subset, 

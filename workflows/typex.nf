@@ -86,9 +86,11 @@ workflow TISSEG {
 	//////////////////////////////////////////////
 	
 	main:
+	
+		run_dirs = Channel.fromPath(params.image_dir, type: "dir", relative: false)
 		tissegMarkers = get_tissue_seg_markeres(params.overlay_config_file)	
-		preprocess_panck(tissegMarkers)
-		create_composites(preprocess_panck.out, tissegMarkers)
+		preprocess_panck(tissegMarkers, run_dirs)
+		create_composites(preprocess_panck.out, tissegMarkers, run_dirs)
 		run_classifier(create_composites.out)
 		process_probs(run_classifier.out)
 		ts_exporter(process_probs.out)

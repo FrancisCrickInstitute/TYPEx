@@ -35,8 +35,9 @@ process qc_create_single_channel_images {
         
 		input:
 			tuple val (ref_markers)
-        	val subset
-        	tuple val (method)
+			val subset
+      tuple val (method)
+			path input		
 			val selection
 
 		output:
@@ -48,7 +49,7 @@ process qc_create_single_channel_images {
 				mkdir -p ${subset}_${ref_markers}_${method}/overlays
 			## Using params.input_dir as an absolute path
 			ImageJ-linux64 --ij2 --headless --run "${baseDir}/bin/raw_image_by_file.ijm" \
-				'inDir=\"${params.image_dir}/\", posFile=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt", outDir=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays\"'
+				'inDir=\"${input}/\", posFile=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt", outDir=\"${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays\"'
 		"""
 }
 
@@ -58,6 +59,7 @@ process qc_overlay {
 		tuple val (ref_markers)
 		val subset
 		tuple val (method)
+		path input
 		val images
 
 	script:
@@ -69,7 +71,7 @@ process qc_overlay {
 			
 			plot_overlays.R \
 				--rawDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/ \
-				--maskDir \"${params.input_dir}\" --mccs ${params.cellprofiler}	 \
+				--maskDir ${input} --mccs ${params.cellprofiler}	 \
 				--inDir ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/tables/ \
 				--outDir "${params.output_dir}/summary/${subset}_${ref_markers}_${method}/" \
 				--posFile ${params.output_dir}/summary/${subset}_${ref_markers}_${method}/overlays/overlay_examples.txt \

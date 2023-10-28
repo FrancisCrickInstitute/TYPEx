@@ -26,8 +26,10 @@ def get_cell_files(imcyto, cellprofiler) {
 		}
 		samplePattern=cellFilePattern
 			.replaceAll('\\*', '.*')
-			.replaceAll('.\\*.\\*', '(.*)')
+			.replaceAll('.\\*.\\*\\/cells.csv', '(.*)/cells.csv')
+			.replaceAll('.\\*.\\*', '.*')
 			.replaceAll('\\/+', '.')
+		samplePattern=".*" + samplePattern
 	
 		cellFiles=Channel
 			.fromPath("${cellFilePattern}", relative:false)
@@ -52,8 +54,10 @@ def get_imcyto_raw_masks() {
 	rawMasksPattern="${params.input_dir}/imctools/**/full_stack/*.tiff"
 	rawSamplePattern=rawMasksPattern.
 		replaceAll('\\*', '.*').
-		replaceAll('.\\*.\\*', '(.*)').
+		replaceAll('.\\*.\\*\\/full_stack', '(.*)/full_stack').
+		replaceAll('.\\*.\\*', '.*').
 		replaceAll('\\/+', '.')
+	rawSamplePattern=".*" + rawSamplePattern
 	println(rawSamplePattern)
 	rawMasks=Channel
         .fromPath("${rawMasksPattern}", relative:false)

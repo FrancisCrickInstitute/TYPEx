@@ -62,9 +62,7 @@ legend("left", fill = cellTypeColors, legend = names(cellTypeColors),
 			pch = 21, box.lty = 0, title = "Cell subtypes", cex = 1)
 dev.off()
 
-
 maskDirs=Sys.glob(args$maskDir)
-
 for(imagename in imagenames) {
 
 	print(imagename)
@@ -88,12 +86,12 @@ for(imagename in imagenames) {
 	outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
 	print(outlineImg)
 	if(! length(outlineImg)) {
-		cat("WARNING: Segmentation outlines not found for", imagename, ".Skipping.\n")
+		cat("WARNING: Segmentation outlines not found for", maskDirs, imagename, ".Skipping.\n")
 		next
 	}
 	if(length(outlineImg) > 1)
 		stop(f("More than one image selected for the segmentation mask in {imagename}\\/"))
-	
+	print(outlineImg)
 	r <- raster::raster(outlineImg)
   
 	typeMat = r
@@ -146,9 +144,13 @@ if(file.size(args$posFile)) {
 		print(outlineImg)
 		
 		outlineImg = grep(gsub('-',  '.', f("{imagename}\\/")), outlineImg, value = T)
+		if(! length(outlineImg)) {
+			cat("WARNING: Segmentation outlines not found for", maskDirs, imagename, ".Skipping.\n")
+			next
+		}
 		if(length(outlineImg) > 1)
 			stop(f("More than one image selected for the segmentation mask in {imagename}\\/"))
-
+		print(outlineImg)
 	  	r <- raster::raster(outlineImg)
  
 		markersList = unique(qcDf[qcDf[, 1] == imagename, 2])
@@ -156,10 +158,10 @@ if(file.size(args$posFile)) {
 		for(marker in markersList) {
 
 		  print(marker)
-		  file = list.files(args$rawDir, pattern = f("^{marker}\\..{imagename}.*.png"), full.names = T)
+		  # multiple files if the same marker and image are selected to represent multiple cell types
+		  file = list.files(args$rawDir, pattern = f("^{marker}\\..{imagename}.*.png"), full.names = T)[1]
 		  if(! length(file))
 			stop('File not found', paste(file, marker, imagename, args$rawDir))
-	
 		  dataFlt$type = get_marker_frequency(dataFlt, marker, "positive")
 		  positive = grep("\\+", dataFlt$type)
 		  print(table(dataFlt$type))
