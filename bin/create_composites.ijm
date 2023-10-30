@@ -9,6 +9,7 @@
 #@Integer nrCategs
 
 
+minImgSize = 100;
 // Choose whether to analyse all images ("all") or specific e.g. "P1_TMA003_R_20190619-roi_12", or "P1_TMA004_L_20190619-roi_13"
 image="all";
 // Choose whether to apply directional filter ("direct") or "none"
@@ -129,6 +130,11 @@ for (k = 0; k< runs.length;  k++)	{
 						continue;
 						
 					open(imgDir + imgList[i]);
+					// very small images won't work with Ilastik
+					width = getWidth;
+				  height = getHeight;
+					if(width < minImgSize || height < minImgSize) 
+						continue;
 					autoAdjust();
 
 					for(m = 0; m < tumourList.length; m++) {
