@@ -11,7 +11,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 			paste0(., ".*")
 	    colnames(inData)=colnames(inData) %>%
 		  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-    		gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) 
+    		gsub('^[0-9]+[A-Za-z]+[_-](.*)', '\\1', .) 
 
 
 		if(! any(metals %in% colnames(inData)))

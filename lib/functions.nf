@@ -32,13 +32,14 @@ def get_cell_files(imcyto, cellprofiler) {
 		samplePattern=".*" + samplePattern
 	
 		cellFiles=Channel
-			.fromPath("${cellFilePattern}", relative:false)
+			.fromPath("${cellFilePattern}", relative:false, checkIfExists: true)
 			.map{ file ->
 						tuple(
 							file.toString()
 								.replaceAll(samplePattern, '$1')
 								.replaceAll('\\/', '-'),
 							file) }
+			.ifEmpty(exit 1, "ERROR: Did not find deep-imcyto output in ${params.input_dir})
 	} else {
 		// tuple ("-", file) when sample pattern not provided
 		println 'Processing files independently from deep-imcyto'

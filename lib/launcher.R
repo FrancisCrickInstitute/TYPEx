@@ -35,10 +35,10 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	paste0(., ".*")
   colnames(inData)=colnames(inData) %>%
 	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
+	gsub('^[0-9]+[A-Za-z]+[_-](.*)', '\\1', .)
   columnNames=columnNames %>%
   	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-	gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .)
+	gsub('^[0-9]+[A-Za-z]+[_-](.*)', '\\1', .)
   print(any(metals %in% colnames(inData)))
   if(! any(metals %in% colnames(inData))) {
 		print(metals[metals %in% colnames(inData)])
@@ -93,12 +93,19 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     # Include batches for cellassign; # rows must match cov matrix
     if(method == "cellassign") {
       # add batch effects
-	  tma_values = sapply(pars$batch_effects, function(factor) {
-		  get_region_info(panel=pars$panel, 
-		  				cellIDs=inData$imagename,
-						regFile=regFile,
-						featurePattern=f("{factor}$"))
-	  })
+	  if(pars$batch_effects == "") {
+	  	tma_values=rep(NA, nrow(inData))
+		cat("WARNING: Empty batch effects variable.",
+	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
+	  } else {
+		  tma_values = sapply(pars$batch_effects, function(factor) {
+			  get_region_info(panel=pars$panel, 
+			  				cellIDs=inData$imagename,
+							regFile=regFile,
+							featurePattern=f("{factor}$"))
+		  })
+	  }
+	  
       if(all(is.na(tma_values))) {
 		tma_values=rep("one", nrow(inData))
 		cat("WARNING:  Batch effects will not be calculated for",
