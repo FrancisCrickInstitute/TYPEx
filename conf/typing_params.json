@@ -1,7 +1,7 @@
 // Parameters for cell phenotyping
 {
   // Channels that will be excluded from cell phenotype analysis
-  "channels_exclude":["Argon", "80ArAr", "131Xe", "134Xe", "DNA1",  "DNA2", "processed"],
+  "channels_exclude":["Argon", "80ArAr", "131Xe", "134Xe", "DNA1",  "DNA2", "processed", "ruthenium"],
 
   // Exlude cells with an area smaller or eqiual to pars$area_exclude [area for raidus > 2 pixels]
   "area_exclude":[0],
@@ -31,8 +31,6 @@
   "batch_effects":["TMA", "duplicate_core", "cohort"],
   // CODEX "batch_effects":["TMA_12"],
   //
-  "experimental_condition":["tissue_type"],
-
   // Method-specific parameters
   "FastPG":{
 	  "k":[30],

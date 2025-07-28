@@ -26,9 +26,10 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 
 		print("Cell type assignment")
 		clusterNameFile=f("{runID}.clusterNames.txt")
+		rowsSelect = which(! grepl("Excluded [0-9]+$|^Excluded$", runOutput))
 		clusterNames = assign_cluster_positivity(
-			dfExp = inData[, ..columnNames], 
-			clusters=runOutput,
+			dfExp = inData[rowsSelect, ..columnNames], 
+			clusters=runOutput[rowsSelect],
 			run=pars$run,
 			runID=runID, 
 			panel=pars$panel, 

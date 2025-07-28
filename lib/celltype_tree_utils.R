@@ -134,3 +134,18 @@ get_node_list <- function(tree) {
 	sapply(cellTypes, 
 		function(x) get_celltype_markers(tree, x))
 }
+
+get_tree_names <- function(tree, label = NULL) {
+  
+  # return only the cell types for which major_markers have been defined
+  if(! is.list(tree) & is.null(label))
+    return(NULL)
+  if(! is.list(tree))
+    return(toString(label))
+  cellTypes = sapply(names(tree), function(label) {
+    get_tree_names(tree[[label]], label)
+  })
+  cellTypes=c(names(tree), cellTypes) %>% unlist %>% unique %>% unname
+  return(cellTypes[! is.na(cellTypes)])
+}
+

@@ -2,6 +2,7 @@
 process exporter {
 
 	label 'xs'
+	cache false
 	
 	publishDir path: "${params.output_dir}/summary/", 
 			   mode: params.publish_dir_mode, 

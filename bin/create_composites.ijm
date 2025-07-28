@@ -16,8 +16,7 @@ image="all";
 directional='none';
 
 // Choose the NextFlow run iteration
-f = File.open('panck_preprocessed_images.txt');
-panck_threshold = 20;
+panck_threshold = 15;
 
 // DNA
 dnaList = split(dna, "=|,");
@@ -77,7 +76,7 @@ runs=getFileList(rootDir);
 
 print("Number of images found in " + rootDir + " " + runs.length);
 for (k = 0; k< runs.length;  k++)	{
-	print('RUNL ', runs[k]);
+	// print('RUNL ', runs[k]);
 
 	runDir=rootDir + runs[k];
 	roiList=getFileList(runDir);
@@ -87,16 +86,23 @@ for (k = 0; k< runs.length;  k++)	{
 
 		tma=replace(runs[k],  "/", "");
 		roi=replace(roiList[j], "/", "");
-
+		
+		print(tma);
 		imgName=tma + "-" + roi;
 		print('IMG name:  ', imgName);
+		fileOut = tma + "-" + roi + ".tiff";
+		print(fileOut);
+		if(File.exists(fileOut)) {
+			print('File exists', fileOut);
+			continue;	
+		}
 		if(image != "all" && imgName != image) {
 			print(image, 'skipping');
 			continue;
 		}	
 		stacks=getFileList(runDir+roiList[j]);
 		print("Stack dir: " + runDir + roiList[j]);
-		if(stacks.length==0) {
+		if(stacks.length == 0) {
 			print('Stack size is 0. Skipping');
 			continue;
 		}
@@ -108,42 +114,57 @@ for (k = 0; k< runs.length;  k++)	{
 			print('Stack: ', stacks[m]);
 			
 			imgDir=runDir + roiList[j] + stacks[m];
-			if(stacks.length==0) {
+			if(stacks.length == 0) {
 				print("ERROR: empty stack " + stacks[m] + "\n");
 				exit;
-			}
-			fileOut = tma + "-" + roi + ".tiff";
-		    if(File.exists(fileOut)) {
-				print('File exists', fileOut);
-				 continue;	
 			}
 			if(File.isDirectory(imgDir)) {
 			
 				imgList=getFileList(imgDir);
 
 				for ( i=0; i<imgList.length; i++ ) {
+					
 					if(indexOf(tumour, imgList[i]) == -1 &&
 						indexOf(immune, imgList[i]) == -1 &&
 						indexOf(stroma, imgList[i]) == -1 &&
 						indexOf(auxStroma, imgList[i]) == -1 &&
-						indexOf(dna, imgList[i]) == -1)
-						continue;
+						indexOf(dna, imgList[i]) == -1) {
+							continue;
+						}
 						
+					print("Opening:" + imgList[i]);		
 					open(imgDir + imgList[i]);
-					// very small images won't work with Ilastik
+					// very small images willl not work with Ilastik
 					width = getWidth;
-				  height = getHeight;
-					if(width < minImgSize || height < minImgSize) 
-						continue;
-					autoAdjust();
-
+					height = getHeight;
+					print(imgList[i], width, height, minImgSize);
+					if(width < minImgSize || height < minImgSize){
+							run("Close All");
+							continue;
+					}
+					isTumourMarker = "false";
 					for(m = 0; m < tumourList.length; m++) {
-						if(imgList[i] != tumourList[m])	{ 
-							run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
-							run("Median (3D)");
+                        if(imgList[i] == tumourList[m]) {
+							isTumourMarker = 'true';
+							break;
 						}
 					}
+					if(isTumourMarker == "false") {
+						run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
+						run("Median (3D)");
+					}
+				  }
+				  autoAdjust();
 				}
+			}
+
+			if(isOpen(tumourList[1]) == 0)
+				continue;
+			print(imgName);
+
+			if(width < minImgSize || height < minImgSize) {
+							run("Close All");
+							continue;
 			}
 			// DNA Sum
 			run("Concatenate...", " title=DNA open " + dnaMarkers);
@@ -155,43 +176,69 @@ for (k = 0; k< runs.length;  k++)	{
 
 			print(tumourList.length);
 			// Tumour
-			panCKIndex = indexOf(tumourMarkers.toLowerCase(), "panck");
-			if(tumourList.length > 2 || panCKIndex  == -1) {
+			print("Tumour markers");
+			for (tind = 1; tind < tumourList.length; tind++) {
+
+			    print(tumourList[tind]);
+				selectWindow(tumourList[tind]);
+				getMinAndMax(min, max);
+				print(tumourList[tind]);
+
+				if(max < panck_threshold) {
+
+					run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
+					run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
+					run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
+				} else {
+
+					run("Duplicate...", "title=TumourDupl");
+					run("Morphological Filters", "operation=[Dilation] element=Square radius=20");
+					rename("ProcessNoise");
+					run("Calculator Plus", "i1=TumourDupl i2=ProcessNoise operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0 create");
+					close("ProcessNoise");
+					close("TumourDupl");
+					//run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
+				}
+				close(tumourList[tind]);
+				run("Median (3D)");
+				rename("Median of " + tumourList[tind]);
+			}
+
+			if(tumourList.length > 2) {
+
 				print("Concatenate tumour");
 				print(tumourMarkers);
 				run("Concatenate...", " title=Test open " + tumourMarkers);
 				run("Z Project...", "projection=[Sum Slices]");
 				rename('Tumour');
 				autoAdjust();
+				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
 			} else {
-				print("Processing panCK");
-				panckID = "";
-				for (m = 1; m < tumourList.length; m++) {
-					index = indexOf(tumourList[m].toLowerCase(), "panck");
-					print(tumourList[m]);
-					if(index != -1)
-						panckID = tumourList[m];
-				}
-				selectWindow(panckID);
+				selectWindow("Median of " + tumourList[1]);
 				autoAdjust();
-				getMinAndMax(min, max);
-				print(imgName, 'Tumour', min, max);
-				if(max < panck_threshold) {
-					print("Opening " + compositeDir + 'panckf_' + imgName + '.tif');
-					open(compositeDir + 'panckf_' + imgName + '.tif');
-					print('panckf_' + imgName  + '.tif');
-				}
 				print("Enhance");
 				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
 				rename('Tumour');
 			}
-		//	saveAs("PNG", tma + "-" + roi + "tumour.png");
-
 			// Stroma
-			//if(panel == 'p1') {
 			if(auxStromaMarkers != "") {
-				run("Concatenate...", "  title=Nonsp open " + auxStromaMarkers);
-				run("Z Project...", "projection=[Sum Slices]");
+			
+				// Concatenation works for more than one marker
+				if(auxStromaList.length > 2) {
+					run("Concatenate...", "  title=Nonsp open " + auxStromaMarkers);
+					run("Z Project...", "projection=[Sum Slices]");
+				} else {
+					print(auxStromaList[1]);
+					
+					if(isOpen(auxStromaList[1]) == 0) {
+							print(auxStromaList[1], "windows is not open");
+							run("Close All");
+							continue;
+					}
+					print(auxStromaList[1], "window is open");
+					selectWindow(auxStromaList[1]);
+				}
+				
 				run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 				autoAdjust();
 				run("Median (3D)");
@@ -199,14 +246,16 @@ for (k = 0; k< runs.length;  k++)	{
 				run("Enhance Contrast", "saturated=0.35");
 				rename('auxStroma');
 			}
-			//} else {
-			//	selectWindow(auxStroma);
-			//	rename('auxStroma');
-			//}
 		
 			// Immune sum
-			run("Concatenate...", "  title=Immune open " + immuneMarkers);
-			run("Z Project...", "projection=[Sum Slices]");
+			// Concatenation works for more than one marker
+			print("Concatenate immune");
+			if(immuneList.length > 2) {
+				run("Concatenate...", "  title=Immune open " + immuneMarkers);
+				run("Z Project...", "projection=[Sum Slices]");
+			} else {
+				selectWindow(immuneList[1]);
+			}
 			run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 			print('Immune');
 			autoAdjust();
@@ -231,10 +280,16 @@ for (k = 0; k< runs.length;  k++)	{
 				autoAdjust();
 				print(stromaMrgMarkers);
 				run("Concatenate...", "  title=Stroma open " + stromaMrgMarkers);
+				run("Z Project...", "projection=[Sum Slices]");
 			} else if(stromaList.length > 1)	{
+				if(stromaList.length > 2) {
 				 run("Concatenate...", "  title=Stroma open " + stromaMarkers);
+	 				run("Z Project...", "projection=[Sum Slices]");
+				} else {
+					print(stromaList[1]);
+					selectWindow(stromaList[1]);
+				}
 			}
-			run("Z Project...", "projection=[Sum Slices]");
 
 			run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
 			run("Median (3D)");
@@ -255,7 +310,6 @@ for (k = 0; k< runs.length;  k++)	{
 			print(fileOut);
 			run("Close All");
 
-		}
 	}
 }
 
@@ -314,5 +368,3 @@ function autoAdjust() {
 		 print(hmin, hmax);
 		// run(“Apply LUT”);
 }
-
-

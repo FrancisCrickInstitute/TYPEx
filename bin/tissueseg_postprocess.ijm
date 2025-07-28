@@ -33,8 +33,8 @@ for (i = 0; i < slideDirList.length; i++) {
 		fileOut=outDirOverlay + "overlay_" + imgName +".png";
 		if(File.exists(fileOut)) continue;
 
-		run("Import HDF5", "select=" + probDir+slideDirList[i] + 
-			" datasetname=[/exported_data: (1747, 1756, 2) uint8] axisorder=yxc");
+		// Allow spaces in the image name
+		run("Import HDF5", "select=[" + probDir+slideDirList[i] + "] datasetname=[/exported_data: (1747, 1756, 2) uint8] axisorder=yxc");
 		run("Make Composite", "display=Color");
 		run("Duplicate...", "duplicate");
 		run("Auto Threshold", "method=Default white show use_stack_histogram");

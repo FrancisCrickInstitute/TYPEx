@@ -39,7 +39,7 @@ def get_cell_files(imcyto, cellprofiler) {
 								.replaceAll(samplePattern, '$1')
 								.replaceAll('\\/', '-'),
 							file) }
-			.ifEmpty(exit 1, "ERROR: Did not find deep-imcyto output in ${params.input_dir})
+			.ifEmpty(exit 1, "ERROR: Did not find deep-imcyto output in ${params.input_dir}")
 	} else {
 		// tuple ("-", file) when sample pattern not provided
 		println 'Processing files independently from deep-imcyto'

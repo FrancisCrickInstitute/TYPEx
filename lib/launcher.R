@@ -93,7 +93,7 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     # Include batches for cellassign; # rows must match cov matrix
     if(method == "cellassign") {
       # add batch effects
-	  if(pars$batch_effects == "") {
+	  if(! "batch_effects" %in% names(pars) | pars$batch_effects == "") {
 	  	tma_values=rep(NA, nrow(inData))
 		cat("WARNING: Empty batch effects variable.",
 	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
@@ -128,6 +128,9 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
       	rowsKeep=rowsKeep & ! is.na(tma_values)  # & !is.na(tissue_values)
         pars[[method]]$X = model.matrix(~ 0 + tma_values[rowsKeep])   
 		cat('Batch', sum(rowsKeep), '\n')
+		cat("After filtering for batch effects variable.",
+            sum(rowsKeep), "\n", file=f("{runID}.log"), append=T)
+
       } else {
 		  cat('WARNING: Batch effects will not be calculated for',
 		  	"the probabilistic cellassign model\n",

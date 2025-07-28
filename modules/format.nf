@@ -18,7 +18,8 @@ process format_input {
 
 	script:
 		"""
-			split_input_by_feature_per_file.pl ${inFile} ${imageID} ${feature} ${params.deep_imcyto}
+			# account for potential spaces in file and image anems
+			split_input_by_feature_per_file.pl "${inFile}" "${imageID}" "${feature}" ${params.deep_imcyto}
 			
 		"""
 }

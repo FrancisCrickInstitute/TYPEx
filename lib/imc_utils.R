@@ -12,12 +12,13 @@ get_region_info <- function(panel, cellIDs, featurePattern, regFile) {
 	print(regFile)
 	if(! file.exists(regFile))
 		stop('The sample annotation file does not exists --sample_file')
-	regData = read.delim(f(regFile), stringsAsFactors = F)
+
+	if(grepl("csv$", args$regFile)) { 
+        regData = read.csv(args$regFile, stringsAsFactors = F)
+	} else {
+		regData = read.delim(f(regFile), stringsAsFactors = F)
+	}
 	
-	# Specific for Tx where regData can have images from multiple panels
-	panelSelection = grepl(f("^{toupper(panel)}_"), regData$imagename)
-	if(any(panelSelection))
-		regData=subset(regData, panelSelection)
 	cellRegions = get_cellRegionID(cellIDs)
 	ind = match(cellRegions, regData$imagename)
 	colNames = unique(grep(f("^{featurePattern}$"), colnames(regData)))
@@ -101,6 +102,7 @@ plot_scatter <- function(x, y, color, xlab, ylab,legend=T)  {
 
 # Get info
 get_tissue_category <- function(cellIDs, panel, tissAreaDir, class="regional") {
+
 	panel=gsub("_.*", "", panel)
 	inFile=f("{tissAreaDir}/cell_info/{panel}_{class}_cell_info.csv")
 	print(inFile)
@@ -235,50 +237,79 @@ review_cellType_by_major <- function(cellTypes, majorTypes, positivity, cellAssi
          with(guide, paste(OldCellType, OldMajorType, positive)))
   if(! all(is.na(ind)))
     cellTypes[! is.na(ind)] = guide$newCellType[ind[! is.na(ind)]]
-  cellTypes=gsub(' - Other', '', cellTypes)
+
   cellTypes[grepl('^Epithelial cells - Tissue.*', cellTypes)] = 'Epithelial cells'
   return(cellTypes)
 }
 
-review_major_by_cellType <- function(cellTypes, majorTypes, positivity, 
-		cellAssignFile, subtypeMarkersList, majorMarkersList) {
+review_major_by_cellType <- function(cellTypes, majorTypes, positivity,
+                                     cellAssignFile, subtypeMarkersList, majorMarkersList) {
+  
+  allCellTypes = get_tree_names(subtypeMarkersList)
+  allMajorTypes = get_tree_names(majorMarkersList)
   
   # Stromal
   if(file.exists(cellAssignFile)) {
-   
-	  positivity=gsub('pos:(.*) neg:', '\\1', positivity)
-	  # majorTypes[which(majorTypes == "Smooth muscle cells")] = "Myofibroblasts"
-	  guide=read.csv(f(cellAssignFile), sep='\t', stringsAsFactors = F)
-	  guide=subset(guide, !is.na(newCellType) & !is.na(newMajorType))
-	  ind=match(paste(cellTypes, majorTypes, positivity),
-	         with(guide, paste(OldCellType, OldMajorType, positive)))
-	  if(!all(is.na(ind))) {
-	    majorTypes[! is.na(ind)] = guide$newMajorType[ind[! is.na(ind)]] 
-	  }
+    
+    positivity=gsub('pos:(.*) neg:', '\\1', positivity)
+    # majorTypes[which(majorTypes == "Smooth muscle cells")] = "Myofibroblasts"
+    guide=read.csv(f(cellAssignFile), sep='\t', stringsAsFactors = F)
+    guide=subset(guide, !is.na(newCellType) & !is.na(newMajorType))
+    ind=match(paste(cellTypes, majorTypes, positivity),
+              with(guide, paste(OldCellType, OldMajorType, positive)))
+    if(! all(is.na(ind)))
+      majorTypes[! is.na(ind)] = guide$newMajorType[ind[! is.na(ind)]]
   }
-  ambiguousIndices = grepl('Ambiguous|Unassigned', majorTypes) & 
-  	! grepl('Ambiguous|Unassigned', cellTypes)
-	
-	if(any(ambiguousIndices)) {
-		
-	    majorReview = sapply(unique(cellTypes[ambiguousIndices]), function(cellType) {
-	  		selectedMarkers = get_celltype_markers(subtypeMarkersList, cellType)
-	  		assign_celltype(paste(selectedMarkers, sep = "_", collapse = "_"), majorMarkersList, major = T)
-	    })
-	    majorTypes[ambiguousIndices] = sapply(which(ambiguousIndices), function(x) {
-	  	  cellType = gsub('For Review ', '', cellTypes[x])
-	  	  if(cellType %in% c('Ambiguous', 'Unassigned'))
-	  		  return(cellType)
-		  if(majorReview[x] %in% c("Unassigned"))
-			  return(cellType)
-		  if(cellType == 'CD4+ Myeloid cells')
-			  majorReview[x] = 'CD4+ Myeloid cells'
-	  	  majorReview[x]
-	    })
-	}
-	majorTypes[grepl('^Epithelial cells - Tissue.*', majorTypes)] = 'Epithelial cells'
-	
-	return(majorTypes)
+  
+  majorTypes[grepl('^Epithelial cells - Tissue.*', majorTypes)] = 'Epithelial cells'
+  
+  childPairs = paste(majorTypes, cellTypes, sep = "--") %>% unique
+  isPair = sapply(childPairs, function(pair) {
+    major = strsplit(pair, split = "--")[[1]][1]
+    subtype = strsplit(pair, split = "--")[[1]][2]
+    isChild(subtypeMarkersList, toString(major), toString(subtype))
+  })
+  ambiguousIndices = sapply(1:length(majorTypes), function(x) {
+    grepl('Ambiguous|Unassigned', majorTypes[x]) &
+      ! grepl('Ambiguous|Unassigned', cellTypes[x]) |
+      is.na(majorTypes[x]) |
+      ! is.na(majorTypes[x]) & ! isPair[[paste(majorTypes[x], cellTypes[x], sep = "--")]]
+  })
+  
+  if(any(ambiguousIndices)) {
+    
+    majorReview = sapply(unique(cellTypes[ambiguousIndices]), function(cellType) {
+      selectedMarkers = get_celltype_markers(subtypeMarkersList, cellType)
+      assign_celltype(paste(selectedMarkers, sep = "_", collapse = "_"), majorMarkersList, major = T)
+    })
+    majorTypes[ambiguousIndices] = sapply(which(ambiguousIndices), function(x) {
+      cellType = gsub('For Review ', '', cellTypes[x]) %>%
+        gsub("Ambiguous.*", "Ambiguous", .)
+      if(cellType %in% c('Ambiguous', 'Unassigned'))
+        return(cellType)
+      if(majorReview[x] %in% c("Unassigned"))
+        return(cellType)
+      if(cellType == 'CD4+ Myeloid cells')
+        majorReview[x] = 'CD4+ Myeloid cells'
+      if(! isPair[[paste(majorTypes[x], cellType, sep = "--")]]) {
+        parents = sapply(allCellTypes, function(parent)
+          isChild(subtypeMarkersList, parent, cellType))
+        parents = allCellTypes[parents]
+        if(length(parents) == 1) {
+          return(parents)
+        }
+        parents = c(parents, gsub(" - Other", "", parents), paste(parents, " - Other")) %>% unique
+        if(! any(parents %in% allMajorTypes))   {
+          return(majorReview[x])
+        }
+        parents = parents[parents %in% allMajorTypes]
+        values = sapply(parents, function(parent) get_node_depth(subtypeMarkersList, parent))
+        return(toString(parents[values == max(values, na.rm = T)]))
+      }
+    })
+  }
+  
+  return(majorTypes)
 }
 
 summary_table <- function(inDf, pars, regFile) {
@@ -324,7 +355,7 @@ summary_table <- function(inDf, pars, regFile) {
                     density = sum(cellDensity, na.rm = T))
 
   # Output for cell density table
-  inDf$cellID=paste(inDf$cellType, sep = ":")
+  inDf$cellID=paste(inDf$majorType, inDf$cellType, sep = ":")
   print(head(inDf))
   typeStats = ddply(inDf, .(imagename, cellID), summarise,
                   cellDensity = ifelse(all(is.na(cellDensity)), NA, sum(cellDensity, na.rm = T)),
@@ -361,7 +392,7 @@ summary_table <- function(inDf, pars, regFile) {
   typeMatch = match(with(typeStats, paste(imagename, cellID)), with(posStats, paste(imagename, cellID)))
   typeStats$majorType = gsub(':.*', "", typeStats$cellID)
   typeStats$cellType = gsub('^[^:]+:', "", typeStats$cellID)
-  typeStats = typeStats[, c(ids, 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
+  typeStats = typeStats[, c(ids, "majorType", 'cellType', 'cellDensity', 'cellCount', 'cellPercentage')]
   typeStats = cbind(typeStats, posStats[typeMatch, markerColSel])
   typeStats[is.na(typeStats)] = 0
   return(typeStats)

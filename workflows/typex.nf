@@ -9,7 +9,7 @@ include { format_input; collate_features } from '../modules/format.nf'
 include { csm_submit; csm_export } from '../modules/csm.nf'
 include { TYPE as tier_one; TYPE as tier_two; TYPE as tier_one_ref; 
 		  TYPE as tier_two_nostrat; build_strata_model }  from '../modules/typing.nf'
-include { preprocess_panck; create_composites; run_classifier; 
+include { create_composites; run_classifier; 
 		  process_probs; ts_exporter; mask_overlay }  from '../modules/tissue_seg.nf'
 
 include { TYPE as call_cluster } from '../modules/typing.nf'
@@ -89,8 +89,7 @@ workflow TISSEG {
 	
 		run_dirs = Channel.fromPath(params.image_dir, type: "dir", relative: false)
 		tissegMarkers = get_tissue_seg_markeres(params.overlay_config_file)	
-		preprocess_panck(tissegMarkers, run_dirs)
-		create_composites(preprocess_panck.out.collect(), tissegMarkers, run_dirs)
+		create_composites(tissegMarkers, run_dirs)
 		run_classifier(create_composites.out.collect())
 		process_probs(run_classifier.out)
 		ts_exporter(process_probs.out)
