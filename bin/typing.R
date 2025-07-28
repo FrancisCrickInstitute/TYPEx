@@ -65,7 +65,11 @@ if(! pars$markers %in% names(marker_gene_list))
 	stop("Marker list -", pars$markers, "- not found")
 
 if(file.exists(args$regFile)) {
-	metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
+	if(grepl("csv$", args$regFile)) {
+		metaDf=read.csv(args$regFile, stringsAsFactors = F)
+	} else {
+		metaDf=read.csv(args$regFile, sep = "\t", stringsAsFactors = F)
+	}
 } else {
 	stop(f('ERROR: Sample annotation file does not exist {args$regFile}. ', 
 		"In the running script, include the path to your sample annotation table next to the --sample_file argument."))
@@ -113,7 +117,7 @@ if(! dir.exists(outDir))
 runID = file.path(outDir, paste1(pars[[pars$method]]))
 print(pars$method)
 write.table(x = data.frame(unlist(pars[[pars$method]])),
-	file = f("{runID}.log"), append = F)
+	file = f("{runID}.log"), append = T)
 cat("Output dir:", outDir, "\n")
 
 for(feature in pars$features) {
@@ -143,7 +147,7 @@ for(feature in pars$features) {
 	
 		imagenames = gsub(".txt", "", basename(inData$imagename))
 		excludeIDs = metaDf$imagename[
-			which(metaDf$useImage == "exclude" &
+			which((metaDf$useImage == "exclude" | metaDf$use_image == "exclude") &
 				metaDf$imagename %in% imagenames)]
 		inData=inData[! imagenames %in% excludeIDs, ]
 		cat("Kept cells", sum(! imagenames %in% excludeIDs), 
@@ -155,9 +159,27 @@ for(feature in pars$features) {
 		excludeIDs = c()
 	}
 
+	ids = with(inData, paste(ObjectNumber, basename(imagename)))
+	# If batch effect colums exists, filter out samples without batch effect information
+	if("batch_effects" %in% names(pars))	{
+
+		if(all(pars$batch_effects %in% colnames(metaDf))) {
+			batchNAs = sapply(ids, function(id) {
+				any(is.na(metaDf[metaDf$imagename == id, pars$batch_effects]))
+			})
+			cat("Number of samples with NAs for batch effects columns", sum(batchNAs), "\n")
+			cat("Number of samples with NAs for batch effects columns", sum(batchNAs), "\n",
+				file = f("{runID}.log"), append = T)
+			excludeIDs = c(excludeIDs, ids[which(batchNAs)])
+		} else {
+			cat("WARNING: Not all batch effects columns are in the sample annotation file:", pars$batch_effects," \n",
+                file = f("{runID}.log"), append = T)
+			cat("WARNING: Not all batch effects columns are in the sample annotation file:", pars$batch_effects," \n")
+		}
+	}
+
 	## Filter out excluded samples based on metadata
 	print("Getting mask annotations")
-	ids = with(inData, paste(ObjectNumber, basename(imagename)))
 	tissue_categs = get_tissue_category(
             cellIDs     = gsub(".txt", "", ids),
             panel       = pars$panel,

@@ -216,7 +216,7 @@ if(! length(data)) {
 												 excludedFreqIndices], na.rm = T)
 		cat(qCut, nCut, '\n')
 	
-		cols = palette$cellTypeColors
+		cols = unique(palette$cellTypeColors)
 		colorCol = typedCols[1]
 		pdfOut=f("{out}/MostFrequentSame.{analysisID}.pdf")
 		pdf(pdfOut, width = 7, height = 4)

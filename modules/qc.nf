@@ -1,6 +1,7 @@
 process qc_select_images {
 
 	label 'x'
+	cache false
 
 	input:
 		tuple val (ref_markers)
@@ -30,6 +31,7 @@ process qc_create_single_channel_images {
 
 
 		label 'x'
+		cache false
 
 		maxRetries 1
         
@@ -54,6 +56,8 @@ process qc_create_single_channel_images {
 }
 
 process qc_overlay {
+	
+	cache false
 	
 	input:
 		tuple val (ref_markers)
@@ -81,6 +85,9 @@ process qc_overlay {
 }
 
 process qc_intensity_heatmap {
+
+
+	cache false
 	
 	input:
 		tuple val (ref_markers)

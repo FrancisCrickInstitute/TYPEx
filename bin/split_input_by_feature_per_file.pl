@@ -26,7 +26,7 @@ print "core ", $core, "\n";
 $core =~ s/\/roi/-roi/;
 open IN, $inFile or die "Could not open $inFile:$!\n";
 my @header = split /$delim/, <IN>;
-$header[$#header] =~ s/\n//;
+$header[$#header] =~ s/\r*\n//;
 
 if($imcyto eq 'true')	{
 	@header = map {s/Intensity_//; $_} @header;
@@ -70,7 +70,7 @@ print join(",", @header, "\n");
 
 my (%in_hash, %markers);
 while(<IN>) {
-	$_ =~ s/\n//;
+	$_ =~ s/\r*\n//;
       my @columns = split /$delim/;
       my $object=$columns[$object_col];
 			my $imageID;

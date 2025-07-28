@@ -11,7 +11,7 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 			paste0(., ".*")
 	    colnames(inData)=colnames(inData) %>%
 		  	gsub(paste0(".*", feature, "_?_(.*)"), "\\1", .) %>%
-    		gsub('^[0-9]+[A-Za-z]+_(.*)', '\\1', .) 
+    		gsub('^[0-9]+[A-Za-z]+[_-](.*)', '\\1', .) 
 
 
 		if(! any(metals %in% colnames(inData)))
@@ -26,9 +26,10 @@ summarise_output <- function(inData, method, pars, runID, runOutput, columnNames
 
 		print("Cell type assignment")
 		clusterNameFile=f("{runID}.clusterNames.txt")
+		rowsSelect = which(! grepl("Excluded [0-9]+$|^Excluded$", runOutput))
 		clusterNames = assign_cluster_positivity(
-			dfExp = inData[, ..columnNames], 
-			clusters=runOutput,
+			dfExp = inData[rowsSelect, ..columnNames], 
+			clusters=runOutput[rowsSelect],
 			run=pars$run,
 			runID=runID, 
 			panel=pars$panel, 
