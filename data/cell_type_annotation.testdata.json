@@ -6,7 +6,8 @@
 		"T cells":{
   				"T cells - Other":["CD45", "CD3"],
   				"CD8 T cells":["CD45", "CD3", "CD8a"],
-  				"CD4 T cells":["CD45", "CD3", "CD4"]
+  				"CD4 T cells":["CD45", "CD3", "CD4"],
+				"Tregs":["CD45", "CD3", "CD4", "FOXP3"]
   		}
 	},
 	"Stroma":{
