@@ -191,7 +191,7 @@ for (k = 0; k< runs.length;  k++)	{
 					if(index != -1)
 						panckID = tumourList[m];
 				}
-				selectWindow("Median of " + panckID);
+				selectWindow(panckID);
 			}
 			
 			getMinAndMax(min, max);
