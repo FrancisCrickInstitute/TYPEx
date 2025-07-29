@@ -92,12 +92,21 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
     
     # Include batches for cellassign; # rows must match cov matrix
     if(method == "cellassign") {
+
       # add batch effects
-	  if(! "batch_effects" %in% names(pars) | pars$batch_effects == "") {
+	  if(! "batch_effects" %in% names(pars) | ! length(pars$batch_effects)) {
+
 	  	tma_values=rep(NA, nrow(inData))
 		cat("WARNING: Empty batch effects variable.",
-	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
+	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append = T)
+
+	  } else if(pars$batch_effects == "") {
+			tma_values=rep(NA, nrow(inData))
+	        cat("WARNING: Empty batch effects variable.",
+    	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append = T)
+
 	  } else {
+
 		  tma_values = sapply(pars$batch_effects, function(factor) {
 			  get_region_info(panel=pars$panel, 
 			  				cellIDs=inData$imagename,
@@ -107,11 +116,13 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
 	  }
 	  
       if(all(is.na(tma_values))) {
+
 		tma_values=rep("one", nrow(inData))
 		cat("WARNING:  Batch effects will not be calculated for",
 			"the probabilistic cellassign model",
 	        sum(! rowsKeep), "\n", file=f("{runID}.log"), append=T)
         #stop("ERROR: Missing TMA values")
+
 	  } else if(! length(tma_values)) {
 		  stop("ERROR: The variables for batch effect correction specified in typing_params.json do not exist. ", 
 		  		"Verify that the column(s) for batch effects exit")
