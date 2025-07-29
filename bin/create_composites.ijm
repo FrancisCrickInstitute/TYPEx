@@ -31,7 +31,7 @@ print(dnaMarkers)
 tumourList = split(tumour, "=|,");
 tumourMarkers = "";
 for (m = 1; m < tumourList.length; m++) {
-    tumourMarkers = tumourMarkers + "image" + m + "=[Median of " + tumourList[m] + "] ";
+    tumourMarkers = tumourMarkers + "image" + m + "=[" + tumourList[m] + "] ";
 }
 tumourMarkers = tumourMarkers + "image" + tumourList.length + "=[-- None --]";
 print(tumourMarkers)
@@ -130,7 +130,7 @@ for (k = 0; k< runs.length;  k++)	{
 						indexOf(auxStroma, imgList[i]) == -1 &&
 						indexOf(dna, imgList[i]) == -1) {
 							continue;
-						}
+					}
 						
 					print("Opening:" + imgList[i]);		
 					open(imgDir + imgList[i]);
@@ -146,6 +146,7 @@ for (k = 0; k< runs.length;  k++)	{
 					for(m = 0; m < tumourList.length; m++) {
                         if(imgList[i] == tumourList[m]) {
 							isTumourMarker = 'true';
+							print("Skip preprocessing of the tumour channel");
 							break;
 						}
 					}
@@ -153,8 +154,8 @@ for (k = 0; k< runs.length;  k++)	{
 						run("Remove Outliers", "block_radius_x=40 block_radius_y=40 standard_deviations=3");
 						run("Median (3D)");
 					}
+				  	autoAdjust();
 				  }
-				  autoAdjust();
 				}
 			}
 
@@ -172,54 +173,48 @@ for (k = 0; k< runs.length;  k++)	{
 			run("Remove Outliers", "block_radius_x=2 block_radius_y=2 standard_deviations=3");
 			autoAdjust();
 			run("Enhance Contrast", "saturated=0.35");
-		//	saveAs("PNG",tma + "-" + roi +  "dna.png");
 
 			print(tumourList.length);
-			// Tumour
-			print("Tumour markers");
-			for (tind = 1; tind < tumourList.length; tind++) {
-
-			    print(tumourList[tind]);
-				selectWindow(tumourList[tind]);
-				getMinAndMax(min, max);
-				print(tumourList[tind]);
-
-				if(max < panck_threshold) {
-
-					run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
-					run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
-					run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
-				} else {
-
-					run("Duplicate...", "title=TumourDupl");
-					run("Morphological Filters", "operation=[Dilation] element=Square radius=20");
-					rename("ProcessNoise");
-					run("Calculator Plus", "i1=TumourDupl i2=ProcessNoise operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0 create");
-					close("ProcessNoise");
-					close("TumourDupl");
-					//run("Directional Filtering", "type=Max operation=Median line=1 direction=32");
-				}
-				close(tumourList[tind]);
-				run("Median (3D)");
-				rename("Median of " + tumourList[tind]);
-			}
-
 			if(tumourList.length > 2) {
 
 				print("Concatenate tumour");
 				print(tumourMarkers);
 				run("Concatenate...", " title=Test open " + tumourMarkers);
 				run("Z Project...", "projection=[Sum Slices]");
-				rename('Tumour');
 				autoAdjust();
-				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
 			} else {
-				selectWindow("Median of " + tumourList[1]);
-				autoAdjust();
-				print("Enhance");
-				run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
-				rename('Tumour');
+				print("Processing panCK");
+				panckID = "";
+				for (m = 1; m < tumourList.length; m++) {
+					index = indexOf(tumourList[m].toLowerCase(), "panck");
+					print(tumourList[m]);
+					if(index != -1)
+						panckID = tumourList[m];
+				}
+				selectWindow("Median of " + panckID);
 			}
+			
+			getMinAndMax(min, max);
+			print("Max after concat", max);
+			if(max < panck_threshold) {
+				
+				run("Morphological Filters", "operation=[Dilation] element=Square radius=1");
+				run("Directional Filtering", "type=Max operation=Median line=2 direction=32");
+				run("Morphological Filters", "operation=[Erosion] element=Square radius=1");
+			} else {
+			
+				run("Duplicate...", "title=TumourDupl");
+				run("Morphological Filters", "operation=[Dilation] element=Square radius=20");
+				rename("ProcessNoise");
+				run("Calculator Plus", "i1=TumourDupl i2=ProcessNoise operation=[Divide: i2 = (i1/i2) x k1 + k2] k1=1 k2=0 create");
+				close("ProcessNoise");
+				close("TumourDupl");
+			}
+			run("Median (3D)");
+			autoAdjust();
+			run("Enhance Local Contrast (CLAHE)", "blocksize=127 histogram=256 maximum=3 mask=*None* fast_(less_accurate)");
+			rename('Tumour');
+				
 			// Stroma
 			if(auxStromaMarkers != "") {
 			
@@ -295,13 +290,11 @@ for (k = 0; k< runs.length;  k++)	{
 			run("Median (3D)");
 			autoAdjust();
 			rename('Stroma_Only');
-			// saveAs("PNG", tma + "-" + roi + "stroma.png");
 
 			run("Concatenate...", "  title=StromaStack open image1=SUM_Immune image2=[Stroma_Only] image3=[-- None --]");
 			run("Z Project...", "projection=[Sum Slices]");
 			rename("Stroma_merge");
 			autoAdjust();
-//			saveAs("PNG", tma + "-" + roi + "stroma_merg.png");
 
 			run("Enhance Contrast", "saturated=0.35");
 			run("Merge Channels...", "c3=SUM_DNA c7=Tumour c6=Stroma_merge create");
@@ -364,7 +357,6 @@ function autoAdjust() {
 		}
 		if(hmin > aggregateMin) hmin=noiseLevel;
 		if(hmin < 0) hmin=0;
-		if (hmax > noiseLevel) setMinAndMax(hmin, hmax); 
-		 print(hmin, hmax);
-		// run(“Apply LUT”);
+		if (hmax > noiseLevel) setMinAndMax(hmin, hmax);
+		print("Autoadjust", hmin, hmax);
 }

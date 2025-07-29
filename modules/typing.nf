@@ -2,6 +2,7 @@
 process TYPE {
 
 	label 'max'
+	cache false
 
 	input:
 		tuple val(method)
@@ -43,6 +44,7 @@ process TYPE {
 process build_strata_model {
 	
 	label 'medium_mem'
+	cache false
 	
 	input:
 		val files
