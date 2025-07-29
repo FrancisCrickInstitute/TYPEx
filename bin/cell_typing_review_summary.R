@@ -297,7 +297,7 @@ if(! length(data)) {
 		qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
 		cat(qCut, nCut, '\n')
 			 
-		cols = palette$cellTypeColors
+		cols = unique(palette$cellTypeColors)
 		pdfOut=f("{out}/MostFrequentExcluded.{analysisID}.pdf")
 		pdf(pdfOut, width = 7, height = 4)
 		# Skip plotting the full dataset if more than 0.5M cells
@@ -377,7 +377,7 @@ if(! length(data)) {
     	    qCut = max(recast[[intensityColNameRef]][intensityChange > negativeCutoff & mostFreqIndices], na.rm = T)
     	    cat(qCut, nCut, '\n')
 				
-			cols = palette$cellTypeColors
+			cols = unique(palette$cellTypeColors)
 			pdfOut = f("{out}/Missing.{missedCellType}.{analysisID}.pdf")
 			pdf(pdfOut, width = 6, height = 4)
 			if(! nrow(recast) < 500000) {
@@ -553,7 +553,9 @@ if(! length(data)) {
 	stats=data.frame(table(dfMrg$control))
 	stats$Freq=round(stats$Freq/sum(stats$Freq), 3)
 	stats$Var1=factor(stats$Var1, levels=sort(stats$Var1))
-
+	
+	if("cellTypingStatusCols" %in% names(palette)) 
+		stop("ERROR message: cellTypingStatusCols missing. Confirm it hasn't been removed from the celltype_colors.json file."
 	pdfOut=f("{out}/Control_stats.{analysisID}.pdf")
 	pdf(pdfOut, height=5, width=5)
 	g <- ggplot(stats, aes(x="", y=Freq, fill=Var1))

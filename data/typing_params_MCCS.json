@@ -26,9 +26,9 @@
   
   "dependentCell":[],
 
-  "experimental_condition":["CRUK_ID"],
+  "experimental_condition":[],
   // Batch effects correction to be considered from the sample annotation table
-  "batch_effects":["TMA", "duplicate_core", "cohort"],
+  "batch_effects":[],
   // CODEX "batch_effects":["TMA_12"],
 
   // Method-specific parameters

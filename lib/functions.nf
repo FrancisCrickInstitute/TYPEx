@@ -31,7 +31,6 @@ def get_cell_files(imcyto, cellprofiler) {
 			.replaceAll('\\/+', '.')
 		samplePattern=".*" + samplePattern
 		println samplePattern
-		println cellPattern
 	
 		cellFiles=Channel
 			.fromPath("${cellFilePattern}", relative:false, checkIfExists: true)

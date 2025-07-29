@@ -161,7 +161,7 @@ for(feature in pars$features) {
 
 	ids = with(inData, paste(ObjectNumber, basename(imagename)))
 	# If batch effect colums exists, filter out samples without batch effect information
-	if("batch_effects" %in% names(pars))	{
+	if("batch_effects" %in% names(pars) & length(pars$batch_effects))	{
 
 		if(all(pars$batch_effects %in% colnames(metaDf))) {
 			batchNAs = sapply(ids, function(id) {
@@ -283,20 +283,6 @@ for(feature in pars$features) {
 		out=NA
 	}
 	
-	# TODO: Check if exists
-	if("useImage" %in% colnames(metaDf) & ! is.na(out)) {
-		controls=unique(metaDf$useImage)
-		for(subset in controls) {
-			IDs=metaDf$imagename[metaDf$useImage == subset]
-			if(! sum(out$imagename %in% IDs))
-				next
-			fst::write.fst(out[out$imagename %in% IDs, ], 
-				path=f("{runID}.{subset}.fst"), compress = 75)
-			if(subset == "review") 
-				write.tab(out[out$imagename %in% IDs, ], 
-					file=f("{runID}.{subset}.txt"))
-		}
-	}
 	end=Sys.time()
 	
 	cat('Printing parameters in ', f("{runID}.pars.yaml"), '\n')
