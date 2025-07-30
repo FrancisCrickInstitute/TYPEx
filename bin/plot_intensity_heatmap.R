@@ -71,7 +71,7 @@ if(! length(cellObjectsFile)) {
 	stop("ERROR: the cell objects table has not been created by the process subtype_exporter.")
 } 
 cellObjectsDf = fst::read.fst(cellObjectsFile)
-expDf = subset(expDf, imagename %in% unique(cellObjectsDf))
+expDf = subset(expDf, imagename %in% unique(cellObjectsDf$imagename))
 
 markers = setdiff(colnames(expDf), c('ObjectNumber', 'imagename'))
 
