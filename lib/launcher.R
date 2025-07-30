@@ -202,6 +202,10 @@ run_method <- function(inData, method, pars, runID, wDir, regFile, nfDir,
       rowsKeep=rowsKeep[which(!is.na(clusters))]
       clusters=clusters[!is.na(clusters)]
 	  cat(length(runOutput), length(rowsKeep), length(clusters), '\n')
+
+	  if(any(is.na(rowsKeep)))
+		stop("ERROR: The `tier_one` process attempts to reuse the proabilistic model in results/*/major but fails to match all data points. Change the release or delete the folder `major` to restart cellassign on a new dataset")
+
       runOutput[rowsKeep] = clusters
     } else {
       runOutput[rowsKeep] = funForward(inMat, pars[[method]], colors=colors)

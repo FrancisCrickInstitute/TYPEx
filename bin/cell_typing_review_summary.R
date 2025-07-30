@@ -554,8 +554,9 @@ if(! length(data)) {
 	stats$Freq=round(stats$Freq/sum(stats$Freq), 3)
 	stats$Var1=factor(stats$Var1, levels=sort(stats$Var1))
 	
-	if("cellTypingStatusCols" %in% names(palette)) 
-		stop("ERROR message: cellTypingStatusCols missing. Confirm it hasn't been removed from the celltype_colors.json file."
+	if(! "cellTypingStatusCols" %in% names(palette)) 
+		stop("ERROR message: cellTypingStatusCols missing. Confirm it hasn't been removed from the celltype_colors.json file.")
+
 	pdfOut=f("{out}/Control_stats.{analysisID}.pdf")
 	pdf(pdfOut, height=5, width=5)
 	g <- ggplot(stats, aes(x="", y=Freq, fill=Var1))
