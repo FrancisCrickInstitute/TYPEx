@@ -184,13 +184,7 @@ for (k = 0; k< runs.length;  k++)	{
 				autoAdjust();
 			} else {
 				print("Processing panCK");
-				panckID = "";
-				for (m = 1; m < tumourList.length; m++) {
-					index = indexOf(tumourList[m].toLowerCase(), "panck");
-					print(tumourList[m]);
-					if(index != -1)
-						panckID = tumourList[m];
-				}
+				panckID = tumourList[1];
 				selectWindow(panckID);
 			}
 			
